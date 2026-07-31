@@ -5,7 +5,7 @@ A multi-agent AI system that discovers hidden unmet user needs by comparing Goog
 
 ## Architecture
 ```
-Preprocessor (local) → LatentNeedDetector (Gemini) → EvidenceVerifier (local)
+Preprocessor (local) → LatentNeedDetector (Gemini) → EvidenceVerifier (local) → Critic (Gemini)
 ```
 
 ## Folder Structure
@@ -42,6 +42,8 @@ Each agent in `lib/agents/` exports a single async function:
 - `preprocessor.ts`: `preprocessReviews()`, `preprocessIssues()` - local, no Gemini
 - `latent-need-detector.ts`: `runLatentNeedDetector()` - Gemini call, finds hidden needs
 - `evidence-verifier.ts`: `runEvidenceVerifier()` - local verification
+- `critic.ts`: `runCritic()` - Gemini call, adversarial counter-arguments
+- `pattern-matcher.ts`: `findCrossProjectPatterns()`, `boostCrossProjectConfidence()` - cross-source analysis
 
 All agent I/O types defined in `lib/agents/types.ts`.
 
@@ -56,6 +58,7 @@ All agent I/O types defined in `lib/agents/types.ts`.
 ## Environment Variables
 ```bash
 GEMINI_API_KEY=your_key_here  # Required for Gemini API
+GITHUB_TOKEN=your_token_here  # Optional: increases GitHub API rate limit from 60 to 5,000 requests/hour
 ```
 
 ## Running

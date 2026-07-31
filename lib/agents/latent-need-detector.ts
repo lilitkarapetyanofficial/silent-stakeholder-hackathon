@@ -6,7 +6,8 @@ export async function runLatentNeedDetector(
   preprocessed: PreprocessedData,
   issues: Issue[],
   issueSummary: IssueSummary,
-  product: string
+  product: string,
+  reviewsAvailable: boolean
 ): Promise<LatentNeedDetectorOutput> {
   const clusterSummaries = preprocessed.clusters.slice(0, 15).map((c, i) =>
     `Cluster ${i + 1} (${c.clusterSize} reviews, avg ${c.avgScore.toFixed(1)} stars, ${c.totalThumbsUp} thumbs-up):
@@ -31,9 +32,11 @@ ${i.title}`
 
 YOUR MISSION: Find HIDDEN UNMET USER NEEDS that the product roadmap is missing or under-serving. You are NOT summarizing complaints. You are inferring what users NEED but NEVER SAID OUT LOUD.
 
-━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━
 
 INPUT DATA:
+
+REVIEW AVAILABILITY: ${reviewsAvailable ? "User reviews are available and included below." : "No user review data available for this product. Base your analysis solely on the GitHub roadmap issues."}
 
 REVIEW CLUSTERS (${preprocessed.totalClusters} clusters from ${preprocessed.totalReviews} reviews):
 ${clusterSummaries}

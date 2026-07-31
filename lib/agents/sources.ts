@@ -7,6 +7,7 @@ export interface SourceEntry {
   name: string;
   product: string;
   reviewsPath: string | null;
+  reviewsAvailable: boolean;
   issuesPath: string;
 }
 
@@ -15,18 +16,21 @@ export const SOURCE_REGISTRY: SourceEntry[] = [
     name: "wordpress-android",
     product: "wordpress-mobile/WordPress-Android",
     reviewsPath: join(DATA_DIR, "reviews.json"),
+    reviewsAvailable: true,
     issuesPath: join(DATA_DIR, "issues.json"),
   },
   {
     name: "antennapod",
     product: "AntennaPod/AntennaPod",
     reviewsPath: null,
+    reviewsAvailable: false,
     issuesPath: join(DATA_DIR, "issues-antennapod.json"),
   },
   {
     name: "ankidroid",
     product: "AnkiDroid/Anki-Android",
     reviewsPath: null,
+    reviewsAvailable: false,
     issuesPath: join(DATA_DIR, "issues-ankidroid.json"),
   },
 ];

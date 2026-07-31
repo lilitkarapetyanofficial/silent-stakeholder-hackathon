@@ -58,6 +58,7 @@ function makeVerifiedGap(
   allReviews: Review[],
   allIssues: Issue[],
   product: string,
+  reviewsAvailable: boolean,
   fallbackConfidence?: number
 ): VerifiedGap {
   const llmConf = Math.min(100, Math.max(0, fallbackConfidence ?? gap.confidence));
@@ -78,6 +79,7 @@ function makeVerifiedGap(
     rankingReasoning: gap.rankingReasoning,
     counterArgument: "",
     product,
+    reviewsAvailable,
     createdAt: new Date().toISOString(),
   };
 }
@@ -86,7 +88,8 @@ export async function runEvidenceVerifier(
   gaps: LatentNeedDetectorOutput,
   reviews: Review[],
   issues: Issue[],
-  product: string
+  product: string,
+  reviewsAvailable: boolean
 ): Promise<EvidenceAgentOutput> {
   const reviewMap = new Map(reviews.map((r) => [r.id, r]));
   const issueMap = new Map(issues.map((i) => [i.number, i]));
@@ -124,7 +127,7 @@ export async function runEvidenceVerifier(
       continue;
     }
 
-    const vg = makeVerifiedGap(gap, evidenceReviews, evidenceIssues, reviews, issues, product);
+    const vg = makeVerifiedGap(gap, evidenceReviews, evidenceIssues, reviews, issues, product, reviewsAvailable);
     vg.id = `gap-${verifiedGaps.length + 1}`;
     verifiedGaps.push(vg);
   }
@@ -146,7 +149,7 @@ export async function runEvidenceVerifier(
         labels: [] as string[],
       }));
       const vg = makeVerifiedGap(
-        gap, fallbackReviews, fallbackIssues, reviews, issues, product,
+        gap, fallbackReviews, fallbackIssues, reviews, issues, product, reviewsAvailable,
         Math.round(gap.confidence * 0.8)
       );
       vg.id = `gap-${verifiedGaps.length + 1}`;

@@ -25,8 +25,17 @@ export default function GapCard({ gap, rank, isDark }: GapCardProps) {
               </span>
               <span className="text-[11px] text-[var(--fg-muted)] font-mono">#{rank}</span>
               {gap.product && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--bg-muted)] text-[var(--fg-muted)] border border-[var(--border)] font-mono">
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-500/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
                   {gap.product}
+                </span>
+              )}
+              {gap.product && !gap.reviewsAvailable && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700">
+                  <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                  </svg>
+                  Issues-only source
                 </span>
               )}
               {gap.flagged && (

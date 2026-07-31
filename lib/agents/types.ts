@@ -79,6 +79,7 @@ export interface VerifiedGap {
   rankingReasoning: string;
   counterArgument: string;
   product: string;
+  reviewsAvailable: boolean;
   createdAt: string;
 }
 

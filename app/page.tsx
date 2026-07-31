@@ -11,6 +11,7 @@ import FilterBar from "@/components/FilterBar";
 import AnalyzeButton from "@/components/AnalyzeButton";
 import RejectedGapsPanel from "@/components/RejectedGapsPanel";
 import CrossProjectPatterns from "@/components/CrossProjectPatterns";
+import SourceHealthPanel from "@/components/SourceHealthPanel";
 
 export default function Home() {
   const [data, setData] = useState<AnalysisResult | null>(null);
@@ -103,6 +104,10 @@ export default function Home() {
               dateRange: data?.stats.dateRange ?? "Loading...",
             }}
           />
+        </div>
+
+        <div className="mb-6 animate-fade-up delay-100">
+          <SourceHealthPanel />
         </div>
 
         <div className="mb-6 animate-fade-up delay-200">

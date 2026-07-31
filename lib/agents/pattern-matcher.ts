@@ -29,6 +29,8 @@ const TOPIC_KEYWORDS: Record<string, string[]> = {
   "share": ["share", "sharing", "social", "integrate"],
 };
 
+const CROSS_SOURCE_BOOST = 12;
+
 function normalizeTopic(topic: string): string[] {
   const lower = topic.toLowerCase();
   const matches: string[] = [];
@@ -92,4 +94,37 @@ export function findCrossProjectPatterns(verifiedGaps: GapLike[]): CrossProjectP
   }
 
   return patterns.sort((a, b) => b.gapIds.length - a.gapIds.length);
+}
+
+export function boostCrossProjectConfidence(
+  gaps: VerifiedGap[],
+  patterns: CrossProjectPattern[]
+): VerifiedGap[] {
+  if (patterns.length === 0) return gaps;
+
+  const gapIdToPattern = new Map<string, CrossProjectPattern>();
+  for (const pattern of patterns) {
+    for (const gapId of pattern.gapIds) {
+      const existing = gapIdToPattern.get(gapId);
+      if (!existing || pattern.products.length > existing.products.length) {
+        gapIdToPattern.set(gapId, pattern);
+      }
+    }
+  }
+
+  return gaps.map((gap) => {
+    const pattern = gapIdToPattern.get(gap.id);
+    if (!pattern) return gap;
+
+    const otherProducts = pattern.products.filter((p) => p !== gap.product);
+    const boostedComputed = Math.min(100, gap.computedConfidence + CROSS_SOURCE_BOOST);
+    const boostNote = `Confirmed independently in ${otherProducts.join(" and ")}`;
+    const separator = gap.confidenceJustification ? " " : "";
+
+    return {
+      ...gap,
+      computedConfidence: boostedComputed,
+      confidenceJustification: `${gap.confidenceJustification}${separator}[${boostNote}]`,
+    };
+  });
 }
