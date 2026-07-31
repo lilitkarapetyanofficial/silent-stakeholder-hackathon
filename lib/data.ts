@@ -123,7 +123,12 @@ export function loadCachedAnalysis(): AnalysisResult | null {
   const path = join(OUTPUT_DIR, "analysis.json");
   if (!existsSync(path)) return null;
   const raw = readFileSync(path, "utf-8");
-  return JSON.parse(raw);
+  const data = JSON.parse(raw) as AnalysisResult;
+  const firstGap = data.gaps?.[0];
+  if (!firstGap || typeof firstGap.llmConfidence !== "number" || typeof firstGap.computedConfidence !== "number") {
+    return null;
+  }
+  return data;
 }
 
 export function loadMilestoneStats(): { milestone: string; open: number; closed: number; total: number }[] {

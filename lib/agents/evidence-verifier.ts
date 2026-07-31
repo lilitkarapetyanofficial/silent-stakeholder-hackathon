@@ -132,34 +132,14 @@ export async function runEvidenceVerifier(
       continue;
     }
 
+    if (evidenceIssues.length === 0) {
+      removalReasons.push(`Removed "${gap.topic}": no verifiable issue evidence`);
+      continue;
+    }
+
     const vg = makeVerifiedGap(gap, evidenceReviews, evidenceIssues, reviews, issues, product, reviewsAvailable);
     vg.id = `gap-${verifiedGaps.length + 1}`;
     verifiedGaps.push(vg);
-  }
-
-  if (verifiedGaps.length === 0 && gaps.gaps.length > 0) {
-    for (const gap of gaps.gaps.slice(0, 3)) {
-      const fallbackReviews = gap.supportingQuotes.slice(0, 3).map((q, i) => ({
-        reviewId: gap.supportingReviewIds[i] || `review-${i}`,
-        content: q,
-        score: 3,
-        thumbsUp: 5,
-        date: "unknown",
-      }));
-      const fallbackIssues = gap.relatedIssueNumbers.slice(0, 3).map((num) => ({
-        issueNumber: num,
-        title: `Issue #${num}`,
-        url: `https://github.com/wordpress-mobile/WordPress-Android/issues/${num}`,
-        state: "unknown",
-        labels: [] as string[],
-      }));
-      const vg = makeVerifiedGap(
-        gap, fallbackReviews, fallbackIssues, reviews, issues, product, reviewsAvailable,
-        Math.round(gap.confidence * 0.8)
-      );
-      vg.id = `gap-${verifiedGaps.length + 1}`;
-      verifiedGaps.push(vg);
-    }
   }
 
   return {
