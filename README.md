@@ -1,5 +1,7 @@
 # Silent Stakeholder
 
+> **The gap:** Users need to feel confident that their mobile device is a secure, trusted extension of their desktop workspace, without security protocols locking them out of their own creative flow.
+
 **Discovering hidden user needs by comparing Google Play reviews against GitHub roadmap issues for WordPress for Android.**
 
 ## The Problem

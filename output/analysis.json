@@ -1,0 +1,285 @@
+{
+  "gaps": [
+    {
+      "id": "gap-1",
+      "topic": "seamless-auth-handshake",
+      "need": "Users need to feel confident that their mobile device is a secure, trusted extension of their desktop workspace, without security protocols locking them out of their own creative flow.",
+      "explanation": "While developers focus on minor 2FA UI tweaks, users are trapped in endless browser-to-app redirect loops and broken application password handshakes. This disconnect shows the team treats authentication as a one-time setup step rather than a continuous, cross-platform trust relationship.",
+      "confidence": 0.95,
+      "confidenceBreakdown": {
+        "volume": 0.07500000000000001,
+        "social": 0.76,
+        "pain": 1,
+        "coverage": 0.2
+      },
+      "confidenceExplanation": "Multiple detailed reviews highlight the exact loop mechanism (Rev 13, Rev 6) and cryptic credential errors (Rev 27), while the roadmap only addresses surface-level 2FA text clarity (#19442) rather than resolving the underlying session state handoff failures.",
+      "verdict": "MISUNDERSTOOD",
+      "evidence": {
+        "reviews": [
+          {
+            "reviewId": "rev-local-0-0mlb",
+            "content": "this app is junk that keeps initiating an endless loop of: enter login > open email > click email login > back to app > enter login > open email......forever.",
+            "score": 1,
+            "thumbsUp": 0,
+            "date": "unknown"
+          },
+          {
+            "reviewId": "rev-local-0-680i",
+            "content": "Now the app continually tells me that my application password no longer exists. It takes me to the web login, which works and then prompts to accept the connection from the app. But when I accept the connection, it takes me back to the app, which then tells me the a",
+            "score": 2,
+            "thumbsUp": 0,
+            "date": "unknown"
+          },
+          {
+            "reviewId": "rev-bc6bbf89-adb4-4a60-ad5f-57f5974e9287",
+            "content": "There was an error storing application password credentials..... Is it that hard to throw an actually useful error message? I have nothing to go off here",
+            "score": 1,
+            "thumbsUp": 3,
+            "date": "2026-05-16T11:18:55"
+          }
+        ],
+        "issues": [
+          {
+            "issueNumber": 19442,
+            "title": "2FA code: Add clarity that the code is for WordPress.com",
+            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/19442",
+            "state": "closed",
+            "labels": [
+              "[Type] Enhancement",
+              "Good First Issue",
+              "Login"
+            ]
+          }
+        ]
+      },
+      "createdAt": "2026-07-31T11:40:55.048Z"
+    },
+    {
+      "id": "gap-2",
+      "topic": "mobile-site-autonomy",
+      "need": "Users need a fully autonomous mobile workspace that allows them to design and structure their digital presence on the go, rather than being restricted to a stripped-down 'editor-only' companion app.",
+      "explanation": "The team treats the app as a basic blog-post publisher, whereas modern creators expect full website building capabilities directly from their phones. This gap leaves users frustrated when they realize they cannot perform fundamental design and customization tasks without a desktop.",
+      "confidence": 0.9,
+      "confidenceBreakdown": {
+        "volume": 0.15000000000000002,
+        "social": 0.7200000000000001,
+        "pain": 0.75,
+        "coverage": 0.8
+      },
+      "confidenceExplanation": "Reviews explicitly call out the inability to build or design websites (Rev 8, Rev 28), yet the GitHub roadmap contains zero open or closed issues related to site-building, theme customization, or layout design on mobile.",
+      "verdict": "IGNORED",
+      "evidence": {
+        "reviews": [
+          {
+            "reviewId": "rev-289aa2a8-37ef-48be-ace4-48f53a2f81c4",
+            "content": "needs more options to creat and add designs and do your web your ouw still",
+            "score": 3,
+            "thumbsUp": 1,
+            "date": "2026-07-05T04:19:29"
+          },
+          {
+            "reviewId": "rev-41ca6baa-3d26-4cf5-8bcd-d69c10857469",
+            "content": "doesn't allow you to build your website in the app.",
+            "score": 1,
+            "thumbsUp": 1,
+            "date": "2026-05-13T10:22:01"
+          }
+        ],
+        "issues": []
+      },
+      "createdAt": "2026-07-31T11:40:55.048Z"
+    },
+    {
+      "id": "gap-3",
+      "topic": "metadata-and-state-preservation",
+      "need": "Creators need absolute certainty that their complex content taxonomies and media assets are perfectly synchronized and preserved across devices without silent data truncation or corruption.",
+      "explanation": "The app silently truncates categories and tags to the top 10 and fails to sync recent posts, destroying the user's trust in mobile publishing. The team treats sync issues as isolated bugs rather than a systemic failure to respect the user's desktop-established content architecture.",
+      "confidence": 0.95,
+      "confidenceBreakdown": {
+        "volume": 0.22499999999999998,
+        "social": 0.76,
+        "pain": 0.9166666666666666,
+        "coverage": 0.2
+      },
+      "confidenceExplanation": "This is backed by highly specific complaints about category/tag limits (Rev 10, Rev 16, Rev 24) and sync failures (Rev 4, Rev 9), while the roadmap only addresses minor sync issues like trashed comments (#21581) or dashboard updates (#19250).",
+      "verdict": "UNDER-PRIORITIZED",
+      "evidence": {
+        "reviews": [
+          {
+            "reviewId": "rev-f6a93715-b14b-4536-a8cc-b4ae3cf28f11",
+            "content": "Basically unusable compared to the IOS version. It only loads the first 10 categories and tags + only the dozen or so photos in the media section...",
+            "score": 1,
+            "thumbsUp": 1,
+            "date": "2026-07-03T03:08:00"
+          },
+          {
+            "reviewId": "rev-a3ba2798-40ab-4624-a5a3-9d9fb6144e6b",
+            "content": "Since the latest version, all categories and tags are no longer visible in the app. Only the top 10 categories and tags are showing",
+            "score": 1,
+            "thumbsUp": 3,
+            "date": "2026-05-21T14:23:55"
+          },
+          {
+            "reviewId": "rev-717eaa02-5554-4078-bdc7-49fd32b24388",
+            "content": "Odd, doesn't sync from the site. last posts 7 days ago despite newer ones being published. unusable as is",
+            "score": 3,
+            "thumbsUp": 2,
+            "date": "2026-07-03T20:23:50"
+          }
+        ],
+        "issues": [
+          {
+            "issueNumber": 21581,
+            "title": "Jetpack app doesn't sync trashed comments",
+            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/21581",
+            "state": "open",
+            "labels": [
+              "[Type] Bug",
+              "Comments"
+            ]
+          },
+          {
+            "issueNumber": 19250,
+            "title": "\"Couldn't update dashboard\" error on sites hosted on WPCOM",
+            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/19250",
+            "state": "open",
+            "labels": [
+              "[Type] Bug",
+              "[Pri] High",
+              "/My site",
+              "My Site Dashboard"
+            ]
+          }
+        ]
+      },
+      "createdAt": "2026-07-31T11:40:55.048Z"
+    },
+    {
+      "id": "gap-4",
+      "topic": "decoupled-self-hosted-utility",
+      "need": "Self-hosted creators need a lightweight, unburdened editing tool that respects their server resources and doesn't force a bloated plugin ecosystem as a prerequisite for mobile productivity.",
+      "explanation": "The app is heavily coupled with Jetpack and WordPress.com infrastructure, alienating the massive self-hosted (WP.org) community who experience severe performance degradation or total lockout. The team is optimizing for their proprietary ecosystem while ignoring the core open-source promise of WordPress.",
+      "confidence": 0.85,
+      "confidenceBreakdown": {
+        "volume": 0.22499999999999998,
+        "social": 0.68,
+        "pain": 1,
+        "coverage": 0.8
+      },
+      "confidenceExplanation": "Reviewers note they are forced to abandon the app because they disabled Jetpack for performance reasons (Rev 15) or because the app fails to support non-WP-hosted sites (Rev 30, Rev 22). The roadmap shows no effort to decouple the app from Jetpack dependencies.",
+      "verdict": "IGNORED",
+      "evidence": {
+        "reviews": [
+          {
+            "reviewId": "rev-8737390a-cc5d-4c32-bf92-fe3979babea0",
+            "content": "I've stopped using Jetpack because it severely slows down my blogs, coincidentally I now can't access my Wordpress app on my smart phone and create blogs",
+            "score": 1,
+            "thumbsUp": 0,
+            "date": "2026-06-12T01:57:05"
+          },
+          {
+            "reviewId": "rev-a20482bf-4a51-4f5f-95d0-e4ddedea5878",
+            "content": "I installed and deleted this app several years ago because it doesn't support connection to anything but the WP-hosted sites. Tried again today and this is not something they've added.",
+            "score": 2,
+            "thumbsUp": 2,
+            "date": "2026-05-06T17:55:51"
+          },
+          {
+            "reviewId": "rev-11fa750c-5c02-4180-b850-ea1173d35fa2",
+            "content": "Majority of app is not compatible with WP at all errors throughout the app not compatible with sever version .",
+            "score": 1,
+            "thumbsUp": 0,
+            "date": "2026-05-23T14:36:33"
+          }
+        ],
+        "issues": []
+      },
+      "createdAt": "2026-07-31T11:40:55.048Z"
+    },
+    {
+      "id": "gap-5",
+      "topic": "resilient-error-agency",
+      "need": "Non-technical users need clear, actionable guidance and self-healing pathways when network, server, or credential mismatches occur, transforming technical failures into collaborative troubleshooting.",
+      "explanation": "When connections fail, the app throws cryptic developer-facing errors or displays blank screens, leaving users feeling helpless and stupid. The development team treats errors as backend crashes to be patched rather than critical user experience touchpoints that require graceful degradation and clear communication.",
+      "confidence": 0.9,
+      "confidenceBreakdown": {
+        "volume": 0.22499999999999998,
+        "social": 0.7200000000000001,
+        "pain": 1,
+        "coverage": 0.2
+      },
+      "confidenceExplanation": "Users express extreme frustration over unhelpful error messages (Rev 27) and blank screens (Rev 1), while the roadmap focuses entirely on fixing the underlying technical crashes (#20147, #20538, #20376) without designing better user-facing error states or recovery flows.",
+      "verdict": "MISUNDERSTOOD",
+      "evidence": {
+        "reviews": [
+          {
+            "reviewId": "rev-447a39ab-228e-4006-b144-2e9d3d91f944",
+            "content": "Once I log-in its a BLANK PAGE",
+            "score": 1,
+            "thumbsUp": 0,
+            "date": "2026-07-28T00:59:25"
+          },
+          {
+            "reviewId": "rev-bc6bbf89-adb4-4a60-ad5f-57f5974e9287",
+            "content": "There was an error storing application password credentials..... Is it that hard to throw an actually useful error message? I have nothing to go off here",
+            "score": 1,
+            "thumbsUp": 3,
+            "date": "2026-05-16T11:18:55"
+          },
+          {
+            "reviewId": "rev-8c788d71-5256-4530-bf6a-6c9a887f44b8",
+            "content": "ek bhi cheez smj nhi aati",
+            "score": 1,
+            "thumbsUp": 0,
+            "date": "2026-07-21T08:40:05"
+          }
+        ],
+        "issues": [
+          {
+            "issueNumber": 20147,
+            "title": "JniAndroid$UncaughtExceptionException: Native stack trace:",
+            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/20147",
+            "state": "closed",
+            "labels": [
+              "[Pri] Medium",
+              "General",
+              "[Type] Crash"
+            ]
+          },
+          {
+            "issueNumber": 20538,
+            "title": "RuntimeException: Unable to create application org.wordpress.android.WordPressRelease: java.io.FileNotFoundExceptio...",
+            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/20538",
+            "state": "closed",
+            "labels": [
+              "[Pri] Medium",
+              "General",
+              "[Type] Crash"
+            ]
+          },
+          {
+            "issueNumber": 20376,
+            "title": "RuntimeException: Unable to create application org.wordpress.android.WordPressRelease: android.database.sqlite.SQLi...",
+            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/20376",
+            "state": "closed",
+            "labels": [
+              "[Pri] Medium",
+              "General",
+              "[Type] Crash"
+            ]
+          }
+        ]
+      },
+      "createdAt": "2026-07-31T11:40:55.048Z"
+    }
+  ],
+  "stats": {
+    "totalReviews": 500,
+    "totalIssues": 1000,
+    "dateRange": "2025-06 to 2026-07",
+    "analyzedAt": "2026-07-31T11:40:55.055Z",
+    "ignoredCount": 2,
+    "underPrioritizedCount": 1,
+    "misunderstoodCount": 2
+  }
+}
