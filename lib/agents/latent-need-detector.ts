@@ -14,8 +14,9 @@ Representative: "${c.representativeReview.content.slice(0, 200)}"`
   ).join("\n\n");
 
   const lowRatedSummary = preprocessed.topLowRated.slice(0, 10).map((r) =>
-    `[${r.score} stars ${r.thumbs_up} thumbs-up] ${r.content.slice(0, 150)}`
-  ).join("\n");
+    `[ID:${r.id}] ${r.score} stars ${r.thumbs_up} thumbs-up | ${r.at?.slice(0, 10) || "?"}
+${r.content.slice(0, 200)}`
+  ).join("\n\n");
 
   const highCommentSummary = issueSummary.highCommentIssues.slice(0, 20).map((i) =>
     `[#${i.number}] ${i.state} | ${i.labels.join(",") || "none"} | ${i.comments} comments | ${i.milestone || "no milestone"}
@@ -44,6 +45,9 @@ Total issues: ${issueSummary.total} (${issueSummary.open} open, ${issueSummary.c
 Top labels: ${labelSummary}
 Top milestones: ${milestoneSummary || "none"}
 
+OPEN ISSUE NUMBERS (for checking if gap is already tracked):
+${issueSummary.openIssueNumbers.slice(0, 100).join(", ")}
+
 MOST-DISCUSSED ISSUES (sorted by community engagement):
 ${highCommentSummary}
 
@@ -56,53 +60,53 @@ DETECTION RULES:
    - "Can't find the editor" → SECOND-ORDER: "Users need intuitive navigation that respects their workflow"
    - "Login fails sometimes" → SECOND-ORDER: "Users need reliable access without friction"
 
-2. Cross-reference EVERY user signal against the roadmap:
-   - If NO roadmap issue addresses it → IGNORED
-   - If issues exist but are closed/stale/low-priority → UNDER-PRIORITIZED
-   - If issues exist but solve a DIFFERENT problem than what users actually need → MISUNDERSTOOD
+2. CRITICAL CHECK: Is this gap already an open GitHub issue?
+   - If YES and the roadmap is handling it adequately → EXCLUDE this gap entirely
+   - If YES but the roadmap is clearly mishandling it (wrong solution, not enough focus) → classify as MISUNDERSTOOD
+   - If NO open issue exists → classify as IGNORED
+   - If issue exists but is closed/stale/low-priority → classify as UNDER-PRIORITIZED
 
-3. Rank gaps by STRENGTH OF EVIDENCE, not frequency:
-   - Number of supporting reviews (more = stronger)
-   - Consistency across users (same pattern in different reviews = stronger)
-   - Severity of pain (low ratings + high thumbs-up = stronger)
-   - Roadmap gap size (completely missing = stronger)
+3. BAN surface-level complaint summarization:
+   - "Users complain about crashes" = BAD (this is a complaint summary)
+   - "Users need confidence their work is safe during publishing" = GOOD (this is an inferred need)
+   - Do NOT output a gap if it's simply "users are frequently annoyed by X" and X is already tracked
 
-4. For each gap, generate a DEFENSE EXPLANATION that answers:
-   "Why do you believe this is a real unmet need?"
-   This must be specific enough to defend during a live Q&A with hackathon judges.
+4. Rank gaps by EVIDENCE STRENGTH (define your ranking rationale):
+   Strength = (a) number of independent supporting signals × (b) consistency across sources × (c) recency
+   - More independent reviews mentioning same pattern = stronger
+   - Same pattern appearing in different contexts = stronger
+   - Recent reviews = stronger than old reviews
+   - You MUST include rankingReasoning explaining WHY this gap is ranked at its position
 
 ━━━━━━━━━━━━━━━━━━
 
-Return JSON:
+For EVERY gap, produce ALL FOUR of these fields (no exceptions):
+
 {
-  "gaps": [
-    {
-      "topic": "kebab-case-label",
-      "hiddenNeed": "Users need [specific need] (1 sentence, in user's plain language, NOT technical)",
-      "confidence": 85,
-      "confidenceExplanation": "Why this confidence score: evidence volume, consistency across users, severity of pain signals, and roadmap gap size (2-3 sentences)",
-      "verdict": "IGNORED|UNDER-PRIORITIZED|MISUNDERSTOOD",
-      "supportingReviewIds": ["rev-xxx"],
-      "supportingQuotes": ["exact quote from review that reveals the hidden need"],
-      "relatedIssueNumbers": [123],
-      "defenseExplanation": "Why this is a real unmet need: specific evidence that proves this is not just a complaint but a genuine gap in the product (2-3 sentences, ready for live Q&A)"
-    }
-  ],
-  "stats": {
-    "totalReviews": ${preprocessed.totalReviews},
-    "totalIssues": ${issueSummary.total},
-    "clustersFormed": ${preprocessed.totalClusters},
-    "avgRating": 0.0
-  }
+  "topic": "kebab-case-label",
+  "hiddenNeed": "The user's need stated in THEIR words/framing, not technical language. 1 sentence.",
+  "confidence": 85,
+  "confidenceJustification": "62% — corroborated by 14 reviews across 2 time periods but contradicted by 3 reviews praising the same feature",
+  "verdict": "IGNORED|UNDER-PRIORITIZED|MISUNDERSTOOD",
+  "verdictReason": "One sentence explaining WHY this specific verdict label applies",
+  "supportingReviewIds": ["rev-xxx", "rev-yyy"],
+  "supportingQuotes": ["exact quote from review that reveals the hidden need"],
+  "relatedIssueNumbers": [123],
+  "defenseExplanation": "Why this is a real unmet need: specific evidence that proves this is not just a complaint but a genuine gap in the product (2-3 sentences, ready for live Q&A)",
+  "rankingReasoning": "Ranked #1 because: 23 independent reviews, consistent across 3 months, no open GitHub issue addressing this specific need"
 }
 
+━━━━━━━━━━━━━━━━━━
+
 RULES:
-- Return TOP 3-5 gaps only. Quality over quantity.
+- Return TOP 3-5 gaps ONLY. Quality over quantity.
 - confidence MUST be an integer from 0-100 (not decimal).
 - Every gap MUST have at least 1 supporting review ID.
+- Every gap MUST have ALL FOUR fields: hiddenNeed, confidenceJustification, verdictReason, defenseExplanation
 - Every insight MUST be provable from the data.
 - Do NOT return generic complaints. Return HIDDEN NEEDS.
-- Do NOT rank by frequency only. Rank by evidence strength.
+- Do NOT include gaps where the issue is already open and being handled (除非 roadmap is clearly mishandling it)
+- rankingReasoning MUST explain the evidence strength calculation
 
 Return ONLY the JSON.`;
 

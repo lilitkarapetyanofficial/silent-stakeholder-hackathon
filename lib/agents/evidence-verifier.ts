@@ -16,10 +16,10 @@ export async function runEvidenceVerifier(
     const evidenceReviews = gap.supportingReviewIds
       .map((id) => reviewMap.get(id))
       .filter((r): r is Review => !!r)
-      .slice(0, 3)
+      .slice(0, 5)
       .map((r) => ({
         reviewId: r.id,
-        content: r.content.slice(0, 300),
+        content: r.content.slice(0, 400),
         score: r.score,
         thumbsUp: r.thumbs_up,
         date: r.at || "unknown",
@@ -46,15 +46,17 @@ export async function runEvidenceVerifier(
       id: `gap-${verifiedGaps.length + 1}`,
       topic: gap.topic,
       userNeed: gap.hiddenNeed,
-      explanation: gap.confidenceExplanation,
+      explanation: gap.defenseExplanation,
       confidence: Math.min(100, Math.max(0, gap.confidence)),
+      confidenceJustification: gap.confidenceJustification,
       verdict: gap.verdict,
-      confidenceExplanation: gap.confidenceExplanation,
+      verdictReason: gap.verdictReason,
       evidence: {
         reviews: evidenceReviews,
         issues: evidenceIssues,
       },
       defenseExplanation: gap.defenseExplanation,
+      rankingReasoning: gap.rankingReasoning,
       createdAt: new Date().toISOString(),
     });
   }
@@ -65,10 +67,11 @@ export async function runEvidenceVerifier(
         id: `gap-${verifiedGaps.length + 1}`,
         topic: gap.topic,
         userNeed: gap.hiddenNeed,
-        explanation: gap.confidenceExplanation,
+        explanation: gap.defenseExplanation,
         confidence: Math.min(100, Math.max(0, Math.round(gap.confidence * 0.8))),
+        confidenceJustification: gap.confidenceJustification,
         verdict: gap.verdict,
-        confidenceExplanation: gap.confidenceExplanation,
+        verdictReason: gap.verdictReason,
         evidence: {
           reviews: gap.supportingQuotes.slice(0, 3).map((q, i) => ({
             reviewId: gap.supportingReviewIds[i] || `review-${i}`,
@@ -86,6 +89,7 @@ export async function runEvidenceVerifier(
           })),
         },
         defenseExplanation: gap.defenseExplanation,
+        rankingReasoning: gap.rankingReasoning,
         createdAt: new Date().toISOString(),
       });
     }

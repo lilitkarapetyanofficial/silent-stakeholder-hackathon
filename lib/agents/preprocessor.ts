@@ -144,10 +144,15 @@ export function preprocessIssues(issues: Issue[]): IssueSummary {
       comments: i.comments,
     }));
 
+  const openIssueNumbers = issues
+    .filter((i) => i.state === "open")
+    .map((i) => i.number);
+
   return {
     total: issues.length,
     open: byState.open,
     closed: byState.closed,
+    openIssueNumbers,
     topLabels,
     topMilestones,
     highCommentIssues,

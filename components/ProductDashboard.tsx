@@ -29,10 +29,10 @@ export default function ProductDashboard({ stats }: ProductDashboardProps) {
       <div className="grid grid-cols-3 gap-4">
         <div className="rounded-xl bg-[var(--bg-muted)] p-3 border border-[var(--border)]">
           <p className="text-[10px] text-[var(--fg-muted)] uppercase tracking-wider font-medium mb-1">
-            Reviews Source
+            User Signals Source
           </p>
-          <p className="text-xs font-semibold text-[var(--fg)]">Google Play Store</p>
-          <p className="text-[10px] text-[var(--fg-muted)]">org.wordpress.android</p>
+          <p className="text-xs font-semibold text-[var(--fg)]">Google Play Reviews</p>
+          <p className="text-[10px] text-[var(--fg-muted)]">sealuzh/app_reviews (HuggingFace)</p>
         </div>
         <div className="rounded-xl bg-[var(--bg-muted)] p-3 border border-[var(--border)]">
           <p className="text-[10px] text-[var(--fg-muted)] uppercase tracking-wider font-medium mb-1">

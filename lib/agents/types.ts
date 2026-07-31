@@ -22,6 +22,7 @@ export interface IssueSummary {
   total: number;
   open: number;
   closed: number;
+  openIssueNumbers: number[];
   topLabels: { label: string; count: number }[];
   topMilestones: { milestone: string; count: number }[];
   highCommentIssues: {
@@ -38,12 +39,14 @@ export interface DetectedGap {
   topic: string;
   hiddenNeed: string;
   confidence: number;
-  confidenceExplanation: string;
+  confidenceJustification: string;
   verdict: "IGNORED" | "UNDER-PRIORITIZED" | "MISUNDERSTOOD";
+  verdictReason: string;
   supportingReviewIds: string[];
   supportingQuotes: string[];
   relatedIssueNumbers: number[];
   defenseExplanation: string;
+  rankingReasoning: string;
 }
 
 export interface LatentNeedDetectorOutput {
@@ -62,13 +65,15 @@ export interface VerifiedGap {
   userNeed: string;
   explanation: string;
   confidence: number;
+  confidenceJustification: string;
   verdict: "IGNORED" | "UNDER-PRIORITIZED" | "MISUNDERSTOOD";
-  confidenceExplanation: string;
+  verdictReason: string;
   evidence: {
     reviews: { reviewId: string; content: string; score: number; thumbsUp: number; date: string }[];
     issues: { issueNumber: number; title: string; url: string; state: string; labels: string[] }[];
   };
   defenseExplanation: string;
+  rankingReasoning: string;
   createdAt: string;
 }
 

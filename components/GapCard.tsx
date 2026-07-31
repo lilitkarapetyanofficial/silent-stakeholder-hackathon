@@ -27,9 +27,6 @@ export default function GapCard({ gap, rank, isDark }: GapCardProps) {
             </div>
             <h3 className="text-lg font-bold text-[var(--fg)] capitalize mb-1">{gap.topic}</h3>
             <p className="text-sm font-medium text-[var(--fg)] leading-relaxed">{gap.userNeed}</p>
-            {gap.explanation && (
-              <p className="text-xs text-[var(--fg-muted)] leading-relaxed mt-2">{gap.explanation}</p>
-            )}
           </div>
           <div className="text-right flex-shrink-0">
             <div className="text-3xl font-bold font-mono text-[var(--fg)]">{gap.confidence}%</div>
@@ -37,35 +34,50 @@ export default function GapCard({ gap, rank, isDark }: GapCardProps) {
           </div>
         </div>
 
-        <div className="h-2 bg-[var(--bg-muted)] rounded-full overflow-hidden mb-4">
+        <div className="h-2 bg-[var(--bg-muted)] rounded-full overflow-hidden mb-3">
           <div
             className={`h-full rounded-full transition-all duration-700 ${getConfidenceColor(gap.confidence / 100, isDark)}`}
             style={{ width: `${gap.confidence}%` }}
           />
         </div>
 
+        {gap.confidenceJustification && (
+          <p className="text-xs text-[var(--fg-muted)] mb-3 italic">{gap.confidenceJustification}</p>
+        )}
+
         <div className="flex items-center gap-4 text-xs text-[var(--fg-muted)]">
-          <span>{gap.evidence.reviews.length} review quotes</span>
-          <span>{gap.evidence.issues.length} matched issues</span>
+          <span>{gap.evidence.reviews.length} review evidence</span>
+          <span>{gap.evidence.issues.length} roadmap issues</span>
           <span className="ml-auto text-[var(--fg-muted)]/60">{expanded ? "▲ collapse" : "▼ expand"}</span>
         </div>
       </div>
 
       {expanded && (
-        <div className="border-t border-[var(--border)] p-5 bg-[var(--bg-muted)]/30">
-          {gap.confidenceExplanation && (
-            <div className="mb-4">
+        <div className="border-t border-[var(--border)] p-5 bg-[var(--bg-muted)]/30 space-y-4">
+          {gap.rankingReasoning && (
+            <div>
               <h4 className="text-[11px] font-semibold text-[var(--fg-muted)] uppercase tracking-wider mb-2">
-                Confidence Reasoning
+                Why Ranked #{rank}
               </h4>
               <p className="text-xs text-[var(--fg-muted)] leading-relaxed bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-3">
-                {gap.confidenceExplanation}
+                {gap.rankingReasoning}
+              </p>
+            </div>
+          )}
+
+          {gap.verdictReason && (
+            <div>
+              <h4 className="text-[11px] font-semibold text-[var(--fg-muted)] uppercase tracking-wider mb-2">
+                Verdict Reason
+              </h4>
+              <p className="text-xs text-[var(--fg-muted)] leading-relaxed bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-3">
+                <span className={`font-medium ${gap.verdict === "IGNORED" ? "text-red-500" : gap.verdict === "UNDER-PRIORITIZED" ? "text-amber-500" : "text-blue-500"}`}>{gap.verdict}:</span> {gap.verdictReason}
               </p>
             </div>
           )}
 
           {gap.defenseExplanation && (
-            <div className="mb-4">
+            <div>
               <h4 className="text-[11px] font-semibold text-[var(--fg-muted)] uppercase tracking-wider mb-2">
                 Why This Is a Real Unmet Need
               </h4>
@@ -76,15 +88,15 @@ export default function GapCard({ gap, rank, isDark }: GapCardProps) {
           )}
 
           {gap.evidence.reviews.length > 0 && (
-            <div className="mb-4">
+            <div>
               <h4 className="text-[11px] font-semibold text-[var(--fg-muted)] uppercase tracking-wider mb-2">
-                Evidence from Reviews
+                Evidence from Reviews ({gap.evidence.reviews.length} sources)
               </h4>
               <div className="space-y-2">
                 {gap.evidence.reviews.map((r, i) => (
                   <div key={i} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-3">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-[10px] font-mono text-[var(--fg-muted)]">{r.reviewId}</span>
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <span className="text-[10px] font-mono text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-1.5 py-0.5 rounded">{r.reviewId}</span>
                       <span className="text-[10px] text-[var(--fg-muted)]">{r.score} stars</span>
                       <span className="text-[10px] text-[var(--fg-muted)]">{r.thumbsUp} thumbs-up</span>
                       <span className="text-[10px] text-[var(--fg-muted)]">{r.date?.slice(0, 10)}</span>
@@ -99,7 +111,7 @@ export default function GapCard({ gap, rank, isDark }: GapCardProps) {
           {gap.evidence.issues.length > 0 && (
             <div>
               <h4 className="text-[11px] font-semibold text-[var(--fg-muted)] uppercase tracking-wider mb-2">
-                Matched Roadmap Issues
+                Matched Roadmap Issues ({gap.evidence.issues.length} issues)
               </h4>
               <div className="space-y-1">
                 {gap.evidence.issues.map((issue) => (
@@ -108,9 +120,9 @@ export default function GapCard({ gap, rank, isDark }: GapCardProps) {
                     href={issue.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-xs text-[var(--fg-muted)] hover:text-blue-500 dark:hover:text-blue-400 transition-colors py-1"
+                    className="flex items-center gap-2 text-xs text-[var(--fg-muted)] hover:text-blue-500 dark:hover:text-blue-400 transition-colors py-1.5 px-2 rounded hover:bg-[var(--bg-card)]"
                   >
-                    <span className="font-mono text-[var(--fg-muted)]">#{issue.issueNumber}</span>
+                    <span className="font-mono text-blue-500 dark:text-blue-400">#{issue.issueNumber}</span>
                     <span className="truncate flex-1">{issue.title}</span>
                     <span className={`px-1.5 py-0.5 rounded text-[9px] font-medium ${issue.state === "open" ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400" : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400"}`}>
                       {issue.state}

@@ -28,13 +28,15 @@ export interface Gap {
   userNeed: string;
   explanation: string;
   confidence: number;
-  confidenceExplanation: string;
+  confidenceJustification: string;
   verdict: "IGNORED" | "UNDER-PRIORITIZED" | "MISUNDERSTOOD";
+  verdictReason: string;
   evidence: {
     reviews: { reviewId: string; content: string; score: number; thumbsUp: number; date: string }[];
     issues: { issueNumber: number; title: string; url: string; state: string; labels: string[] }[];
   };
   defenseExplanation: string;
+  rankingReasoning: string;
   createdAt: string;
 }
 

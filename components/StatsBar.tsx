@@ -13,11 +13,12 @@ export default function StatsBar({ stats }: StatsBarProps) {
   const total = stats.ignoredCount + stats.underPrioritizedCount + stats.misunderstoodCount;
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
       <StatCard label="Reviews" value={stats.totalReviews.toLocaleString()} accent="text-blue-500 dark:text-blue-400" />
       <StatCard label="Issues" value={stats.totalIssues.toLocaleString()} accent="text-purple-500 dark:text-purple-400" />
       <StatCard label="Gaps Found" value={total.toString()} accent="text-violet-500 dark:text-violet-400" />
       <StatCard label="Ignored" value={stats.ignoredCount.toString()} accent="text-red-500 dark:text-red-400" />
+      <StatCard label="Under-Prioritized" value={stats.underPrioritizedCount.toString()} accent="text-amber-500 dark:text-amber-400" />
     </div>
   );
 }
