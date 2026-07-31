@@ -12,7 +12,8 @@ export async function runLatentNeedDetector(
   const clusterSummaries = preprocessed.clusters.slice(0, 15).map((c, i) =>
     `Cluster ${i + 1} (${c.clusterSize} reviews, avg ${c.avgScore.toFixed(1)} stars, ${c.totalThumbsUp} thumbs-up):
 Keywords: ${c.keywords.join(", ")}
-Representative: "${c.representativeReview.content.slice(0, 200)}"`
+Review IDs in this cluster: ${c.similarReviewIds.slice(0, 10).join(", ")}
+Representative [ID:${c.representativeReview.id}]: "${c.representativeReview.content.slice(0, 200)}"`
   ).join("\n\n");
 
   const lowRatedSummary = preprocessed.topLowRated.slice(0, 10).map((r) =>
@@ -20,7 +21,7 @@ Representative: "${c.representativeReview.content.slice(0, 200)}"`
 ${r.content.slice(0, 200)}`
   ).join("\n\n");
 
-  const highCommentSummary = issueSummary.highCommentIssues.slice(0, 20).map((i) =>
+  const highCommentSummary = issueSummary.highCommentIssues.slice(0, 50).map((i) =>
     `[#${i.number}] ${i.state} | ${i.labels.join(",") || "none"} | ${i.comments} comments | ${i.milestone || "no milestone"}
 ${i.title}`
   ).join("\n");
@@ -106,6 +107,7 @@ RULES:
 - Return TOP 3-5 gaps ONLY. Quality over quantity.
 - confidence MUST be an integer from 0-100 (not decimal).
 - Every gap MUST have at least 1 supporting review ID.
+- supportingReviewIds MUST be copied exactly from an [ID:...] tag or a 'Review IDs in this cluster' list shown above — never invented. If you cannot find a real review ID to cite, do not create the gap.
 - Every gap MUST have ALL FOUR fields: hiddenNeed, confidenceJustification, verdictReason, defenseExplanation
 - Every insight MUST be provable from the data.
 - Do NOT return generic complaints. Return HIDDEN NEEDS.
