@@ -19,6 +19,7 @@ export default function StatsBar({ stats }: StatsBarProps) {
       <StatCard label="Gaps Found" value={total.toString()} accent="text-violet-500 dark:text-violet-400" />
       <StatCard label="Ignored" value={stats.ignoredCount.toString()} accent="text-red-500 dark:text-red-400" />
       <StatCard label="Under-Prioritized" value={stats.underPrioritizedCount.toString()} accent="text-amber-500 dark:text-amber-400" />
+      <StatCard label="Misunderstood" value={stats.misunderstoodCount.toString()} accent="text-indigo-500 dark:text-indigo-400" />
     </div>
   );
 }
