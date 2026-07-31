@@ -20,8 +20,8 @@ export default function RootLayout({
             __html: `
               (function() {
                 var theme = localStorage.getItem('theme');
-                if (theme === 'light') document.documentElement.classList.add('light');
-                else document.documentElement.classList.add('dark');
+                if (theme === 'dark') document.documentElement.classList.add('dark');
+                else document.documentElement.classList.add('light');
               })();
             `,
           }}
