@@ -1,6 +1,98 @@
 import type { Review, Issue } from "../types";
-import type { PreprocessedData, IssueSummary, LatentNeedDetectorOutput } from "./types";
+import type { PreprocessedData, IssueSummary, LatentNeedDetectorOutput, DetectedGap } from "./types";
 import { callGeminiJson } from "./gemini-client";
+
+function localAnalysis(
+  preprocessed: PreprocessedData,
+  issues: Issue[],
+  issueSummary: IssueSummary,
+  product: string
+): LatentNeedDetectorOutput {
+  const gaps: DetectedGap[] = [];
+  const openIssueNumbers = new Set(issueSummary.openIssueNumbers);
+
+  for (const cluster of preprocessed.clusters.slice(0, 10)) {
+    if (cluster.clusterSize < 2) continue;
+
+    const matchingIssues = issues.filter((issue) => {
+      const issueWords = new Set(
+        (issue.title + " " + issue.body).toLowerCase().split(/\s+/).filter((w) => w.length > 3)
+      );
+      return cluster.keywords.some((kw) => issueWords.has(kw));
+    });
+
+    const relatedIssueNumbers = matchingIssues.map((i) => i.number);
+    const hasOpenIssue = relatedIssueNumbers.some((n) => openIssueNumbers.has(n));
+
+    const confidence = Math.min(95, Math.round(
+      30 + (cluster.clusterSize * 4) + (cluster.totalThumbsUp * 0.5) + (cluster.avgScore < 3 ? 15 : 0)
+    ));
+
+    const topic = cluster.keywords.slice(0, 3).join("-") || "general-experience";
+
+    gaps.push({
+      topic,
+      hiddenNeed: `Users need better ${topic.replace(/-/g, " ")} based on ${cluster.clusterSize} similar reviews`,
+      confidence,
+      confidenceJustification: `Based on ${cluster.clusterSize} clustered reviews with avg ${cluster.avgScore.toFixed(1)} stars and ${cluster.totalThumbsUp} thumbs-up signals`,
+      verdict: hasOpenIssue ? "UNDER-PRIORITIZED" : "IGNORED",
+      verdictReason: hasOpenIssue
+        ? `Related issues exist but may not adequately address this cluster of ${cluster.clusterSize} user signals`
+        : `No open GitHub issue found addressing this pattern from ${cluster.clusterSize} reviews`,
+      supportingReviewIds: cluster.similarReviewIds,
+      supportingQuotes: [cluster.representativeReview.content.slice(0, 200)],
+      relatedIssueNumbers,
+      defenseExplanation: `${cluster.clusterSize} independent reviews share similar keywords (${cluster.keywords.slice(0, 5).join(", ")}), indicating a consistent user need that ${hasOpenIssue ? "existing issues may not fully address" : "has no roadmap coverage"}.`,
+      rankingReasoning: `Cluster of ${cluster.clusterSize} reviews, avg ${cluster.avgScore.toFixed(1)} stars, ${cluster.totalThumbsUp} total thumbs-up`,
+      product,
+    });
+  }
+
+  const topLowRated = preprocessed.topLowRated.filter(
+    (r) => !gaps.some((g) => g.supportingReviewIds.includes(r.id))
+  );
+
+  for (const review of topLowRated.slice(0, 3)) {
+    const words = review.content.toLowerCase().split(/\s+/).filter((w) => w.length > 3);
+    const matchingIssues = issues.filter((issue) => {
+      const issueWords = new Set(
+        (issue.title + " " + issue.body).toLowerCase().split(/\s+/).filter((w) => w.length > 3)
+      );
+      return words.some((w) => issueWords.has(w));
+    });
+
+    const relatedIssueNumbers = matchingIssues.map((i) => i.number);
+    const hasOpenIssue = relatedIssueNumbers.some((n) => openIssueNumbers.has(n));
+    const topic = words.slice(0, 3).join("-") || "low-rated-feedback";
+
+    gaps.push({
+      topic,
+      hiddenNeed: `Users need improvements around ${topic.replace(/-/g, " ")} based on low-rated review`,
+      confidence: Math.min(80, Math.round(40 + review.thumbs_up * 2)),
+      confidenceJustification: `Low-rated review (${review.score} stars, ${review.thumbs_up} thumbs-up) highlights unmet need`,
+      verdict: hasOpenIssue ? "UNDER-PRIORITIZED" : "IGNORED",
+      verdictReason: hasOpenIssue
+        ? "Related issue exists but user pain persists"
+        : "No open issue tracks this specific user pain",
+      supportingReviewIds: [review.id],
+      supportingQuotes: [review.content.slice(0, 200)],
+      relatedIssueNumbers,
+      defenseExplanation: `Direct user signal: ${review.score}-star review with ${review.thumbs_up} thumbs-up indicates strong dissatisfaction with no adequate roadmap response.`,
+      rankingReasoning: `High-thumbs-up low-rated review, no corresponding open issue`,
+      product,
+    });
+  }
+
+  return {
+    gaps: gaps.slice(0, 5),
+    stats: {
+      totalReviews: preprocessed.totalReviews,
+      totalIssues: issueSummary.total,
+      clustersFormed: preprocessed.totalClusters,
+      avgRating: 0,
+    },
+  };
+}
 
 export async function runLatentNeedDetector(
   preprocessed: PreprocessedData,
@@ -116,7 +208,12 @@ RULES:
 
 Return ONLY the JSON.`;
 
-  const result = await callGeminiJson<{ gaps?: LatentNeedDetectorOutput["gaps"]; stats?: LatentNeedDetectorOutput["stats"] }>(prompt, { temperature: 0.3 });
+  let result: { gaps?: LatentNeedDetectorOutput["gaps"]; stats?: LatentNeedDetectorOutput["stats"] };
+  try {
+    result = await callGeminiJson<{ gaps?: LatentNeedDetectorOutput["gaps"]; stats?: LatentNeedDetectorOutput["stats"] }>(prompt, { temperature: 0.3 });
+  } catch {
+    return localAnalysis(preprocessed, issues, issueSummary, product);
+  }
   return {
     gaps: (result.gaps ?? []).map((g) => ({ ...g, product })),
     stats: result.stats ?? {
