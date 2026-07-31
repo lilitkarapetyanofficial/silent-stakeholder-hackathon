@@ -77,7 +77,10 @@ export default function GapCard({ gap, rank, isDark }: GapCardProps) {
         </div>
 
         {gap.confidenceJustification && (
-          <p className="text-xs text-[var(--fg-muted)] mb-3 italic">{gap.confidenceJustification}</p>
+          <div className="mb-3 rounded-lg bg-[var(--bg-muted)]/60 border border-[var(--border)] px-3 py-2">
+            <p className="text-[10px] text-[var(--fg-muted)] uppercase tracking-wider font-medium mb-1">Confidence Justification</p>
+            <p className="text-xs text-[var(--fg)] leading-relaxed">{gap.confidenceJustification}</p>
+          </div>
         )}
 
         <div className="flex items-center gap-4 text-xs text-[var(--fg-muted)]">

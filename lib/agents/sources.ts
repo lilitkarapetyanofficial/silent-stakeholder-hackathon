@@ -19,18 +19,4 @@ export const SOURCE_REGISTRY: SourceEntry[] = [
     reviewsAvailable: true,
     issuesPath: join(DATA_DIR, "issues.json"),
   },
-  {
-    name: "antennapod",
-    product: "AntennaPod/AntennaPod",
-    reviewsPath: null,
-    reviewsAvailable: false,
-    issuesPath: join(DATA_DIR, "issues-antennapod.json"),
-  },
-  {
-    name: "ankidroid",
-    product: "AnkiDroid/Anki-Android",
-    reviewsPath: null,
-    reviewsAvailable: false,
-    issuesPath: join(DATA_DIR, "issues-ankidroid.json"),
-  },
 ];

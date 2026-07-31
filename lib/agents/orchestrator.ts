@@ -6,7 +6,7 @@ import { runEvidenceVerifier } from "./evidence-verifier";
 import { runCritic } from "./critic";
 import { SOURCE_REGISTRY, type SourceEntry } from "./sources";
 import { loadReviewsFromPath, loadIssuesFromPath } from "../data";
-import { findCrossProjectPatterns, boostCrossProjectConfidence, type CrossProjectPattern } from "./pattern-matcher";
+
 
 async function runProductPipeline(
   source: SourceEntry,
@@ -78,7 +78,6 @@ async function runProductPipeline(
 export async function runPipeline(): Promise<{
   state: PipelineState;
   gaps: EvidenceAgentOutput | undefined;
-  patterns: CrossProjectPattern[];
 }> {
   const state: PipelineState = {
     status: "running",
@@ -130,17 +129,13 @@ export async function runPipeline(): Promise<{
     state.status = "completed";
     state.completedAt = new Date().toISOString();
 
-    const patterns = findCrossProjectPatterns(allVerifiedGaps);
-    const boostedGaps = boostCrossProjectConfidence(allVerifiedGaps, patterns);
-
-    mergedEvidence.verifiedGaps = boostedGaps;
     state.results.evidence = mergedEvidence;
 
-    return { state, gaps: boostedGaps.length > 0 ? mergedEvidence : undefined, patterns };
+    return { state, gaps: mergedEvidence.verifiedGaps.length > 0 ? mergedEvidence : undefined };
   } catch (error) {
     state.status = "failed";
     state.errors.push(error instanceof Error ? error.message : "Unknown error");
     state.completedAt = new Date().toISOString();
-    return { state, gaps: undefined, patterns: [] };
+    return { state, gaps: undefined };
   }
 }

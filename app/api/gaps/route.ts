@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { loadCachedAnalysis, loadReviewsFromPath, loadIssuesFromPath, getDateRange } from "@/lib/data";
+import { loadCachedAnalysis, loadReviewsFromPath, loadIssuesFromPath, getDateRange, loadMilestoneStats } from "@/lib/data";
 import { SOURCE_REGISTRY } from "@/lib/agents/sources";
 
 export async function GET() {
@@ -31,9 +31,12 @@ export async function GET() {
       ? `${allDates[0].slice(0, 7)} to ${allDates[allDates.length - 1].slice(0, 7)}`
       : "Unknown";
 
+    const milestones = loadMilestoneStats();
+
     return NextResponse.json({
       gaps: analysis?.gaps ?? [],
       rejectedGaps: analysis?.rejectedGaps ?? [],
+      milestones,
       stats: {
         totalReviews,
         totalIssues,

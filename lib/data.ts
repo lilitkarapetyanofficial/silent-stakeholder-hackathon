@@ -126,6 +126,38 @@ export function loadCachedAnalysis(): AnalysisResult | null {
   return JSON.parse(raw);
 }
 
+export function loadMilestoneStats(): { milestone: string; open: number; closed: number; total: number }[] {
+  const { issues } = loadIssues();
+  const milestoneMap = new Map<string, { open: number; closed: number }>();
+
+  for (const issue of issues) {
+    const ms = issue.milestone;
+    if (!ms) continue;
+    const entry = milestoneMap.get(ms) ?? { open: 0, closed: 0 };
+    if (issue.state === "open") entry.open++;
+    else entry.closed++;
+    milestoneMap.set(ms, entry);
+  }
+
+  const milestones = Array.from(milestoneMap.entries())
+    .map(([milestone, { open, closed }]) => ({
+      milestone,
+      open,
+      closed,
+      total: open + closed,
+    }))
+    .sort((a, b) => {
+      const aNum = parseFloat(a.milestone);
+      const bNum = parseFloat(b.milestone);
+      if (!isNaN(aNum) && !isNaN(bNum)) return bNum - aNum;
+      if (a.milestone === "Future") return 1;
+      if (b.milestone === "Future") return -1;
+      return b.milestone.localeCompare(a.milestone);
+    });
+
+  return milestones;
+}
+
 export function getDateRange(reviews: Review[]): string {
   const dates = reviews.filter((r) => r.at).map((r) => r.at!).sort();
   return dates.length > 0

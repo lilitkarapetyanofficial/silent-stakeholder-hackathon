@@ -122,6 +122,11 @@ export async function runEvidenceVerifier(
         labels: i.labels,
       }));
 
+    if (evidenceReviews.length === 0 && evidenceIssues.length === 0) {
+      removalReasons.push(`Removed "${gap.topic}": no verifiable review or issue evidence`);
+      continue;
+    }
+
     if (evidenceReviews.length === 0) {
       removalReasons.push(`Removed "${gap.topic}": no verifiable review evidence`);
       continue;
