@@ -1,7 +1,7 @@
 import type { Review, Issue } from "../types";
 import type { LatentNeedDetectorOutput, EvidenceAgentOutput, VerifiedGap } from "./types";
 
-const STALE_THRESHOLD_DAYS = 180;
+const STALE_ISSUE_DAYS = 180;
 const CONFIDENCE_DIVERGENCE_THRESHOLD = 15;
 
 function computedConfidence(
@@ -12,36 +12,36 @@ function computedConfidence(
   const reviewMap = new Map(reviews.map((r) => [r.id, r]));
   const issueMap = new Map(issues.map((i) => [i.number, i]));
 
-  const evidenceReviews = gap.supportingReviewIds
+  const matchedReviews = gap.supportingReviewIds
     .map((id) => reviewMap.get(id))
     .filter((r): r is Review => !!r);
 
-  if (evidenceReviews.length === 0) return 0;
+  if (matchedReviews.length === 0) return 0;
 
-  const clusterSizeScore = Math.min(30, evidenceReviews.length * 6);
+  const clusterSizeScore = Math.min(30, matchedReviews.length * 6);
 
-  const avgRating = evidenceReviews.reduce((sum, r) => sum + r.score, 0) / evidenceReviews.length;
+  const avgRating = matchedReviews.reduce((sum, r) => sum + r.score, 0) / matchedReviews.length;
   const ratingScore = Math.round((avgRating / 5) * 25);
 
   const now = Date.now();
   const threeMonthsAgo = now - 90 * 24 * 60 * 60 * 1000;
-  const recentCount = evidenceReviews.filter((r) => {
+  const recentCount = matchedReviews.filter((r) => {
     if (!r.at) return false;
     return new Date(r.at).getTime() > threeMonthsAgo;
   }).length;
-  const recencyScore = Math.round((recentCount / evidenceReviews.length) * 25);
+  const recencyScore = Math.round((recentCount / matchedReviews.length) * 25);
 
-  const evidenceIssues = gap.relatedIssueNumbers
+  const matchedIssues = gap.relatedIssueNumbers
     .map((num) => issueMap.get(num))
     .filter((i): i is Issue => !!i);
 
   let issueScore = 0;
-  if (evidenceIssues.length > 0) {
-    const openCount = evidenceIssues.filter((i) => i.state === "open").length;
-    const staleCount = evidenceIssues.filter((i) => {
+  if (matchedIssues.length > 0) {
+    const openCount = matchedIssues.filter((i) => i.state === "open").length;
+    const staleCount = matchedIssues.filter((i) => {
       if (i.state === "closed") return false;
       const updatedAt = new Date(i.updated_at).getTime();
-      return now - updatedAt > STALE_THRESHOLD_DAYS * 24 * 60 * 60 * 1000;
+      return now - updatedAt > STALE_ISSUE_DAYS * 24 * 60 * 60 * 1000;
     }).length;
 
     if (openCount > 0) issueScore = 10 + Math.min(10, staleCount * 5);
@@ -58,10 +58,9 @@ function makeVerifiedGap(
   allReviews: Review[],
   allIssues: Issue[],
   product: string,
-  reviewsAvailable: boolean,
-  fallbackConfidence?: number
+  reviewsAvailable: boolean
 ): VerifiedGap {
-  const llmConf = Math.min(100, Math.max(0, fallbackConfidence ?? gap.confidence));
+  const llmConf = Math.min(100, Math.max(0, gap.confidence));
   const compConf = computedConfidence(gap, allReviews, allIssues);
   return {
     id: `gap-0`,

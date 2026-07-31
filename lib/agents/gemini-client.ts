@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { join } from "path";
 
 const CACHE_DIR = join(process.cwd(), ".cache", "gemini");
-const MODELS = ["gemini-2.0-flash", "gemini-1.5-flash"];
+const MODELS = ["gemini-2.0-flash", "gemini-2.5-flash"];
 const RATE_LIMIT_MS = 1000;
 
 let lastCallTime = 0;
@@ -13,7 +13,7 @@ function getApiKey(): string {
   return key;
 }
 
-function getCacheKey(prompt: string, model: string): string {
+function computeCacheKey(prompt: string, model: string): string {
   let hash = 0;
   const str = model + prompt.slice(0, 200);
   for (let i = 0; i < str.length; i++) {
@@ -24,7 +24,7 @@ function getCacheKey(prompt: string, model: string): string {
   return `gemini_${Math.abs(hash).toString(36)}`;
 }
 
-function getFromCache(key: string): string | null {
+function readCache(key: string): string | null {
   try {
     const path = join(CACHE_DIR, `${key}.json`);
     if (!existsSync(path)) return null;
@@ -37,7 +37,7 @@ function getFromCache(key: string): string | null {
   }
 }
 
-function saveToCache(key: string, text: string): void {
+function writeCache(key: string, text: string): void {
   try {
     if (!existsSync(CACHE_DIR)) mkdirSync(CACHE_DIR, { recursive: true });
     writeFileSync(join(CACHE_DIR, `${key}.json`), JSON.stringify({
@@ -51,8 +51,8 @@ export async function callGemini(
   prompt: string,
   opts?: { temperature?: number; maxTokens?: number }
 ): Promise<string> {
-  const cacheKey = getCacheKey(prompt, MODELS[0]);
-  const cached = getFromCache(cacheKey);
+  const cacheKey = computeCacheKey(prompt, MODELS[0]);
+  const cached = readCache(cacheKey);
   if (cached) return cached;
 
   const now = Date.now();
@@ -81,7 +81,7 @@ export async function callGemini(
           const data = await response.json();
           const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
           if (text) {
-            saveToCache(cacheKey, text);
+            writeCache(cacheKey, text);
             return text;
           }
         }
@@ -91,8 +91,8 @@ export async function callGemini(
           continue;
         }
 
-        const err = await response.text();
-        console.error(`Gemini ${model} error: ${response.status} - ${err.slice(0, 200)}`);
+        const errBody = await response.text();
+        console.error(`Gemini ${model} error: ${response.status} - ${errBody.slice(0, 200)}`);
         break;
       } catch (e) {
         console.error(`Gemini ${model} attempt ${attempt + 1} failed:`, e);

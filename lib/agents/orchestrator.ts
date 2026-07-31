@@ -7,7 +7,6 @@ import { runCritic } from "./critic";
 import { SOURCE_REGISTRY, type SourceEntry } from "./sources";
 import { loadReviewsFromPath, loadIssuesFromPath } from "../data";
 
-
 async function runProductPipeline(
   source: SourceEntry,
   reviews: Review[],
@@ -29,7 +28,7 @@ async function runProductPipeline(
   state.currentAgent = `latentNeedDetector:${source.name}`;
 
   const latentNeeds = await runLatentNeedDetector(preprocessed, issues, issueSummary, product, source.reviewsAvailable).catch((e) => {
-    state.errors.push(`Latent Need Detector (${source.name}): ${e.message}`);
+    state.errors.push(`LatentNeedDetector (${source.name}): ${e.message}`);
     return null;
   });
 
@@ -43,7 +42,7 @@ async function runProductPipeline(
   state.currentAgent = `evidenceVerifier:${source.name}`;
 
   const evidence = await runEvidenceVerifier(latentNeeds, reviews, issues, product, source.reviewsAvailable).catch((e) => {
-    state.errors.push(`Evidence Verifier (${source.name}): ${e.message}`);
+    state.errors.push(`EvidenceVerifier (${source.name}): ${e.message}`);
     return null;
   });
 
