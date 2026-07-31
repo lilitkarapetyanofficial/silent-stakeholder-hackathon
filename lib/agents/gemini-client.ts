@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { join } from "path";
 
 const CACHE_DIR = join(process.cwd(), ".cache", "gemini");
-const MODELS = ["gemini-3.5-flash", "gemini-2.0-flash"];
+const MODELS = ["gemini-2.0-flash", "gemini-1.5-flash"];
 const RATE_LIMIT_MS = 1000;
 
 let lastCallTime = 0;

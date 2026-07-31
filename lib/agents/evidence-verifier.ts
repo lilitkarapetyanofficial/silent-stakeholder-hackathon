@@ -127,16 +127,6 @@ export async function runEvidenceVerifier(
       continue;
     }
 
-    if (evidenceReviews.length === 0) {
-      removalReasons.push(`Removed "${gap.topic}": no verifiable review evidence`);
-      continue;
-    }
-
-    if (evidenceIssues.length === 0) {
-      removalReasons.push(`Removed "${gap.topic}": no verifiable issue evidence`);
-      continue;
-    }
-
     const vg = makeVerifiedGap(gap, evidenceReviews, evidenceIssues, reviews, issues, product, reviewsAvailable);
     vg.id = `gap-${verifiedGaps.length + 1}`;
     verifiedGaps.push(vg);

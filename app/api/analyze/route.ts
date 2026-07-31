@@ -12,6 +12,7 @@ export async function POST() {
       return NextResponse.json({
         error: "Pipeline completed but no verified gaps found",
         pipeline: state,
+        removalReasons: gaps?.removalReasons ?? [],
       }, { status: 500 });
     }
 
