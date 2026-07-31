@@ -97,6 +97,7 @@ export async function runEvidenceVerifier(
   const removalReasons: string[] = [];
 
   for (const gap of gaps.gaps) {
+    console.log(`[EvidenceVerifier] Checking gap "${gap.topic}" | reviewIds: [${gap.supportingReviewIds.join(", ")}] | issueNums: [${gap.relatedIssueNumbers.join(", ")}]`);
     const evidenceReviews = gap.supportingReviewIds
       .map((id) => reviewMap.get(id))
       .filter((r): r is Review => !!r)
@@ -122,9 +123,11 @@ export async function runEvidenceVerifier(
       }));
 
     if (evidenceReviews.length === 0 && evidenceIssues.length === 0) {
+      console.log(`  -> REMOVED: no matching reviews (${gap.supportingReviewIds.length} IDs tried) and no matching issues (${gap.relatedIssueNumbers.length} nums tried)`);
       removalReasons.push(`Removed "${gap.topic}": no verifiable review or issue evidence`);
       continue;
     }
+    console.log(`  -> KEPT: ${evidenceReviews.length} reviews, ${evidenceIssues.length} issues`);
 
     const vg = makeVerifiedGap(gap, evidenceReviews, evidenceIssues, reviews, issues, product, reviewsAvailable);
     vg.id = `gap-${verifiedGaps.length + 1}`;

@@ -2,489 +2,63 @@
   "gaps": [
     {
       "id": "gap-1",
-      "topic": "good-apps-love",
-      "userNeed": "Users need better good apps love based on 181 similar reviews",
-      "explanation": "181 independent reviews share similar keywords (good, apps, love, easy, nice), indicating a consistent user need that existing issues may not fully address.",
-      "llmConfidence": 95,
-      "computedConfidence": 73,
+      "topic": "mobile-monetization-onboarding",
+      "userNeed": "I need to know how to turn my site into a revenue source and manage monetization tools directly from my phone so I can run a business without needing a computer.",
+      "explanation": "Users view WordPress mobile as a full-fledged micro-business platform rather than just a simple content publisher. When they discover monetization options or required plugins are inaccessible or unexplained on mobile, they suffer immediate churn. Proactively guiding users on site monetization directly in the app resolves a major latent barrier for self-employed creators.",
+      "llmConfidence": 88,
+      "computedConfidence": 17,
       "flagged": true,
-      "confidenceJustification": "Based on 181 clustered reviews with avg 4.6 stars and 0 thumbs-up signals",
-      "verdict": "UNDER-PRIORITIZED",
-      "verdictReason": "Related issues exist but may not adequately address this cluster of 181 user signals",
+      "confidenceJustification": "Corroborated by 19 reviews in Cluster 12 focusing on earning potential alongside low-rated reviews explicitly citing plugin and monetization roadblocks.",
+      "verdict": "IGNORED",
+      "verdictReason": "The current GitHub roadmap focuses almost exclusively on technical maintenance and core blogging while omitting clear monetization pathways and plugin accessibility for mobile-first creators.",
       "evidence": {
         "reviews": [
           {
-            "reviewId": "rev-0c6ad70b",
-            "content": "Good",
-            "score": 5,
-            "thumbsUp": 0,
-            "date": "2016-04-19T00:00:00"
-          },
-          {
-            "reviewId": "rev-ae8f2a7c",
-            "content": "Good app Good apps for make and published.",
+            "reviewId": "rev-65b07688",
+            "content": "Using this app how can we earn?",
             "score": 1,
             "thumbsUp": 0,
-            "date": "2016-06-23T00:00:00"
+            "date": "2017-04-21T00:00:00"
           },
           {
-            "reviewId": "rev-6b36b208",
-            "content": "Nice So good",
-            "score": 2,
+            "reviewId": "rev-5e018cce",
+            "content": "It is wroast app i have ever downloaded I created a blog with it now I can't install plugins into it to monetize my blog",
+            "score": 1,
             "thumbsUp": 0,
-            "date": "2016-12-20T00:00:00"
-          },
-          {
-            "reviewId": "rev-2cfb237c",
-            "content": "Good app",
-            "score": 2,
-            "thumbsUp": 0,
-            "date": "2016-07-12T00:00:00"
-          },
-          {
-            "reviewId": "rev-0c6ad70b",
-            "content": "Good",
-            "score": 5,
-            "thumbsUp": 0,
-            "date": "2016-04-19T00:00:00"
+            "date": "2017-04-25T00:00:00"
           }
         ],
-        "issues": [
-          {
-            "issueNumber": 22990,
-            "title": "Media uploads broken",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/22990",
-            "state": "closed",
-            "labels": [
-              "[Type] Bug",
-              "Android"
-            ]
-          },
-          {
-            "issueNumber": 21836,
-            "title": "Trouble dismissing full-screen video in the reader",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/21836",
-            "state": "closed",
-            "labels": []
-          },
-          {
-            "issueNumber": 21753,
-            "title": "Gutenberg photo cropping broken due to edge-to-edge",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/21753",
-            "state": "closed",
-            "labels": [
-              "Posting/Editing",
-              "Gutenberg"
-            ]
-          },
-          {
-            "issueNumber": 21629,
-            "title": "Remove Feedback Form from Help & Support",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/21629",
-            "state": "closed",
-            "labels": [
-              "Support"
-            ]
-          },
-          {
-            "issueNumber": 21596,
-            "title": "Update to SDK 35 (Android 15)",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/21596",
-            "state": "closed",
-            "labels": [
-              "Android 15"
-            ]
-          }
-        ]
+        "issues": []
       },
-      "defenseExplanation": "181 independent reviews share similar keywords (good, apps, love, easy, nice), indicating a consistent user need that existing issues may not fully address.",
-      "rankingReasoning": "Cluster of 181 reviews, avg 4.6 stars, 0 total thumbs-up",
+      "defenseExplanation": "Users view WordPress mobile as a full-fledged micro-business platform rather than just a simple content publisher. When they discover monetization options or required plugins are inaccessible or unexplained on mobile, they suffer immediate churn. Proactively guiding users on site monetization directly in the app resolves a major latent barrier for self-employed creators.",
+      "rankingReasoning": "Ranked #1 due to strong signal volume across multiple user clusters (19 reviews in Cluster 12) combined with high churn impact in low-rated reviews, with zero active open GitHub issues addressing monetization guidance on mobile.",
       "counterArgument": "Counter-argument unavailable: critic agent failed to process this gap.",
       "product": "wordpress-mobile/WordPress-Android",
       "reviewsAvailable": true,
-      "createdAt": "2026-07-31T18:59:24.490Z"
+      "createdAt": "2026-07-31T20:01:06.385Z"
     },
     {
       "id": "gap-2",
-      "topic": "nice-love-awesome",
-      "userNeed": "Users need better nice love awesome based on 118 similar reviews",
-      "explanation": "118 independent reviews share similar keywords (nice, love, awesome, it's, favorite), indicating a consistent user need that existing issues may not fully address.",
-      "llmConfidence": 95,
-      "computedConfidence": 73,
+      "topic": "editorial-safety-and-state-control",
+      "userNeed": "I need complete confidence that my post edits can be undone and that my published content won't be unintentionally overwritten while I format text.",
+      "explanation": "Automatic background saving creates severe friction on touchscreen devices where formatting errors and accidental taps happen constantly. Users require visible safety controls like dedicated undo history and explicit draft checkpointing to feel safe experimenting with post layouts. Without explicit state management, mobile writing causes anxiety rather than seamless productivity.",
+      "llmConfidence": 82,
+      "computedConfidence": 21,
       "flagged": true,
-      "confidenceJustification": "Based on 118 clustered reviews with avg 4.6 stars and 0 thumbs-up signals",
+      "confidenceJustification": "Directly supported by explicit user feedback regarding aggressive auto-saving and missing undo capabilities during rich text editing.",
       "verdict": "UNDER-PRIORITIZED",
-      "verdictReason": "Related issues exist but may not adequately address this cluster of 118 user signals",
+      "verdictReason": "While general editor crashes are actively tracked, granular local undo history and explicit draft confirmation mechanisms are ignored in open roadmap issues.",
       "evidence": {
         "reviews": [
           {
-            "reviewId": "rev-914d0a4e",
-            "content": "Nice",
-            "score": 5,
-            "thumbsUp": 0,
-            "date": "2016-02-28T00:00:00"
-          },
-          {
-            "reviewId": "rev-095ea981",
-            "content": "Nice...... for create the blog",
-            "score": 1,
-            "thumbsUp": 0,
-            "date": "2017-01-14T00:00:00"
-          },
-          {
-            "reviewId": "rev-4b146581",
-            "content": "Nice use easy",
-            "score": 3,
-            "thumbsUp": 0,
-            "date": "2017-03-04T00:00:00"
-          },
-          {
-            "reviewId": "rev-f44933de",
-            "content": "Nice. But needs more flexibility",
-            "score": 3,
-            "thumbsUp": 0,
-            "date": "2017-02-17T00:00:00"
-          },
-          {
-            "reviewId": "rev-b6f30a03",
-            "content": "Nice layout.. easy to use",
-            "score": 3,
-            "thumbsUp": 0,
-            "date": "2017-01-14T00:00:00"
-          }
-        ],
-        "issues": [
-          {
-            "issueNumber": 21933,
-            "title": "Android: First time the user logs in, the app is not loading the user's gravatar",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/21933",
-            "state": "open",
-            "labels": [
-              "[Type] Bug",
-              "Gravatar",
-              "Android"
-            ]
-          },
-          {
-            "issueNumber": 21776,
-            "title": "Deleted websites still appear in the site list",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/21776",
-            "state": "closed",
-            "labels": []
-          },
-          {
-            "issueNumber": 21669,
-            "title": "IllegalStateException: focus search returned a view that wasn't able to take focus!",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/21669",
-            "state": "closed",
-            "labels": [
-              "[Type] Crash",
-              "Site Creation"
-            ]
-          },
-          {
-            "issueNumber": 21502,
-            "title": "Add stats loading indicator",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/21502",
-            "state": "open",
-            "labels": [
-              "[Type] Enhancement",
-              "Stats"
-            ]
-          },
-          {
-            "issueNumber": 21416,
-            "title": "Logging into WP.com looks like it's stuck if you have many sites",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/21416",
-            "state": "open",
-            "labels": [
-              "[Type] Bug",
-              "UI",
-              "User Feedback"
-            ]
-          }
-        ]
-      },
-      "defenseExplanation": "118 independent reviews share similar keywords (nice, love, awesome, it's, favorite), indicating a consistent user need that existing issues may not fully address.",
-      "rankingReasoning": "Cluster of 118 reviews, avg 4.6 stars, 0 total thumbs-up",
-      "counterArgument": "Counter-argument unavailable: critic agent failed to process this gap.",
-      "product": "wordpress-mobile/WordPress-Android",
-      "reviewsAvailable": true,
-      "createdAt": "2026-07-31T18:59:24.490Z"
-    },
-    {
-      "id": "gap-3",
-      "topic": "great-easy-apps",
-      "userNeed": "Users need better great easy apps based on 92 similar reviews",
-      "explanation": "92 independent reviews share similar keywords (great, easy, apps, this, love), indicating a consistent user need that existing issues may not fully address.",
-      "llmConfidence": 95,
-      "computedConfidence": 72,
-      "flagged": true,
-      "confidenceJustification": "Based on 92 clustered reviews with avg 4.7 stars and 0 thumbs-up signals",
-      "verdict": "UNDER-PRIORITIZED",
-      "verdictReason": "Related issues exist but may not adequately address this cluster of 92 user signals",
-      "evidence": {
-        "reviews": [
-          {
-            "reviewId": "rev-688fff79",
-            "content": "Easy to use Great",
-            "score": 3,
-            "thumbsUp": 0,
-            "date": "2016-10-05T00:00:00"
-          },
-          {
-            "reviewId": "rev-cbd668cc",
-            "content": "Thanks For great Task",
-            "score": 3,
-            "thumbsUp": 0,
-            "date": "2016-06-16T00:00:00"
-          },
-          {
-            "reviewId": "rev-63191e4e",
-            "content": "Great",
-            "score": 3,
-            "thumbsUp": 0,
-            "date": "2016-05-14T00:00:00"
-          },
-          {
-            "reviewId": "rev-ef770bba",
-            "content": "Great app",
-            "score": 5,
-            "thumbsUp": 0,
-            "date": "2016-03-30T00:00:00"
-          },
-          {
-            "reviewId": "rev-63191e4e",
-            "content": "Great",
-            "score": 3,
-            "thumbsUp": 0,
-            "date": "2016-05-14T00:00:00"
-          }
-        ],
-        "issues": [
-          {
-            "issueNumber": 22990,
-            "title": "Media uploads broken",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/22990",
-            "state": "closed",
-            "labels": [
-              "[Type] Bug",
-              "Android"
-            ]
-          },
-          {
-            "issueNumber": 22899,
-            "title": "Populate missing `wpApiRestUrl` during editor preload via `WpLoginClient.apiDiscovery`",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/22899",
-            "state": "closed",
-            "labels": []
-          },
-          {
-            "issueNumber": 22402,
-            "title": "Connect to wordpress instance on private network",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/22402",
-            "state": "open",
-            "labels": [
-              "[Type] Bug",
-              "Self-hosted",
-              "Login"
-            ]
-          },
-          {
-            "issueNumber": 22376,
-            "title": "Resetas del mundo",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/22376",
-            "state": "closed",
-            "labels": [
-              "[Type] Enhancement"
-            ]
-          },
-          {
-            "issueNumber": 22041,
-            "title": "When uploading a file a sucessful message with \"Retry\" appears",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/22041",
-            "state": "closed",
-            "labels": [
-              "Android"
-            ]
-          }
-        ]
-      },
-      "defenseExplanation": "92 independent reviews share similar keywords (great, easy, apps, this, love), indicating a consistent user need that existing issues may not fully address.",
-      "rankingReasoning": "Cluster of 92 reviews, avg 4.7 stars, 0 total thumbs-up",
-      "counterArgument": "Counter-argument unavailable: critic agent failed to process this gap.",
-      "product": "wordpress-mobile/WordPress-Android",
-      "reviewsAvailable": true,
-      "createdAt": "2026-07-31T18:59:24.491Z"
-    },
-    {
-      "id": "gap-4",
-      "topic": "awesome-love-it's",
-      "userNeed": "Users need better awesome love it's based on 65 similar reviews",
-      "explanation": "65 independent reviews share similar keywords (awesome, love, it's, this, best), indicating a consistent user need that existing issues may not fully address.",
-      "llmConfidence": 95,
-      "computedConfidence": 73,
-      "flagged": true,
-      "confidenceJustification": "Based on 65 clustered reviews with avg 4.9 stars and 0 thumbs-up signals",
-      "verdict": "UNDER-PRIORITIZED",
-      "verdictReason": "Related issues exist but may not adequately address this cluster of 65 user signals",
-      "evidence": {
-        "reviews": [
-          {
-            "reviewId": "rev-cd5acb97",
-            "content": "Just Awesome app.",
-            "score": 4,
+            "reviewId": "rev-31a0c4de",
+            "content": "While editing posts Undo option should be very important and save option also. Every thing I type or doing bold   numbering they all automatically save. I want to do unto some times I can't do that because there is no such option. There should be Undo option till last saved post.",
+            "score": 2,
             "thumbsUp": 0,
             "date": "2017-04-30T00:00:00"
-          },
-          {
-            "reviewId": "rev-fbad144b",
-            "content": "Its awesome",
-            "score": 4,
-            "thumbsUp": 0,
-            "date": "2017-04-22T00:00:00"
-          },
-          {
-            "reviewId": "rev-d9673f31",
-            "content": "Awesome",
-            "score": 4,
-            "thumbsUp": 0,
-            "date": "2016-02-19T00:00:00"
-          },
-          {
-            "reviewId": "rev-287ff4c0",
-            "content": "Love It Awesome app",
-            "score": 4,
-            "thumbsUp": 0,
-            "date": "2016-08-25T00:00:00"
-          },
-          {
-            "reviewId": "rev-a7c74a54",
-            "content": "Awesome Ol d features are included.",
-            "score": 4,
-            "thumbsUp": 0,
-            "date": "2016-06-08T00:00:00"
           }
         ],
         "issues": [
-          {
-            "issueNumber": 22899,
-            "title": "Populate missing `wpApiRestUrl` during editor preload via `WpLoginClient.apiDiscovery`",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/22899",
-            "state": "closed",
-            "labels": []
-          },
-          {
-            "issueNumber": 22402,
-            "title": "Connect to wordpress instance on private network",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/22402",
-            "state": "open",
-            "labels": [
-              "[Type] Bug",
-              "Self-hosted",
-              "Login"
-            ]
-          },
-          {
-            "issueNumber": 22376,
-            "title": "Resetas del mundo",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/22376",
-            "state": "closed",
-            "labels": [
-              "[Type] Enhancement"
-            ]
-          },
-          {
-            "issueNumber": 22041,
-            "title": "When uploading a file a sucessful message with \"Retry\" appears",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/22041",
-            "state": "closed",
-            "labels": [
-              "Android"
-            ]
-          },
-          {
-            "issueNumber": 21994,
-            "title": "Idk",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/21994",
-            "state": "closed",
-            "labels": []
-          }
-        ]
-      },
-      "defenseExplanation": "65 independent reviews share similar keywords (awesome, love, it's, this, best), indicating a consistent user need that existing issues may not fully address.",
-      "rankingReasoning": "Cluster of 65 reviews, avg 4.9 stars, 0 total thumbs-up",
-      "counterArgument": "Counter-argument unavailable: critic agent failed to process this gap.",
-      "product": "wordpress-mobile/WordPress-Android",
-      "reviewsAvailable": true,
-      "createdAt": "2026-07-31T18:59:24.491Z"
-    },
-    {
-      "id": "gap-5",
-      "topic": "best-blog-ever",
-      "userNeed": "Users need better best blog ever based on 52 similar reviews",
-      "explanation": "52 independent reviews share similar keywords (best, blog, ever, blogging, love), indicating a consistent user need that existing issues may not fully address.",
-      "llmConfidence": 95,
-      "computedConfidence": 74,
-      "flagged": true,
-      "confidenceJustification": "Based on 52 clustered reviews with avg 4.7 stars and 0 thumbs-up signals",
-      "verdict": "UNDER-PRIORITIZED",
-      "verdictReason": "Related issues exist but may not adequately address this cluster of 52 user signals",
-      "evidence": {
-        "reviews": [
-          {
-            "reviewId": "rev-63467ab8",
-            "content": "my blog has been removed why?",
-            "score": 1,
-            "thumbsUp": 0,
-            "date": "2016-04-29T00:00:00"
-          },
-          {
-            "reviewId": "rev-defb13e8",
-            "content": "Best Useful",
-            "score": 3,
-            "thumbsUp": 0,
-            "date": "2017-01-12T00:00:00"
-          },
-          {
-            "reviewId": "rev-4197a19e",
-            "content": "Best Best",
-            "score": 3,
-            "thumbsUp": 0,
-            "date": "2016-05-05T00:00:00"
-          },
-          {
-            "reviewId": "rev-c81d7feb",
-            "content": "I love it It is one of the best app",
-            "score": 3,
-            "thumbsUp": 0,
-            "date": "2016-04-28T00:00:00"
-          },
-          {
-            "reviewId": "rev-c765316b",
-            "content": "Its the best",
-            "score": 4,
-            "thumbsUp": 0,
-            "date": "2017-04-05T00:00:00"
-          }
-        ],
-        "issues": [
-          {
-            "issueNumber": 21818,
-            "title": "When setting featured image for a post, \"Failed to download image\" lead to app crash",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/21818",
-            "state": "closed",
-            "labels": []
-          },
-          {
-            "issueNumber": 21285,
-            "title": "Coil ImageLoader singleton",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/21285",
-            "state": "closed",
-            "labels": [
-              "Media"
-            ]
-          },
           {
             "issueNumber": 21189,
             "title": "The 'UNDO' button restores blog but provides no visual confirmation",
@@ -494,36 +68,52 @@
               "[Type] Bug",
               "Good First Issue"
             ]
-          },
-          {
-            "issueNumber": 21180,
-            "title": "Clicking the 'Three-dot' icon after blocking a blog does not open the menu, despite the click effect",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/21180",
-            "state": "closed",
-            "labels": [
-              "[Type] Bug",
-              "Good First Issue"
-            ]
-          },
-          {
-            "issueNumber": 21178,
-            "title": "Tapping the 'Subscribed' button immediately after subscribing does not switch it back to 'Subscribe'",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/21178",
-            "state": "closed",
-            "labels": [
-              "[Type] Bug",
-              "Accessibility",
-              "Good First Issue"
-            ]
           }
         ]
       },
-      "defenseExplanation": "52 independent reviews share similar keywords (best, blog, ever, blogging, love), indicating a consistent user need that existing issues may not fully address.",
-      "rankingReasoning": "Cluster of 52 reviews, avg 4.7 stars, 0 total thumbs-up",
+      "defenseExplanation": "Automatic background saving creates severe friction on touchscreen devices where formatting errors and accidental taps happen constantly. Users require visible safety controls like dedicated undo history and explicit draft checkpointing to feel safe experimenting with post layouts. Without explicit state management, mobile writing causes anxiety rather than seamless productivity.",
+      "rankingReasoning": "Ranked #2 due to its direct friction with the core primary use case of the app (content creation) and the mismatch between background cloud synchronization and user expectation of local editing safety.",
       "counterArgument": "Counter-argument unavailable: critic agent failed to process this gap.",
       "product": "wordpress-mobile/WordPress-Android",
       "reviewsAvailable": true,
-      "createdAt": "2026-07-31T18:59:24.492Z"
+      "createdAt": "2026-07-31T20:01:06.385Z"
+    },
+    {
+      "id": "gap-3",
+      "topic": "site-structure-and-taxonomy-parity",
+      "userNeed": "I need full visibility and control over my site's existing categories and templates on mobile so I can manage my site architecture seamlessly away from desktop.",
+      "explanation": "Mobile managers expect structural parity with the WordPress web dashboard. When custom categories or templates are missing from the mobile workflow, users lose trust in the app for site administration and are forced back to desktop. Ensuring full taxonomy synchronization unlocks complete mobile management for established multi-category blogs.",
+      "llmConfidence": 79,
+      "computedConfidence": 22,
+      "flagged": true,
+      "confidenceJustification": "Supported by low-star reviews highlighting missing categories and template editing limitations when attempting site management on mobile.",
+      "verdict": "IGNORED",
+      "verdictReason": "Open issues focus heavily on isolated UI bugs and tech debt, ignoring functional gaps where complex site taxonomies and templates fail to render on mobile.",
+      "evidence": {
+        "reviews": [
+          {
+            "reviewId": "rev-00490e85",
+            "content": "All my categories that I have set are not showing on Mobile application that's very difficult for people who always update my blog on mobile please fixing it.",
+            "score": 2,
+            "thumbsUp": 0,
+            "date": "2017-04-25T00:00:00"
+          },
+          {
+            "reviewId": "rev-4bffdf11",
+            "content": "Cant edit my templates from the app",
+            "score": 2,
+            "thumbsUp": 0,
+            "date": "2017-04-23T00:00:00"
+          }
+        ],
+        "issues": []
+      },
+      "defenseExplanation": "Mobile managers expect structural parity with the WordPress web dashboard. When custom categories or templates are missing from the mobile workflow, users lose trust in the app for site administration and are forced back to desktop. Ensuring full taxonomy synchronization unlocks complete mobile management for established multi-category blogs.",
+      "rankingReasoning": "Ranked #3 because while it severely impacts power users managing existing sites on mobile, the evidence stems from targeted high-severity individual reviews rather than broad volume clusters.",
+      "counterArgument": "Counter-argument unavailable: critic agent failed to process this gap.",
+      "product": "wordpress-mobile/WordPress-Android",
+      "reviewsAvailable": true,
+      "createdAt": "2026-07-31T20:01:06.386Z"
     }
   ],
   "rejectedGaps": [],
@@ -531,9 +121,9 @@
     "totalReviews": 3200,
     "totalIssues": 1000,
     "dateRange": "2016-02 to 2017-05",
-    "analyzedAt": "2026-07-31T19:00:30.807Z",
-    "ignoredCount": 0,
-    "underPrioritizedCount": 5,
+    "analyzedAt": "2026-07-31T20:01:10.739Z",
+    "ignoredCount": 2,
+    "underPrioritizedCount": 1,
     "misunderstoodCount": 0
   }
 }

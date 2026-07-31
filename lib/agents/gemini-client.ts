@@ -2,8 +2,8 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { join } from "path";
 
 const CACHE_DIR = join(process.cwd(), ".cache", "gemini");
-const MODELS = ["gemini-2.0-flash", "gemini-2.5-flash"];
-const RATE_LIMIT_MS = 1000;
+const MODELS = ["gemini-3.6-flash", "gemini-3.5-flash"];
+const RATE_LIMIT_MS = 3000;
 
 let lastCallTime = 0;
 
@@ -71,7 +71,7 @@ export async function callGemini(
             contents: [{ parts: [{ text: prompt }] }],
             generationConfig: {
               temperature: opts?.temperature ?? 0.3,
-              maxOutputTokens: opts?.maxTokens ?? 4096,
+              maxOutputTokens: opts?.maxTokens ?? 8192,
               responseMimeType: "application/json",
             },
           }),
@@ -84,23 +84,26 @@ export async function callGemini(
             writeCache(cacheKey, text);
             return text;
           }
+          console.error(`Gemini ${model} returned OK but empty text. Response:`, JSON.stringify(data).slice(0, 500));
         }
 
         if (response.status === 503 || response.status === 429) {
+          console.warn(`Gemini ${model} rate-limited/unavailable (${response.status}), retrying in ${2000 * (attempt + 1)}ms...`);
           await new Promise((r) => setTimeout(r, 2000 * (attempt + 1)));
           continue;
         }
 
         const errBody = await response.text();
-        console.error(`Gemini ${model} error: ${response.status} - ${errBody.slice(0, 200)}`);
+        console.error(`Gemini ${model} HTTP ${response.status} (attempt ${attempt + 1}/3). Full response: ${errBody}`);
         break;
       } catch (e) {
-        console.error(`Gemini ${model} attempt ${attempt + 1} failed:`, e);
+        console.error(`Gemini ${model} attempt ${attempt + 1} threw exception:`, e instanceof Error ? e.message : String(e));
         await new Promise((r) => setTimeout(r, 1000));
       }
     }
   }
 
+  console.error(`All Gemini models exhausted. Models tried: ${MODELS.join(", ")}`);
   throw new Error("All Gemini models failed after retries");
 }
 
@@ -109,6 +112,7 @@ export async function callGeminiJson<T>(
   opts?: { temperature?: number; maxTokens?: number }
 ): Promise<T> {
   const text = await callGemini(prompt, opts);
+  console.log(`[callGeminiJson] Raw text (first 500 chars): ${text.slice(0, 500)}`);
   const jsonMatch = text.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
   if (!jsonMatch) throw new Error("No JSON found in Gemini response");
   return JSON.parse(jsonMatch[0]);

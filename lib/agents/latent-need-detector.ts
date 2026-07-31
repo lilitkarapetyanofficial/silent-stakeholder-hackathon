@@ -116,14 +116,28 @@ RULES:
 
 Return ONLY the JSON.`;
 
-  const result = await callGeminiJson<{ gaps?: LatentNeedDetectorOutput["gaps"]; stats?: LatentNeedDetectorOutput["stats"] }>(prompt, { temperature: 0.3 });
+  const result = await callGeminiJson<{ gaps?: LatentNeedDetectorOutput["gaps"]; stats?: LatentNeedDetectorOutput["stats"] } | LatentNeedDetectorOutput["gaps"]>(prompt, { temperature: 0.3 });
+
+  const gapsArray = Array.isArray(result) ? result : (result.gaps ?? []);
+  console.log(`[LatentNeedDetector] Gemini returned ${gapsArray.length} gaps`);
+  if (gapsArray.length > 0) {
+    for (const g of gapsArray) {
+      console.log(`  Gap: "${g.topic}" | reviewIds: [${(g.supportingReviewIds || []).join(", ")}] | issueNums: [${(g.relatedIssueNumbers || []).join(", ")}]`);
+    }
+  }
+
   return {
-    gaps: (result.gaps ?? []).map((g) => ({ ...g, product })),
-    stats: result.stats ?? {
+    gaps: gapsArray.map((g) => ({ ...g, product })),
+    stats: Array.isArray(result) ? {
       totalReviews: preprocessed.totalReviews,
       totalIssues: issueSummary.total,
       clustersFormed: preprocessed.totalClusters,
       avgRating: 0,
-    },
+    } : (result.stats ?? {
+      totalReviews: preprocessed.totalReviews,
+      totalIssues: issueSummary.total,
+      clustersFormed: preprocessed.totalClusters,
+      avgRating: 0,
+    }),
   };
 }
