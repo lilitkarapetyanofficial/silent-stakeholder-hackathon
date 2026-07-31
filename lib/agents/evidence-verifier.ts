@@ -1,10 +1,92 @@
 import type { Review, Issue } from "../types";
 import type { LatentNeedDetectorOutput, EvidenceAgentOutput, VerifiedGap } from "./types";
 
+const STALE_THRESHOLD_DAYS = 180;
+const CONFIDENCE_DIVERGENCE_THRESHOLD = 15;
+
+function computedConfidence(
+  gap: { supportingReviewIds: string[]; relatedIssueNumbers: number[] },
+  reviews: Review[],
+  issues: Issue[]
+): number {
+  const reviewMap = new Map(reviews.map((r) => [r.id, r]));
+  const issueMap = new Map(issues.map((i) => [i.number, i]));
+
+  const evidenceReviews = gap.supportingReviewIds
+    .map((id) => reviewMap.get(id))
+    .filter((r): r is Review => !!r);
+
+  if (evidenceReviews.length === 0) return 0;
+
+  const clusterSizeScore = Math.min(30, evidenceReviews.length * 6);
+
+  const avgRating = evidenceReviews.reduce((sum, r) => sum + r.score, 0) / evidenceReviews.length;
+  const ratingScore = Math.round((avgRating / 5) * 25);
+
+  const now = Date.now();
+  const threeMonthsAgo = now - 90 * 24 * 60 * 60 * 1000;
+  const recentCount = evidenceReviews.filter((r) => {
+    if (!r.at) return false;
+    return new Date(r.at).getTime() > threeMonthsAgo;
+  }).length;
+  const recencyScore = Math.round((recentCount / evidenceReviews.length) * 25);
+
+  const evidenceIssues = gap.relatedIssueNumbers
+    .map((num) => issueMap.get(num))
+    .filter((i): i is Issue => !!i);
+
+  let issueScore = 0;
+  if (evidenceIssues.length > 0) {
+    const openCount = evidenceIssues.filter((i) => i.state === "open").length;
+    const staleCount = evidenceIssues.filter((i) => {
+      if (i.state === "closed") return false;
+      const updatedAt = new Date(i.updated_at).getTime();
+      return now - updatedAt > STALE_THRESHOLD_DAYS * 24 * 60 * 60 * 1000;
+    }).length;
+
+    if (openCount > 0) issueScore = 10 + Math.min(10, staleCount * 5);
+    else issueScore = 5;
+  }
+
+  return Math.min(100, Math.max(0, clusterSizeScore + ratingScore + recencyScore + issueScore));
+}
+
+function makeVerifiedGap(
+  gap: LatentNeedDetectorOutput["gaps"][0],
+  evidenceReviews: VerifiedGap["evidence"]["reviews"],
+  evidenceIssues: VerifiedGap["evidence"]["issues"],
+  allReviews: Review[],
+  allIssues: Issue[],
+  product: string,
+  fallbackConfidence?: number
+): VerifiedGap {
+  const llmConf = Math.min(100, Math.max(0, fallbackConfidence ?? gap.confidence));
+  const compConf = computedConfidence(gap, allReviews, allIssues);
+  return {
+    id: `gap-0`,
+    topic: gap.topic,
+    userNeed: gap.hiddenNeed,
+    explanation: gap.defenseExplanation,
+    llmConfidence: llmConf,
+    computedConfidence: compConf,
+    flagged: Math.abs(llmConf - compConf) > CONFIDENCE_DIVERGENCE_THRESHOLD,
+    confidenceJustification: gap.confidenceJustification,
+    verdict: gap.verdict,
+    verdictReason: gap.verdictReason,
+    evidence: { reviews: evidenceReviews, issues: evidenceIssues },
+    defenseExplanation: gap.defenseExplanation,
+    rankingReasoning: gap.rankingReasoning,
+    counterArgument: "",
+    product,
+    createdAt: new Date().toISOString(),
+  };
+}
+
 export async function runEvidenceVerifier(
   gaps: LatentNeedDetectorOutput,
   reviews: Review[],
-  issues: Issue[]
+  issues: Issue[],
+  product: string
 ): Promise<EvidenceAgentOutput> {
   const reviewMap = new Map(reviews.map((r) => [r.id, r]));
   const issueMap = new Map(issues.map((i) => [i.number, i]));
@@ -42,57 +124,33 @@ export async function runEvidenceVerifier(
       continue;
     }
 
-    verifiedGaps.push({
-      id: `gap-${verifiedGaps.length + 1}`,
-      topic: gap.topic,
-      userNeed: gap.hiddenNeed,
-      explanation: gap.defenseExplanation,
-      confidence: Math.min(100, Math.max(0, gap.confidence)),
-      confidenceJustification: gap.confidenceJustification,
-      verdict: gap.verdict,
-      verdictReason: gap.verdictReason,
-      evidence: {
-        reviews: evidenceReviews,
-        issues: evidenceIssues,
-      },
-      defenseExplanation: gap.defenseExplanation,
-      rankingReasoning: gap.rankingReasoning,
-      counterArgument: "",
-      createdAt: new Date().toISOString(),
-    });
+    const vg = makeVerifiedGap(gap, evidenceReviews, evidenceIssues, reviews, issues, product);
+    vg.id = `gap-${verifiedGaps.length + 1}`;
+    verifiedGaps.push(vg);
   }
 
   if (verifiedGaps.length === 0 && gaps.gaps.length > 0) {
     for (const gap of gaps.gaps.slice(0, 3)) {
-      verifiedGaps.push({
-        id: `gap-${verifiedGaps.length + 1}`,
-        topic: gap.topic,
-        userNeed: gap.hiddenNeed,
-        explanation: gap.defenseExplanation,
-        confidence: Math.min(100, Math.max(0, Math.round(gap.confidence * 0.8))),
-        confidenceJustification: gap.confidenceJustification,
-        verdict: gap.verdict,
-        verdictReason: gap.verdictReason,
-        evidence: {
-          reviews: gap.supportingQuotes.slice(0, 3).map((q, i) => ({
-            reviewId: gap.supportingReviewIds[i] || `review-${i}`,
-            content: q,
-            score: 3,
-            thumbsUp: 5,
-            date: "unknown",
-          })),
-          issues: gap.relatedIssueNumbers.slice(0, 3).map((num) => ({
-            issueNumber: num,
-            title: `Issue #${num}`,
-            url: `https://github.com/wordpress-mobile/WordPress-Android/issues/${num}`,
-            state: "unknown",
-            labels: [],
-          })),
-        },
-        defenseExplanation: gap.defenseExplanation,
-        rankingReasoning: gap.rankingReasoning,
-        createdAt: new Date().toISOString(),
-      });
+      const fallbackReviews = gap.supportingQuotes.slice(0, 3).map((q, i) => ({
+        reviewId: gap.supportingReviewIds[i] || `review-${i}`,
+        content: q,
+        score: 3,
+        thumbsUp: 5,
+        date: "unknown",
+      }));
+      const fallbackIssues = gap.relatedIssueNumbers.slice(0, 3).map((num) => ({
+        issueNumber: num,
+        title: `Issue #${num}`,
+        url: `https://github.com/wordpress-mobile/WordPress-Android/issues/${num}`,
+        state: "unknown",
+        labels: [] as string[],
+      }));
+      const vg = makeVerifiedGap(
+        gap, fallbackReviews, fallbackIssues, reviews, issues, product,
+        Math.round(gap.confidence * 0.8)
+      );
+      vg.id = `gap-${verifiedGaps.length + 1}`;
+      verifiedGaps.push(vg);
     }
   }
 

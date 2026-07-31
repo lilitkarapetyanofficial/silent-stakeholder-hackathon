@@ -1,13 +1,85 @@
 import type { Review, Issue } from "../types";
-import type { PipelineState } from "./types";
+import type { EvidenceAgentOutput, PipelineState, VerifiedGap } from "./types";
 import { preprocessReviews, preprocessIssues } from "./preprocessor";
 import { runLatentNeedDetector } from "./latent-need-detector";
 import { runEvidenceVerifier } from "./evidence-verifier";
+import { runCritic } from "./critic";
+import { SOURCE_REGISTRY, type SourceEntry } from "./sources";
+import { loadReviewsFromPath, loadIssuesFromPath } from "../data";
+import { findCrossProjectPatterns, type CrossProjectPattern } from "./pattern-matcher";
 
-export async function runPipeline(
+async function runProductPipeline(
+  source: SourceEntry,
   reviews: Review[],
-  issues: Issue[]
-): Promise<{ state: PipelineState; gaps: PipelineState["results"]["evidence"] }> {
+  issues: Issue[],
+  state: PipelineState
+): Promise<EvidenceAgentOutput | null> {
+  const product = source.product;
+
+  state.agents.preprocessor = "running";
+  state.currentAgent = `preprocessor:${source.name}`;
+
+  const preprocessed = reviews.length > 0
+    ? preprocessReviews(reviews)
+    : { clusters: [], topLowRated: [], topThumbed: [], totalReviews: 0, totalClusters: 0 };
+  const issueSummary = preprocessIssues(issues);
+  state.agents.preprocessor = "completed";
+
+  state.agents.latentNeedDetector = "running";
+  state.currentAgent = `latentNeedDetector:${source.name}`;
+
+  const latentNeeds = await runLatentNeedDetector(preprocessed, issues, issueSummary, product).catch((e) => {
+    state.errors.push(`Latent Need Detector (${source.name}): ${e.message}`);
+    return null;
+  });
+
+  if (!latentNeeds) {
+    state.agents.latentNeedDetector = "failed";
+    return null;
+  }
+  state.agents.latentNeedDetector = "completed";
+
+  state.agents.evidenceVerifier = "running";
+  state.currentAgent = `evidenceVerifier:${source.name}`;
+
+  const evidence = await runEvidenceVerifier(latentNeeds, reviews, issues, product).catch((e) => {
+    state.errors.push(`Evidence Verifier (${source.name}): ${e.message}`);
+    return null;
+  });
+
+  if (!evidence) {
+    state.agents.evidenceVerifier = "failed";
+    return null;
+  }
+  state.agents.evidenceVerifier = "completed";
+
+  if (evidence.verifiedGaps.length > 0) {
+    state.agents.critic = "running";
+    state.currentAgent = `critic:${source.name}`;
+
+    const critiqued = await runCritic(evidence.verifiedGaps, reviews, issues).catch((e) => {
+      state.errors.push(`Critic (${source.name}): ${e.message}`);
+      return null;
+    });
+
+    if (critiqued) {
+      evidence.verifiedGaps = critiqued;
+      state.agents.critic = "completed";
+    } else {
+      state.agents.critic = "failed";
+    }
+  } else {
+    state.agents.critic = "completed";
+  }
+
+  return evidence;
+}
+
+export async function runPipeline(): Promise<{
+  state: PipelineState;
+  gaps: EvidenceAgentOutput | undefined;
+  patterns: CrossProjectPattern[];
+}> {
   const state: PipelineState = {
     status: "running",
     currentAgent: "preprocessor",
@@ -15,6 +87,7 @@ export async function runPipeline(
       preprocessor: "pending",
       latentNeedDetector: "pending",
       evidenceVerifier: "pending",
+      critic: "pending",
     },
     results: {},
     errors: [],
@@ -22,55 +95,49 @@ export async function runPipeline(
   };
 
   try {
-    state.agents.preprocessor = "running";
-    state.currentAgent = "preprocessor";
+    const allVerifiedGaps: VerifiedGap[] = [];
+    const allRemovalReasons: string[] = [];
+    let totalRemoved = 0;
 
-    const preprocessed = preprocessReviews(reviews);
-    const issueSummary = preprocessIssues(issues);
-    state.results.preprocessed = preprocessed;
-    state.agents.preprocessor = "completed";
+    for (const source of SOURCE_REGISTRY) {
+      try {
+        const reviews = source.reviewsPath ? loadReviewsFromPath(source.reviewsPath) : [];
+        const issues = loadIssuesFromPath(source.issuesPath);
 
-    state.agents.latentNeedDetector = "running";
-    state.currentAgent = "latentNeedDetector";
+        if (reviews.length === 0 && issues.length === 0) {
+          state.errors.push(`Skipping ${source.name}: no reviews or issues available`);
+          continue;
+        }
 
-    const latentNeeds = await runLatentNeedDetector(preprocessed, issues, issueSummary).catch((e) => {
-      state.errors.push(`Latent Need Detector: ${e.message}`);
-      return null;
-    });
+        const evidence = await runProductPipeline(source, reviews, issues, state);
 
-    if (latentNeeds) {
-      state.results.latentNeeds = latentNeeds;
-      state.agents.latentNeedDetector = "completed";
-    } else {
-      state.agents.latentNeedDetector = "failed";
-      state.status = "failed";
-      state.completedAt = new Date().toISOString();
-      return { state, gaps: undefined };
+        if (evidence) {
+          allVerifiedGaps.push(...evidence.verifiedGaps);
+          allRemovalReasons.push(...evidence.removalReasons);
+          totalRemoved += evidence.removedCount;
+        }
+      } catch (e) {
+        state.errors.push(`Pipeline failed for ${source.name}: ${e instanceof Error ? e.message : "Unknown error"}`);
+      }
     }
 
-    state.agents.evidenceVerifier = "running";
-    state.currentAgent = "evidenceVerifier";
+    const mergedEvidence: EvidenceAgentOutput = {
+      verifiedGaps: allVerifiedGaps,
+      removedCount: totalRemoved,
+      removalReasons: allRemovalReasons,
+    };
 
-    const evidence = await runEvidenceVerifier(latentNeeds, reviews, issues).catch((e) => {
-      state.errors.push(`Evidence Verifier: ${e.message}`);
-      return null;
-    });
-
-    if (evidence) {
-      state.results.evidence = evidence;
-      state.agents.evidenceVerifier = "completed";
-    } else {
-      state.agents.evidenceVerifier = "failed";
-    }
-
+    state.results.evidence = mergedEvidence;
     state.status = "completed";
     state.completedAt = new Date().toISOString();
 
-    return { state, gaps: evidence ?? undefined };
+    const patterns = findCrossProjectPatterns(allVerifiedGaps);
+
+    return { state, gaps: allVerifiedGaps.length > 0 ? mergedEvidence : undefined, patterns };
   } catch (error) {
     state.status = "failed";
     state.errors.push(error instanceof Error ? error.message : "Unknown error");
     state.completedAt = new Date().toISOString();
-    return { state, gaps: undefined };
+    return { state, gaps: undefined, patterns: [] };
   }
 }

@@ -47,6 +47,7 @@ export interface DetectedGap {
   relatedIssueNumbers: number[];
   defenseExplanation: string;
   rankingReasoning: string;
+  product: string;
 }
 
 export interface LatentNeedDetectorOutput {
@@ -64,7 +65,9 @@ export interface VerifiedGap {
   topic: string;
   userNeed: string;
   explanation: string;
-  confidence: number;
+  llmConfidence: number;
+  computedConfidence: number;
+  flagged: boolean;
   confidenceJustification: string;
   verdict: "IGNORED" | "UNDER-PRIORITIZED" | "MISUNDERSTOOD";
   verdictReason: string;
@@ -75,6 +78,7 @@ export interface VerifiedGap {
   defenseExplanation: string;
   rankingReasoning: string;
   counterArgument: string;
+  product: string;
   createdAt: string;
 }
 
@@ -93,6 +97,7 @@ export interface PipelineState {
     preprocessor: AgentStatus;
     latentNeedDetector: AgentStatus;
     evidenceVerifier: AgentStatus;
+    critic: AgentStatus;
   };
   results: {
     preprocessed?: PreprocessedData;

@@ -1,27 +1,26 @@
 import { NextResponse } from "next/server";
-import { loadReviews, loadIssues, saveAnalysis } from "@/lib/data";
+import { saveAnalysis } from "@/lib/data";
 import { runPipeline } from "@/lib/agents/orchestrator";
 
-export const maxDuration = 120;
+export const maxDuration = 300;
 
 export async function POST() {
   try {
-    const reviews = loadReviews();
-    const { issues } = loadIssues();
-
-    const { state, gaps } = await runPipeline(reviews, issues);
+    const { state, gaps, patterns } = await runPipeline();
 
     if (!gaps?.verifiedGaps?.length) {
       return NextResponse.json({
         error: "Pipeline completed but no verified gaps found",
         pipeline: state,
+        patterns: [],
       }, { status: 500 });
     }
 
-    const result = saveAnalysis(gaps.verifiedGaps);
+    const result = saveAnalysis(gaps.verifiedGaps, gaps.removalReasons);
 
     return NextResponse.json({
       ...result,
+      patterns,
       pipeline: {
         agents: state.agents,
         errors: state.errors,

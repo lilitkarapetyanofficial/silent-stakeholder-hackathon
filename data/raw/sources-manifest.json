@@ -1,0 +1,26 @@
+[
+  {
+    "name": "wordpress-android",
+    "product": "wordpress-mobile/WordPress-Android",
+    "hasReviews": true,
+    "issueCount": 1000,
+    "dateRange": "2016-02 to 2017-05",
+    "fetchedAt": "2026-07-31T17:41:41Z"
+  },
+  {
+    "name": "antennapod",
+    "product": "AntennaPod/AntennaPod",
+    "hasReviews": false,
+    "issueCount": 143,
+    "dateRange": "2026-03 to 2026-07",
+    "fetchedAt": "2026-07-31T17:41:33Z"
+  },
+  {
+    "name": "ankidroid",
+    "product": "AnkiDroid/Anki-Android",
+    "hasReviews": false,
+    "issueCount": 56,
+    "dateRange": "2026-05 to 2026-07",
+    "fetchedAt": "2026-07-31T17:41:41Z"
+  }
+]

@@ -2,15 +2,20 @@
 
 import { useState, useEffect, useCallback } from "react";
 import type { AnalysisResult } from "@/lib/types";
+import { findCrossProjectPatterns } from "@/lib/agents/pattern-matcher";
 import Header from "@/components/Header";
 import ProductDashboard from "@/components/ProductDashboard";
 import StatsBar from "@/components/StatsBar";
 import GapCard from "@/components/GapCard";
 import FilterBar from "@/components/FilterBar";
 import AnalyzeButton from "@/components/AnalyzeButton";
+import RejectedGapsPanel from "@/components/RejectedGapsPanel";
+import CrossProjectPatterns from "@/components/CrossProjectPatterns";
 
 export default function Home() {
   const [data, setData] = useState<AnalysisResult | null>(null);
+  const [rejectedGaps, setRejectedGaps] = useState<string[]>([]);
+  const [patterns, setPatterns] = useState<Array<{ patternId: string; label: string; topics: string[]; products: string[]; gapIds: string[]; sharedKeywords: string[] }>>([]);
   const [filter, setFilter] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
@@ -33,6 +38,10 @@ export default function Home() {
       if (res.ok) {
         const result = await res.json();
         setData(result);
+        setRejectedGaps(result.rejectedGaps ?? []);
+        if (result.gaps?.length > 0) {
+          setPatterns(findCrossProjectPatterns(result.gaps));
+        }
       }
     } catch {
       setError("Failed to load data");
@@ -54,6 +63,12 @@ export default function Home() {
       }
       const result = await res.json();
       setData(result);
+      setRejectedGaps(result.rejectedGaps ?? []);
+      if (result.patterns?.length > 0) {
+        setPatterns(result.patterns);
+      } else if (result.gaps?.length > 0) {
+        setPatterns(findCrossProjectPatterns(result.gaps));
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Analysis failed");
     } finally {
@@ -149,6 +164,18 @@ export default function Home() {
                     <GapCard gap={gap} rank={i + 1} isDark={isDark} />
                   </div>
                 ))}
+              </div>
+            )}
+
+            {rejectedGaps.length > 0 && (
+              <div className="mt-6 mb-6 animate-fade-up delay-400">
+                <RejectedGapsPanel reasons={rejectedGaps} />
+              </div>
+            )}
+
+            {patterns.length > 0 && (
+              <div className="mt-6 mb-6 animate-fade-up delay-400">
+                <CrossProjectPatterns patterns={patterns} />
               </div>
             )}
 

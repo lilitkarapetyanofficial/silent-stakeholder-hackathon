@@ -17,6 +17,17 @@ export function loadIssues(): { issues: Issue[]; milestones: { id: string; title
   return { issues: data.issues || [], milestones: data.milestones || [] };
 }
 
+export function loadIssuesFromPath(issuesPath: string): Issue[] {
+  const raw = readFileSync(issuesPath, "utf-8");
+  const data = JSON.parse(raw);
+  return data.issues || [];
+}
+
+export function loadReviewsFromPath(reviewsPath: string): Review[] {
+  const raw = readFileSync(reviewsPath, "utf-8");
+  return JSON.parse(raw);
+}
+
 export function loadCachedAnalysis(): AnalysisResult | null {
   const path = join(OUTPUT_DIR, "analysis.json");
   if (!existsSync(path)) return null;
@@ -31,7 +42,7 @@ export function getDateRange(reviews: Review[]): string {
     : "Unknown";
 }
 
-export function saveAnalysis(gaps: Gap[]): AnalysisResult {
+export function saveAnalysis(gaps: Gap[], rejectedGaps: string[] = []): AnalysisResult {
   if (!existsSync(OUTPUT_DIR)) mkdirSync(OUTPUT_DIR, { recursive: true });
 
   const reviews = loadReviews();
@@ -39,6 +50,7 @@ export function saveAnalysis(gaps: Gap[]): AnalysisResult {
 
   const result: AnalysisResult = {
     gaps,
+    rejectedGaps,
     stats: {
       totalReviews: reviews.length,
       totalIssues: issues.length,

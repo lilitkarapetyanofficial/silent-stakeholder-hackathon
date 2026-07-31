@@ -5,7 +5,8 @@ import { callGeminiJson } from "./gemini-client";
 export async function runLatentNeedDetector(
   preprocessed: PreprocessedData,
   issues: Issue[],
-  issueSummary: IssueSummary
+  issueSummary: IssueSummary,
+  product: string
 ): Promise<LatentNeedDetectorOutput> {
   const clusterSummaries = preprocessed.clusters.slice(0, 15).map((c, i) =>
     `Cluster ${i + 1} (${c.clusterSize} reviews, avg ${c.avgScore.toFixed(1)} stars, ${c.totalThumbsUp} thumbs-up):
@@ -26,7 +27,7 @@ ${i.title}`
   const labelSummary = issueSummary.topLabels.map((l) => `${l.label} (${l.count})`).join(", ");
   const milestoneSummary = issueSummary.topMilestones.map((m) => `${m.milestone} (${m.count} issues)`).join(", ");
 
-  const prompt = `You are a latent need detection specialist for the WordPress for Android mobile app.
+  const prompt = `You are a latent need detection specialist for the ${product} mobile app.
 
 YOUR MISSION: Find HIDDEN UNMET USER NEEDS that the product roadmap is missing or under-serving. You are NOT summarizing complaints. You are inferring what users NEED but NEVER SAID OUT LOUD.
 
@@ -110,5 +111,14 @@ RULES:
 
 Return ONLY the JSON.`;
 
-  return await callGeminiJson<LatentNeedDetectorOutput>(prompt, { temperature: 0.3 });
+  const result = await callGeminiJson<{ gaps?: LatentNeedDetectorOutput["gaps"]; stats?: LatentNeedDetectorOutput["stats"] }>(prompt, { temperature: 0.3 });
+  return {
+    gaps: (result.gaps ?? []).map((g) => ({ ...g, product })),
+    stats: result.stats ?? {
+      totalReviews: preprocessed.totalReviews,
+      totalIssues: issueSummary.total,
+      clustersFormed: preprocessed.totalClusters,
+      avgRating: 0,
+    },
+  };
 }

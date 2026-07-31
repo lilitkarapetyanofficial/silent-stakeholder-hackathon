@@ -39,7 +39,7 @@ GAP UNDER REVIEW:
 - Topic: ${gap.topic}
 - User Need: ${gap.userNeed}
 - Verdict: ${gap.verdict}
-- Confidence: ${gap.confidence}%
+- Confidence: ${gap.llmConfidence}%
 - Explanation: ${gap.explanation}
 
 EVIDENCE REVIEWS (${gap.evidence.reviews.length} sources):

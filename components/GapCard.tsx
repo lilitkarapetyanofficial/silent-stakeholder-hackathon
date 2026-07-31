@@ -24,20 +24,46 @@ export default function GapCard({ gap, rank, isDark }: GapCardProps) {
                 {gap.verdict}
               </span>
               <span className="text-[11px] text-[var(--fg-muted)] font-mono">#{rank}</span>
+              {gap.product && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--bg-muted)] text-[var(--fg-muted)] border border-[var(--border)] font-mono">
+                  {gap.product}
+                </span>
+              )}
+              {gap.flagged && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30">
+                  <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                  </svg>
+                  Confidence flagged
+                </span>
+              )}
             </div>
             <h3 className="text-lg font-bold text-[var(--fg)] capitalize mb-1">{gap.topic}</h3>
             <p className="text-sm font-medium text-[var(--fg)] leading-relaxed">{gap.userNeed}</p>
           </div>
           <div className="text-right flex-shrink-0">
-            <div className="text-3xl font-bold font-mono text-[var(--fg)]">{gap.confidence}%</div>
-            <p className="text-[10px] text-[var(--fg-muted)] uppercase tracking-wider mt-0.5">confidence</p>
+            <div className="flex items-center gap-3">
+              <div>
+                <div className="text-2xl font-bold font-mono text-[var(--fg)]">{gap.llmConfidence}%</div>
+                <p className="text-[10px] text-[var(--fg-muted)] uppercase tracking-wider mt-0.5">LLM</p>
+              </div>
+              <div className="text-[var(--fg-muted)]/40 text-lg">/</div>
+              <div>
+                <div className={`text-2xl font-bold font-mono ${gap.flagged ? "text-amber-500" : "text-[var(--fg)]"}`}>{gap.computedConfidence}%</div>
+                <p className="text-[10px] text-[var(--fg-muted)] uppercase tracking-wider mt-0.5">Computed</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="h-2 bg-[var(--bg-muted)] rounded-full overflow-hidden mb-3">
+        <div className="h-2 bg-[var(--bg-muted)] rounded-full overflow-hidden mb-3 flex gap-0.5">
           <div
-            className={`h-full rounded-full transition-all duration-700 ${getConfidenceColor(gap.confidence / 100, isDark)}`}
-            style={{ width: `${gap.confidence}%` }}
+            className={`h-full rounded-full transition-all duration-700 ${getConfidenceColor(gap.llmConfidence / 100, isDark)}`}
+            style={{ width: `${gap.llmConfidence}%`, opacity: 0.4 }}
+          />
+          <div
+            className={`h-full rounded-full transition-all duration-700 ${getConfidenceColor(gap.computedConfidence / 100, isDark)}`}
+            style={{ width: `${gap.computedConfidence}%` }}
           />
         </div>
 
@@ -83,6 +109,17 @@ export default function GapCard({ gap, rank, isDark }: GapCardProps) {
               </h4>
               <p className="text-xs text-[var(--fg-muted)] leading-relaxed bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-3">
                 {gap.defenseExplanation}
+              </p>
+            </div>
+          )}
+
+          {gap.counterArgument && (
+            <div>
+              <h4 className="text-[11px] font-semibold text-[var(--fg-muted)] uppercase tracking-wider mb-2">
+                Counter-argument
+              </h4>
+              <p className="text-xs text-[var(--fg-muted)] leading-relaxed bg-[var(--bg-card)] border border-amber-200 dark:border-amber-500/30 rounded-lg p-3">
+                {gap.counterArgument}
               </p>
             </div>
           )}

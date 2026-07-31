@@ -1,0 +1,811 @@
+{
+  "issues": [
+    {
+      "id": "gh-5026590909",
+      "number": 21412,
+      "title": "With large `document.cookie` and AnkiDroidJS api call: Value POST of type java.lang.String cannot be converted to JSONObject",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [x] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\nThis bug was found while developing a [Remaining Time](https://github.com/trgkanki/remaining_time) addon.\n\nI'm using `document.cookie` as a persistent storage to store review log and html fragments for FOUC prevention.\nIt seems like when the cookie list gets sufficiently large, calling API returns erros d/t how `AnkiServer.getSessionBytes` is implemented.\n\nCookie is the easiest way to inflate HTML request header so this is used as a reproduction step, but I guess anything that can make request header large may cause this, and I think this error may arise on normal circumstances if data races or some kind of lagging occurs.\n\n1. make a new basic note type with front template like:\n\n```html\n{{Front}}\n\n<script>\n(async function () {\n  if (typeof AnkiDroidJS !== 'undefined') {\n    document.cookie = 'rt_repro1=' + 'A'.repeat(4000) + '; path=/';\n    document.cookie = 'rt_repro2=' + 'A'.repeat(4000) + '; path=/';\n    document.cookie = 'rt_repro3=' + 'A'.repeat(4000) + '; path=/';\n    document.cookie = 'rt_repro4=' + 'A'.repeat(4000) + '; path=/';\n    document.cookie = 'rt_repro5=' + 'A'.repeat(4000) + '; path=/';\n    const js = new AnkiDroidJS({ developer: 'repro@example.com', version: '0.0.3' });\n    const results = [];\n    for (let i = 0; i < 20; i++) {\n      try {\n        results.push(await js.ankiGetNewCardCount());\n      } catch (e) {\n        results.push('ERROR: ' + e);\n      }\n    }\n    alert(JSON.stringify(results));\n\tdocument.cookie = 'rt_repro1=; path=/; max-age=0';\n\tdocument.cookie = 'rt_repro2=; path=/; max-age=0';\n\tdocument.cookie = 'rt_repro3=; path=/; max-age=0';\n\tdocument.cookie = 'rt_repro4=; path=/; max-age=0';\n\tdocument.cookie = 'rt_repro5=; path=/; max-age=0';\n }\n})()\n</script>\n```\n\nAdded a simple apkg file containing such note.",
+      "state": "open",
+      "labels": [
+        "Needs Triage"
+      ],
+      "milestone": null,
+      "created_at": "2026-07-31T05:01:31Z",
+      "updated_at": "2026-07-31T11:06:01Z",
+      "comments": 0,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21412"
+    },
+    {
+      "id": "gh-4982047824",
+      "number": 21399,
+      "title": "Fdroid: Fdroid has only a full apk instead of arm64-v8aa",
+      "body": "Fdroid has switched to arm64-v8a for most apps. Anki is still using both variants and has a very big apk size.. It would be nice to have arm8va build on fdroid as well. ",
+      "state": "open",
+      "labels": [],
+      "milestone": null,
+      "created_at": "2026-07-26T18:53:37Z",
+      "updated_at": "2026-07-26T18:53:37Z",
+      "comments": 0,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21399"
+    },
+    {
+      "id": "gh-4964997119",
+      "number": 21395,
+      "title": "[Bug] JavaScript can't detect gamepads",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [x] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\n1. Connect a gamepad to an Android device.\n2. Connect the Android device to a desktop Chromium-based browser via USB or wireless debugging.\n3. Open a card in AnkiDroid.\n4. Inspect that card with the browser dev tools.\n5. Press a button on the gamepad ([per this forum comment](https://forums.ankiweb.net/t/does-anyone-know-how-to-use-a-gamepad-javascript-with-android/38398/8)).\n6. Execute `navigator.getGamepads()` in the browser console. (Or add it to a script tag on a card or template.)\n\n### Expected behaviour\n\nThe console should show an array containing a Gamepad object. Instead it shows an array of null values:\n\n```js\n// expected\n[Gamepad, null, null, null]\n\n// actual\n[null, null, null, null]\n```\n\n### Debug info\n\n```text\nAnkiDroid\n2.24.0\nMay 2, 2026\n(anki 25.09.2 / 3890e12c)\n(FSRS 6)\n```\n\n- Android device: Google Pixel 7\n- Android version: 16\n- Gamepad: 8BitDo Micro\n  - This device has three modes: S (emulates Nintendo Switch controller), D (DirectInput), K (keyboard). The behavior described above is the same in both S and D modes.\n  - When `navigator.getGamepads()` is run in a desktop browser with the gamepad paired in D mode, the controller appears as a `Gamepad` object with `id`: `8BitDo Micro gamepad (Vendor: 2dc8 Product: 9020)`. (S mode doesn't work on desktop either.)\n- Desktop OS: macOS Tahoe 26.3.1\n- Desktop browser: Brave 1.92.134 (Chromium: 150.0.7871.63) (Official Build) (arm64)\n\n### (Optional) Anything else you want to share?\n\n### More details\n\n- This was previously reported in #14974 and reported as fixed by #14983 (in 2023). I'm not sure if there was a regression, this never worked, it was removed because gamepad buttons can be mapped to actions in the app settings, or I'm doing something wrong.\n- Settings that don't affect",
+      "state": "open",
+      "labels": [
+        "Needs Triage"
+      ],
+      "milestone": null,
+      "created_at": "2026-07-24T03:50:43Z",
+      "updated_at": "2026-07-26T18:38:15Z",
+      "comments": 2,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21395"
+    },
+    {
+      "id": "gh-4958781093",
+      "number": 21393,
+      "title": "Filtered deck overview doesn't update properly after rebuilding",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [x] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\n1. Make a filtered deck which successfully pulls some cards (i.e. is not empty).\n2. Long press the deck and empty it.\n3. Open the deck. You should see the congratulation screen.\n4. Tap the button in the top right corner and rebuild the deck.\n\nThe deck overview still says \"Congratulations...\".\n\n<img width=\"1440\" height=\"3200\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/0b4aab82-59f5-4ece-a5ee-f7b521105813\" />\n\n### Expected behaviour\n\nIt should show the usual numbers and study button like this:\n\n<img width=\"1440\" height=\"3200\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/97b90239-8620-4657-b524-1998e3f8ad18\" />\n\n### Debug info\n\n```text\nAnkiDroid Version = 2.25.0alpha2 (ad96da5a09ab3aaa3ddebb4928067c73168ff6c6)  \nBackend Version = 0.1.64-anki25.09.2 (25.09.2 3890e12c9e48c028c3f12aa58cb64bd9f8895e30)  \nAndroid Version = 13 (SDK 33)  \nProductFlavor = full  \nDevice Info = Xiaomi | POCO | mondrian | mondrian_global | 23013PC75G | qcom  \nWebView Info = [com.google.android.webview | 787104603]: Mozilla/5.0 (Linux; Android 13; 23013PC75G Build/TKQ1.220905.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/150.0.7871.46 Mobile Safari/537.36  \nACRA UUID = 4afc3b3f-e93f-4a66-bc71-2b9476ef9eb0  \nFSRS = 5.1.0 (Enabled: true)  \nCrash Reports Enabled = true\n```\n\n### (Optional) Anything else you want to share?\n\nThe padding in the congratulations screen is too small.\n\n### Research\n\n- [x] I have checked the [manual](https://docs.ankidroid.org/) and the [FAQ](https://github.com/ankidroid/Anki-Android/wiki/FAQ) and could not find a solution to my issue\n- [x] (Optional) I have confirmed the issue is not resolved in the latest alpha release ([instructions](https://docs.ankidroid.org/manual.html#betaTesting))",
+      "state": "open",
+      "labels": [
+        "Needs Triage"
+      ],
+      "milestone": null,
+      "created_at": "2026-07-23T12:25:49Z",
+      "updated_at": "2026-07-28T09:40:40Z",
+      "comments": 4,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21393"
+    },
+    {
+      "id": "gh-4927463668",
+      "number": 21385,
+      "title": "[Bug Report] Scheduled notifications not triggering on Android",
+      "body": "Problem Description:\n\nAnkiDroid is completely failing to send due-card notifications, despite enabling all notification toggles inside the app.\n\nSteps Already Attempted:\n\n1. Set notification threshold to 1 card.\n\n2. Set App Battery Optimization to \"Unrestricted.\"\n\n3. Verified background data access and auto-start permissions.\n\n4. Checked system-level \"Alarms & Reminders\" special app permissions.\n\nExpected Behavior:\n\nTimely, responsive local reminders when flashcards become ready to review.\n\nActual Behavior:\n\nNo notifications appear at all unless the app is manually opened.\n\nDebug Info:\n\n[AnkiDroid Version = 2.24.0 (ebcf8e0e34921628b9b8a496c66ffd4adbb3705f)  \nBackend Version = 0.1.64-anki25.09.2 (25.09.2 3890e12c9e48c028c3f12aa58cb64bd9f8895e30)  \nAndroid Version = 16 (SDK 36)  \nProductFlavor = play  \nDevice Info = motorola | motorola | cybert | cybert_g_sys | motorola edge 60 pro | mt6897  \nWebView Info = [com.google.android.webview | 787104603]: Mozilla/5.0 (Linux; Android 16; motorola edge 60 pro Build/W1VVS36H.7-108-8-5; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/150.0.7871.46 Mobile Safari/537.36  \nACRA UUID = 1d031e61-d4c4-4cfa-8bd0-b3864f0aecc1  \nFSRS = 5.1.0 (Enabled: false)  \nCrash Reports Enabled = true]",
+      "state": "closed",
+      "labels": [],
+      "milestone": null,
+      "created_at": "2026-07-20T09:11:19Z",
+      "updated_at": "2026-07-26T14:34:38Z",
+      "comments": 2,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21385"
+    },
+    {
+      "id": "gh-4920797173",
+      "number": 21382,
+      "title": "Improve README.md for new contributors and developers",
+      "body": "The current README.md provides an overview of AnkiDroid and links to several resources, but it can be difficult for new contributors to quickly understand the repository structure and find the appropriate documentation. Since AnkiDroid has a comprehensive wiki, user manual, and contribution guides spread across multiple locations, first-time contributors may spend significant time navigating between resources.\n\nThe project documentation already encourages contributions from both developers and non-developers, and improving onboarding documentation could make the contribution process smoother.\n\nProposed improvements\n\nI would like to improve the README.md by adding or reorganizing sections such as:\n\nA clearer \"Getting Started\" section for contributors.\nA high-level overview of the repository structure and important modules.\nA dedicated \"Documentation\" section linking to:\nDevelopment Guide\nContribution Guide\nUser Manual\nIssue tracker\nA contributor onboarding checklist.\nLinks to beginner-friendly issues such as good first issue and help wanted.\nA short explanation of the technologies used (Kotlin, Gradle, Android tooling, etc.).\n\nBenefits\n\nThese changes would:\n\nReduce the onboarding time for new contributors.\nMake important resources easier to discover.\nEncourage more community contributions.\nImprove the overall developer experience.\n\nI would be happy to work on this improvement and submit a pull request if the maintainers think this would be useful.",
+      "state": "closed",
+      "labels": [
+        "Needs Author Reply"
+      ],
+      "milestone": null,
+      "created_at": "2026-07-19T01:25:59Z",
+      "updated_at": "2026-07-26T14:35:12Z",
+      "comments": 3,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21382"
+    },
+    {
+      "id": "gh-4917036522",
+      "number": 21380,
+      "title": "Dark smudge artifact at top of card content when flipping (New study screen, dark mode, \"Show answer feedback\" + Frame style \"Box\")",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [x] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\n1. Enable Dark mode (nightMode)\n2. Enable \"Show answer feedback\" (Settings > Reviewer)\n3. Set \"Frame style\" to \"Box\" (Settings > Reviewer > Frame style)\n4. Study a card with a custom note type that uses `backdrop-filter` / a translucent background on the card content, e.g.:\n\n.card-content {\n    background: rgba(30, 32, 38, 0.5);\n    backdrop-filter: blur(22px) saturate(160%);\n    border-radius: 15px;\n}\n\n5. Tap \"Show answer\" to flip the card, then rate it (Again/Hard/Good/Easy)\n\n### Expected behaviour\n\nWhat happened: A faint dark smudge briefly appears at the top edge of the card content exactly when the card flips, right where the answer feedback icon (tick/cross) fades in/out.\n\nThis is only reproducible when ALL of the following are true at the same time:\n- Dark mode is on\n- \"Show answer feedback\" is enabled\n- Frame style = \"Box\" (elevation = 0, no rounded corners)\n- The card's CSS uses backdrop-filter / a translucent background near the top of the card content\n\nSwitching Frame style back to \"Card\" (default, with elevation + rounded corners) makes the artifact disappear completely, with everything else unchanged. Light mode never shows the artifact, regardless of Frame style.\n\nWhat should have happened: The card content should render cleanly, without any visual artifact, right after the card flips.\n\nhttps://github.com/user-attachments/assets/ded624ab-ffee-4f05-a4e5-1d96d4587ecc\n\n### Debug info\n\n```text\nAnkiDroid Version = 2.24.0 (ebcf8e0e34921628b9b8a496c66ffd4adbb3705f)  \nBackend Version = 0.1.64-anki25.09.2 (25.09.2 3890e12c9e48c028c3f12aa58cb64bd9f8895e30)  \nAndroid Version = 13 (SDK 33)  \nProductFlavor = play  \nDevice Info = Xiaomi | Xiaomi | nabu | nabu | 21051182C | qcom  \nWebView Info = [com.google.android.webview | 787104603]: Moz",
+      "state": "open",
+      "labels": [
+        "Needs Triage"
+      ],
+      "milestone": null,
+      "created_at": "2026-07-18T06:18:10Z",
+      "updated_at": "2026-07-19T05:42:55Z",
+      "comments": 4,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21380"
+    },
+    {
+      "id": "gh-4893547925",
+      "number": 21372,
+      "title": "[BUG] Locale-only {{tts}} selects an unavailable voice instead of an installed voice",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [x] This bug does not occur in the latest version of Anki Desktop (26.05)\n\n### What are the steps to reproduce this bug?\n\n1. Use Google as Android's preferred TTS engine, with an installed French voice.\n2. Use a locale-only native TTS tag in a card template:\n\n   ```html\n   {{tts fr_FR:Front}}\n   ```\n\n3. Review the card.\n\nAnkiDroid reports:\n\n```text\nERROR_NOT_INSTALLED_YET\n```\n\nThe same failure occurs with `es_ES`, despite installed French and Spanish voices that work in Android's TTS settings.\n\nAs a control, pinning an exact installed voice works:\n\n```html\n{{tts fr_FR voices=EXACT_INSTALLED_VOICE:Front}}\n```\n\n### Expected behaviour\n\nWhen no voice is explicitly requested, locale-only selection should prefer a matching voice where `unavailable() == false`, and TTS should play normally.\n\n### Actual behaviour\n\nLocale-only selection takes the first matching voice regardless of availability, so it can select a voice marked `KEY_FEATURE_NOT_INSTALLED` and fail with `ERROR_NOT_INSTALLED_YET`.\n\nAnkiDroid detects unavailable voices here:\n\nhttps://github.com/ankidroid/Anki-Android/blob/ebcf8e0e34921628b9b8a496c66ffd4adbb3705f/AnkiDroid/src/main/java/com/ichi2/anki/TtsVoices.kt#L261-L265\n\nBut the locale-only fallback does not check availability here:\n\nhttps://github.com/ankidroid/Anki-Android/blob/ebcf8e0e34921628b9b8a496c66ffd4adbb3705f/libanki/src/main/java/com/ichi2/anki/libanki/Tts.kt#L95-L101\n\n### Debug info\n\n```text\nAnkiDroid Version = 2.24.0 (ebcf8e0e34921628b9b8a496c66ffd4adbb3705f)\nBackend Version = 0.1.64-anki25.09.2 (25.09.2 3890e12c9e48c028c3f12aa58cb64bd9f8895e30)\nAndroid Version = 16 (SDK 36)\nProductFlavor = play\nDevice Info = Google | google | caiman | caiman | Pixel 9 Pro | caiman\nWebView Info = [com.google.android.webview | 787104703]: Mozilla/5.0 (Linux; Android 16; Pixel 9 Pro Build/CP1A.260505.005; wv) AppleWebKit/537.36 (KHTML, like Gecko) Ve",
+      "state": "open",
+      "labels": [
+        "Reproduced"
+      ],
+      "milestone": null,
+      "created_at": "2026-07-15T14:42:20Z",
+      "updated_at": "2026-07-22T18:50:21Z",
+      "comments": 2,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21372"
+    },
+    {
+      "id": "gh-4840680113",
+      "number": 21355,
+      "title": "Creating a deck should select it by default",
+      "body": "## Expected: \nThe created deck is selected so that in split layout the panels are consistent\n\n## Current: \n> 1. Install the app from scratch / wipe all data so it loads like a fresh install\n> 2. Open the app on a wide screen (ex. tablet)\n> 3. Create a new deck, \"My Deck\"\n> 4. The app bar at the top populates with new edit and delete buttons... **but they control the Default deck, not the newly added deck**\n> 5. Create a new card and make sure to add it to the newly created deck, \"My Deck\"\n> 6. Return to the Deck Picker screen\n> 7. **The right-hand divided screen shows up, but it shows the Default deck**\n> \n\n\n _Originally posted by @ericli3690 in [#21087](https://github.com/ankidroid/Anki-Android/issues/21087#issuecomment-4823591062)_\n\nI was able to reproduce this on Pixel tab emulator ",
+      "state": "closed",
+      "labels": [
+        "Reproduced"
+      ],
+      "milestone": "2.25 release",
+      "created_at": "2026-07-08T19:57:30Z",
+      "updated_at": "2026-07-10T16:06:10Z",
+      "comments": 0,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21355"
+    },
+    {
+      "id": "gh-4832429412",
+      "number": 21353,
+      "title": "New Anki Editor migration",
+      "body": "Upstream moved the note editor's control from Python to TypeScript and now serves it as a backend web page ([ankitects/anki#4029](https://github.com/ankitects/anki/issues/4029), tracking [ankitects/anki#3830](https://github.com/ankitects/anki/issues/3830)) the same mechanism we already use for deck options, graphs, card-info, etc. This proposes bringing that editor into AnkiDroid behind a developer-options flag, reusing the existing AnkiServer stack. \n\n- The legacy NoteEditorFragment stays the default. Relates to [#10751](https://github.com/ankidroid/Anki-Android/issues/10751) and [#1377](https://github.com/ankidroid/Anki-Android/issues/1377).\n\n## High-level steps (in order)\n- Backend bump: In Anki-Android-Backend, move the anki submodule past [#4029](https://github.com/ankitects/anki/issues/4029)\n-  Consume the new backend in AnkiDroid\n- Add the experimental flag and create the editor fragment\n- Port the host bridge to Kotlin\n- Close the mobile gaps (also see what we need to do differently in AnkiDroid than upstream)\n-  Testing (Unit test and user testing i.e. since it will be experimental)",
+      "state": "open",
+      "labels": [],
+      "milestone": null,
+      "created_at": "2026-07-07T21:38:44Z",
+      "updated_at": "2026-07-07T21:38:44Z",
+      "comments": 0,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21353"
+    },
+    {
+      "id": "gh-4829946629",
+      "number": 21352,
+      "title": "Stopped media from other apps starts after TTS audio completes",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [x] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\nI am using TTS on some of my cards and while reviewing I'm finding that it will restart stopped audio media playback from another app. \n\nMy card has this content: `{{tts zh_CN:Front}}`. I've also noticed this with the HelloChinese app.\n\n\n\n### Expected behaviour\n\nMedia from other apps remains stopped.\n\n### Debug info\n\n```text\nAnkiDroid Version = 2.24.0 (ebcf8e0e34921628b9b8a496c66ffd4adbb3705f)  \nBackend Version = 0.1.64-anki25.09.2 (25.09.2 3890e12c9e48c028c3f12aa58cb64bd9f8895e30)  \nAndroid Version = 16 (SDK 36)  \nProductFlavor = play  \nDevice Info = Google | google | lynx | lynx | Pixel 7a | lynx  \nWebView Info = [com.google.android.webview | 782715903]: Mozilla/5.0 (Linux; Android 16; Pixel 7a Build/CP1A.260505.005; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/149.0.7827.159 Mobile Safari/537.36  \nACRA UUID = 5c894aec-f8e8-4769-b119-779a4a416f11  \nFSRS = 5.1.0 (Enabled: false)  \nCrash Reports Enabled = true\n```\n\n### (Optional) Anything else you want to share?\n\n_No response_\n\n### Research\n\n- [x] I have checked the [manual](https://docs.ankidroid.org/) and the [FAQ](https://github.com/ankidroid/Anki-Android/wiki/FAQ) and could not find a solution to my issue\n- [ ] (Optional) I have confirmed the issue is not resolved in the latest alpha release ([instructions](https://docs.ankidroid.org/manual.html#betaTesting))",
+      "state": "open",
+      "labels": [
+        "Needs Triage"
+      ],
+      "milestone": null,
+      "created_at": "2026-07-07T15:29:16Z",
+      "updated_at": "2026-07-10T18:10:09Z",
+      "comments": 2,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21352"
+    },
+    {
+      "id": "gh-4811751011",
+      "number": 21341,
+      "title": "Unable to use stylus mode",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [ ] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\nCheck the \"stylus mode\" checkbox.\nWrite.\n\n### Expected behaviour\n\nWrite normally \n\n### Debug info\n\n```text\nAnkiDroid Version = 2.24.0 (ebcf8e0e34921628b9b8a496c66ffd4adbb3705f)  \nBackend Version = 0.1.64-anki25.09.2 (25.09.2 3890e12c9e48c028c3f12aa58cb64bd9f8895e30)  \nAndroid Version = 16 (SDK 36)  \nProductFlavor = full  \nDevice Info = Xiaomi | Redmi | onyx | onyx | 25053RT47C | qcom  \nWebView Info = [com.google.android.webview | 768016403]: Mozilla/5.0 (Linux; Android 16; 25053RT47C Build/BP2A.250605.031.A3; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/146.0.7680.164 Mobile Safari/537.36  \nACRA UUID = 4d59def1-42fb-474d-97d5-adeb89db5771  \nFSRS = 5.1.0 (Enabled: true)  \nCrash Reports Enabled = true\n```\n\n### (Optional) Anything else you want to share?\n\nhttps://github.com/user-attachments/assets/b627082c-c047-4c43-b537-f931c41cbc6f\n\n### Research\n\n- [x] I have checked the [manual](https://docs.ankidroid.org/) and the [FAQ](https://github.com/ankidroid/Anki-Android/wiki/FAQ) and could not find a solution to my issue\n- [ ] (Optional) I have confirmed the issue is not resolved in the latest alpha release ([instructions](https://docs.ankidroid.org/manual.html#betaTesting))",
+      "state": "closed",
+      "labels": [
+        "Needs Triage"
+      ],
+      "milestone": null,
+      "created_at": "2026-07-05T05:37:25Z",
+      "updated_at": "2026-07-06T01:41:15Z",
+      "comments": 2,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21341"
+    },
+    {
+      "id": "gh-4806060185",
+      "number": 21338,
+      "title": "Crash when trying to preview an invalid search in the filtered deck options",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [x] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\nMake a filtered deck with the search `is:nee` and tap the search icon.\n\n### Expected behaviour\n\nNo crash.\n\n### Debug info\n\n```text\nAnkiDroid Version = 2.25.0alpha1 (98bddabfa055eb61e0b5f5ab2dfde43f3f174ee6)  \nBackend Version = 0.1.64-anki25.09.2 (25.09.2 3890e12c9e48c028c3f12aa58cb64bd9f8895e30)  \nAndroid Version = 13 (SDK 33)  \nProductFlavor = full  \nDevice Info = Xiaomi | POCO | mondrian | mondrian_global | 23013PC75G | qcom  \nWebView Info = [com.google.android.webview | 782715903]: Mozilla/5.0 (Linux; Android 13; 23013PC75G Build/TKQ1.220905.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/149.0.7827.159 Mobile Safari/537.36  \nACRA UUID = 4afc3b3f-e93f-4a66-bc71-2b9476ef9eb0  \nFSRS = 5.1.0 (Enabled: true)  \nCrash Reports Enabled = true\n```\n\n### (Optional) Anything else you want to share?\n\n_No response_\n\n### Research\n\n- [x] I have checked the [manual](https://docs.ankidroid.org/) and the [FAQ](https://github.com/ankidroid/Anki-Android/wiki/FAQ) and could not find a solution to my issue\n- [x] (Optional) I have confirmed the issue is not resolved in the latest alpha release ([instructions](https://docs.ankidroid.org/manual.html#betaTesting))",
+      "state": "closed",
+      "labels": [
+        "Needs Triage",
+        "2.24"
+      ],
+      "milestone": "2.25 release",
+      "created_at": "2026-07-03T20:08:45Z",
+      "updated_at": "2026-07-17T04:41:26Z",
+      "comments": 2,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21338"
+    },
+    {
+      "id": "gh-4800758192",
+      "number": 21335,
+      "title": "DbError every time I go the the deck list after updating to Android 16",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [x] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\n1. Update to Android 16\n2. Get this error every time you go to the deck list:\n<img width=\"980\" height=\"486\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/85995fdb-e2d7-4ec4-a0c1-21116b468a44\" />\n\nEverything else looks fine. AnkiDroid remembers my daily progress. I have 20GB of empty space in the phone memory.\n\n### Expected behaviour\n\nNo error.\n\n### Debug info\n\n```text\nAnkiDroid Version = 2.24.0 (ebcf8e0e34921628b9b8a496c66ffd4adbb3705f)  \nBackend Version = 0.1.64-anki25.09.2 (25.09.2 3890e12c9e48c028c3f12aa58cb64bd9f8895e30)  \nAndroid Version = 16 (SDK 36)  \nProductFlavor = full  \nDevice Info = Volla | volla | mimameid | mimameid | Volla Phone 22 | mt6768  \nWebView Info = [com.android.webview | 782711401]: Mozilla/5.0 (Linux; Android 16; Volla Phone 22 Build/BP4A.251205.006; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/149.0.7827.114 Mobile Safari/537.36  \nACRA UUID = 11c96a9d-11bd-481b-8bb6-5d1b6b38ce2d  \nFSRS = 5.1.0 (Enabled: false)  \nCrash Reports Enabled = true\n```\n\n### (Optional) Anything else you want to share?\n\n_No response_\n\n### Research\n\n- [x] I have checked the [manual](https://docs.ankidroid.org/) and the [FAQ](https://github.com/ankidroid/Anki-Android/wiki/FAQ) and could not find a solution to my issue\n- [ ] (Optional) I have confirmed the issue is not resolved in the latest alpha release ([instructions](https://docs.ankidroid.org/manual.html#betaTesting))",
+      "state": "open",
+      "labels": [
+        "Needs Triage"
+      ],
+      "milestone": null,
+      "created_at": "2026-07-03T05:56:08Z",
+      "updated_at": "2026-07-03T19:13:40Z",
+      "comments": 1,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21335"
+    },
+    {
+      "id": "gh-4791058518",
+      "number": 21329,
+      "title": "Unable to select custom brush color for whiteboard",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [ ] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\nOpen whiteboard. Add custom brush.\n\n### Expected behaviour\n\nChances the brush is still in color black (see the video below).\nExpect new brush in the color i selected.\n\n### Debug info\n\n```text\nAnkiDroid Version = 2.24.0 (ebcf8e0e34921628b9b8a496c66ffd4adbb3705f)  \nBackend Version = 0.1.64-anki25.09.2 (25.09.2 3890e12c9e48c028c3f12aa58cb64bd9f8895e30)  \nAndroid Version = 16 (SDK 36)  \nProductFlavor = full  \nDevice Info = Xiaomi | Redmi | onyx | onyx | 25053RT47C | qcom  \nWebView Info = [com.google.android.webview | 768016403]: Mozilla/5.0 (Linux; Android 16; 25053RT47C Build/BP2A.250605.031.A3; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/146.0.7680.164 Mobile Safari/537.36  \nACRA UUID = 4d59def1-42fb-474d-97d5-adeb89db5771  \nFSRS = 5.1.0 (Enabled: true)  \nCrash Reports Enabled = true\n```\n\n### (Optional) Anything else you want to share?\n\nhttps://github.com/user-attachments/assets/9df98656-4ae7-43c5-ae00-31275790f5c4\n\n### Research\n\n- [x] I have checked the [manual](https://docs.ankidroid.org/) and the [FAQ](https://github.com/ankidroid/Anki-Android/wiki/FAQ) and could not find a solution to my issue\n- [ ] (Optional) I have confirmed the issue is not resolved in the latest alpha release ([instructions](https://docs.ankidroid.org/manual.html#betaTesting))",
+      "state": "closed",
+      "labels": [
+        "Priority-Medium",
+        "Needs Triage",
+        "Reproduced"
+      ],
+      "milestone": "2.25 release",
+      "created_at": "2026-07-02T03:44:40Z",
+      "updated_at": "2026-07-21T08:36:29Z",
+      "comments": 1,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21329"
+    },
+    {
+      "id": "gh-4773250760",
+      "number": 21319,
+      "title": "Flaky backFromBrowserClosesTheActivity() test",
+      "body": "This keeps appearing([example](https://github.com/ankidroid/Anki-Android/actions/runs/28358983540/job/84008797071)):\n\n```\ncom.ichi2.anki.CardBrowserDeepLinkTest > backFromBrowserClosesTheActivity[emulator-5554 - 16] FAILED \n\tjava.lang.AssertionError: 'back' closes the browser\n\tExpected: <true>\n```\n\n@david-allison \n\n",
+      "state": "closed",
+      "labels": [],
+      "milestone": null,
+      "created_at": "2026-06-30T02:54:42Z",
+      "updated_at": "2026-06-30T04:32:17Z",
+      "comments": 0,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21319"
+    },
+    {
+      "id": "gh-4759674747",
+      "number": 21306,
+      "title": "Empty error should not show half a sentence",
+      "body": "How to reproduce:\n\n* Ensure ankiweb is down\n* sync\n\nResult:\n\n<img width=\"549\" height=\"1280\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/c75f1f73-6304-49bf-b59a-b4af1abb218d\" />\n\n\nExpected: \n* \"d\u00e9tails de l'erreur :\" should be removed  if there is no details to display. This looks unpolished",
+      "state": "open",
+      "labels": [
+        "upstream-issue"
+      ],
+      "milestone": null,
+      "created_at": "2026-06-27T19:35:09Z",
+      "updated_at": "2026-07-10T08:08:52Z",
+      "comments": 1,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21306"
+    },
+    {
+      "id": "gh-4759667341",
+      "number": 21305,
+      "title": "If ankiweb does not respond, the UI\u00a0does not respond",
+      "body": "Currently, ankiweb is down. Sync fails at 0. \nIf while the sync is running you cause the view to be redrawn, such as by changing from light to dark mode, you'll get a message telling you that the app is not responding.\n\nhttps://github.com/user-attachments/assets/51de6d73-f021-41cf-b9c2-f529bfc95e13\n\n\nIf you just wait without doing anytihng, the app just tells you sync failed.",
+      "state": "open",
+      "labels": [],
+      "milestone": null,
+      "created_at": "2026-06-27T19:32:58Z",
+      "updated_at": "2026-06-27T20:17:06Z",
+      "comments": 0,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21305"
+    },
+    {
+      "id": "gh-4735150344",
+      "number": 21302,
+      "title": "Feature Proposal: Semantic Duplicate Detection for Cards",
+      "body": "### Problem\n\nUsers may unintentionally create multiple cards that are phrased differently but contain essentially the same information. Over time, these semantic duplicates can increase deck size unnecessarily and add extra review workload.\n\nExamples:\n\n* \"What is TCP?\"\n* \"Define TCP.\"\n* \"What does TCP stand for and what is its purpose?\"\n\nAlthough these cards are not exact duplicates, they represent very similar knowledge.\n\n### Proposed Solution\n\nWhen a user creates or edits a card, AnkiDroid could optionally analyze its semantic similarity with existing cards in the deck and warn the user if highly similar cards are found.\n\nThe goal would not be to automatically delete or merge cards, but simply to inform users about potential duplicates and allow them to decide whether to continue.\n\n### Potential Benefits\n\n* Reduce accidental duplicate cards.\n* Keep decks cleaner and easier to maintain.\n* Reduce unnecessary review workload.\n* Improve study efficiency.\n\nBefore investing significant implementation effort, I would like to know whether maintainers think this feature aligns with AnkiDroid's goals and whether such a contribution would be welcome.\n",
+      "state": "closed",
+      "labels": [],
+      "milestone": null,
+      "created_at": "2026-06-24T13:14:22Z",
+      "updated_at": "2026-06-25T00:13:12Z",
+      "comments": 1,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21302"
+    },
+    {
+      "id": "gh-4728163683",
+      "number": 21298,
+      "title": "[API] Extension ContentResolver / api to read/write card data",
+      "body": "Suggest to extend ContentResolver / api to read/write card data.\n\nCan start from flag column, and then step by step add read/write for other columns.",
+      "state": "open",
+      "labels": [],
+      "milestone": null,
+      "created_at": "2026-06-23T17:38:08Z",
+      "updated_at": "2026-06-29T18:15:18Z",
+      "comments": 12,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21298"
+    },
+    {
+      "id": "gh-4727889377",
+      "number": 21297,
+      "title": "[API] Extension ContentResolver / api to read/write card data",
+      "body": "Suggest to extend ContentResolver / api to read/write card data.\n\nCan start from flag column, and then step by step add read/write for other columns.",
+      "state": "closed",
+      "labels": [],
+      "milestone": null,
+      "created_at": "2026-06-23T16:58:14Z",
+      "updated_at": "2026-06-23T17:37:42Z",
+      "comments": 0,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21297"
+    },
+    {
+      "id": "gh-4712457592",
+      "number": 21293,
+      "title": "Flaky test: CardBrowserDeepLinkTest: `backFromBrowserClosesTheActivity`",
+      "body": "https://github.com/ankidroid/Anki-Android/actions/runs/27921520275/job/82615973753?pr=21292\n\n21d32195cc4397f5d7fabc99c1542bc707ac1e70\n* https://github.com/ankidroid/Anki-Android/pull/21206",
+      "state": "closed",
+      "labels": [
+        "2.25"
+      ],
+      "milestone": "2.25 release",
+      "created_at": "2026-06-22T00:15:57Z",
+      "updated_at": "2026-06-30T20:27:33Z",
+      "comments": 3,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21293"
+    },
+    {
+      "id": "gh-4711620204",
+      "number": 21289,
+      "title": "Note editor crash if too many field",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [x] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\nUse a note type with 400 fields such as this one\n[chanson.zip](https://github.com/user-attachments/files/29182457/chanson.zip)\nopen it in the note editor\n\nReduce ankidroid or open the previewer\n\n### Expected behaviour\n\nno crash\n\n### Debug info\n\n```text\nBuild at HEAD dfbfb7b2939c6c5ee69a7878915230a04701214a\n```\n\n### (Optional) Anything else you want to share?\n\n```\n2026-06-21 20:57:37.010  5926-5926  ACRA                    com.ichi2.anki.debug                 E  ACRA caught a RuntimeException for com.ichi2.anki.debug\n                                                                                                    java.lang.RuntimeException: android.os.TransactionTooLargeException: data parcel size 583180 bytes\n                                                                                                    Bundle stats:\n                                                                                                      android:viewHierarchyState [size=1308]\n                                                                                                        android:views [size=1200]\n                                                                                                      androidx.lifecycle.BundlableSavedStateRegistry.key [size=581004]\n                                                                                                        android:support:activity-result [size=2064]\n                                                                                                          KEY_COMPONENT_ACTIVITY_REGISTERED_KEYS [size=1576]\n                                                                                                        android:support:fragments [size=577940]\n                                               ",
+      "state": "open",
+      "labels": [
+        "Needs Triage"
+      ],
+      "milestone": null,
+      "created_at": "2026-06-21T19:04:19Z",
+      "updated_at": "2026-06-22T03:58:55Z",
+      "comments": 0,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21289"
+    },
+    {
+      "id": "gh-4683842867",
+      "number": 21281,
+      "title": "Can the buttons at the bottom be added to swap places",
+      "body": "<img width=\"1226\" height=\"2560\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/af8cf0f6-3708-4bab-80c8-53980e3a9bc3\" />",
+      "state": "closed",
+      "labels": [],
+      "milestone": null,
+      "created_at": "2026-06-17T13:44:29Z",
+      "updated_at": "2026-06-19T10:17:38Z",
+      "comments": 1,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21281"
+    },
+    {
+      "id": "gh-4666800532",
+      "number": 21276,
+      "title": "Potential main-thread SVG stream read during multimedia image preview",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n\n### What are the steps to reproduce this bug?\n\nHi AnkiDroid Team,\n\nI\u2019m a PhD student researching Android performance issues. My research group recently ran a static analysis scan for thread-affinity and main-thread blocking bugs in real-world Android apps, and our prototype flagged a potential issue in AnkiDroid.\n\nThis report has been **strictly re-audited against the latest default branch source** listed below, rather than only relying on the older commit URL from the initial static-analysis export. I did not dynamically reproduce an ANR/crash, so this should be treated as a **source-confirmed main-thread blocking risk** rather than a reproduced runtime failure.\n\n## App version\n\nCurrent default branch: `ankidroid/Anki-Android@main`\n\n## Checked target\n\n+ Repository: `ankidroid/Anki-Android`\n+ Source-level caller: `MultimediaImageFragment#previewImage -> WebView#loadSvgImage -> loadSvgFromUri`\n+ Detected API / pattern: `ContentResolver#openInputStream(...)` / stream-to-string conversion\n+ Underlying platform APIs: `ContentResolver#openInputStream(...), InputStream#read(...)`\n+ Observed context: image preview path before updating a WebView\n+ Expected context: worker/background thread before file/provider stream read\n\n## What I found\n\nThe latest SVG preview path still reads the selected SVG content synchronously. `previewImage(...)` calls `loadSvgImage(...)` for SVG MIME types, and `loadSvgImage(...)` immediately calls `loadSvgFromUri(...)`. That helper opens an input stream from the URI and converts the whole stream into a string before calling `WebView.loadDataWithBaseURL(...)`.\n\n## Verified source trace\n\n```text\nUser selects an SVG image\n  -> MultimediaImageFragment.previewImage(imageUri)\n  -> WebView.loadSvgImage(imageUri)\n  -> loadSvgFromUri(imageUri)\n  -> contentResolver.openInputStreamSafe(uri)\n  -> inputStream.convertToString()\n  -> WebView.loadDataWithBaseURL(...)\n```\n\n## Why this matters\n\nA se",
+      "state": "closed",
+      "labels": [
+        "Needs Triage"
+      ],
+      "milestone": "2.25 release",
+      "created_at": "2026-06-15T16:07:29Z",
+      "updated_at": "2026-07-14T13:15:45Z",
+      "comments": 0,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21276"
+    },
+    {
+      "id": "gh-4666786199",
+      "number": 21275,
+      "title": "Potential main-thread ContentResolver query while importing selected images",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n\n### What are the steps to reproduce this bug?\n\nHi AnkiDroid Team,\n\nI\u2019m a PhD student researching Android performance issues. My research group recently ran a static analysis scan for thread-affinity and main-thread blocking bugs in real-world Android apps, and our prototype flagged a potential issue in AnkiDroid.\n\nThis report has been **strictly re-audited against the latest default branch source** listed below, rather than only relying on the older commit URL from the initial static-analysis export. I did not dynamically reproduce an ANR/crash, so this should be treated as a **source-confirmed main-thread blocking risk** rather than a reproduced runtime failure.\n\n## App version\n\nCurrent default branch: `ankidroid/Anki-Android@main`\n\n## Checked target\n\n+ Repository: `ankidroid/Anki-Android`\n+ Corrected caller: `MultimediaImageFragment#handleImageUri/internalizeUri -> MultimediaUtils#getImageNameFromUri`\n+ Detected API / pattern: `ContentResolverCompat#query(...)` and `Cursor#moveToFirst()`\n+ Underlying platform APIs: `ContentResolver#query(...), Cursor#moveToFirst()`\n+ Observed context: multimedia image selection/import UI path\n+ Expected context: worker/background thread before content-provider metadata lookup\n\n## What I found\n\nThe latest multimedia image flow still resolves a selected content URI\u2019s display name synchronously. `MultimediaImageFragment` calls `internalizeUri(...)` from UI/lifecycle paths, and `internalizeUri(...)` calls `MultimediaUtils.getImageNameFromUri(...)`. For content/document URIs, that function queries the content resolver and moves the cursor to the first row.\n\n## Verified source trace\n\n```text\nUser selects or passes an image into MultimediaImageFragment\n  -> MultimediaImageFragment.handleImageUri()\n  -> processExternalImage(uri)\n  -> internalizeUri(uri)\n  -> MultimediaUtils.getImageNameFromUri(requireContext(), uri)\n  -> getImageNameFromContentResolver(...)\n  -> ContentRes",
+      "state": "open",
+      "labels": [
+        "Needs Triage"
+      ],
+      "milestone": null,
+      "created_at": "2026-06-15T16:05:35Z",
+      "updated_at": "2026-07-14T05:47:33Z",
+      "comments": 1,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21275"
+    },
+    {
+      "id": "gh-4651839748",
+      "number": 21263,
+      "title": "Some images can disable touch inputs",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [x] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\n1. Download [no_touch_events.apkg.zip](https://github.com/user-attachments/files/28893064/no_touch_events.apkg.zip).\n2. Rename it to `no_touch_events.apkg` and import it into AnkiDroid.\n3. Open the deck in the new study screen.\n4. Show the answer.\n5. Double tap on the image but don't lift your finger after the second tap. Instead, wait for a few seconds.\n6. Do step 5 again.\n\nNow you can't use any gestures and the HTML elements are not interactive (`:hover` doesn't work, links don't work, etc).\n\nhttps://github.com/user-attachments/assets/7e6764da-2268-4ba0-a451-4011f2f68036\n\n### Expected behaviour\n\nTouch inputs should work.\n\n### Debug info\n\n```text\nAnkiDroid Version = 2.25.0alpha1 (98bddabfa055eb61e0b5f5ab2dfde43f3f174ee6)  \nBackend Version = 0.1.64-anki25.09.2 (25.09.2 3890e12c9e48c028c3f12aa58cb64bd9f8895e30)  \nAndroid Version = 13 (SDK 33)  \nProductFlavor = full  \nDevice Info = Xiaomi | POCO | mondrian | mondrian_global | 23013PC75G | qcom  \nWebView Info = [com.google.android.webview | 782709103]: Mozilla/5.0 (Linux; Android 13; 23013PC75G Build/TKQ1.220905.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/149.0.7827.91 Mobile Safari/537.36  \nACRA UUID = 4afc3b3f-e93f-4a66-bc71-2b9476ef9eb0  \nFSRS = 5.1.0 (Enabled: true)  \nCrash Reports Enabled = true\n```\n\n### (Optional) Anything else you want to share?\n\n- This bug happens in the new study screen only.\n- This bug also happens in 2.24.0 and 2.23.3.\n- Some images don't cause this issue. It seems like only images with about the same aspect ratio as the one above are problematic.\n\nSimilar issues: https://github.com/ankidroid/Anki-Android/issues/21045 and https://github.com/ankidroid/Anki-Android/issues/19165.\n\n### Research\n\n- [x] I have checked the [manual](https://docs.anki",
+      "state": "open",
+      "labels": [
+        "Needs Triage",
+        "Reproduced"
+      ],
+      "milestone": null,
+      "created_at": "2026-06-12T18:59:34Z",
+      "updated_at": "2026-06-23T17:22:26Z",
+      "comments": 0,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21263"
+    },
+    {
+      "id": "gh-4620888768",
+      "number": 21245,
+      "title": "Enable dependency cooldowns",
+      "body": "> I'm okay not being flagged for security vulnerabilities in our dependencies, we'll get them no matter what with dependabot runs\n> \n> One thing I just remembered and I am noting here - it's somewhat standard practice apparently to ask dependabot not to propose any packages newer than 3 days. Why? To avoid ingesting packages that haven't had time for inspection by the wider security community yet. If you let dependabot go with just-published package, you may inadvertently be in the blast radius of a supply chain attack on a dependency that is published but not recognized as malware yet\n> \n> dependabot has config parameters that can do it and LLMs are successful at making the PRs for same if you have any more of the OSS Claude tokens to burn \n\n _Originally posted by @mikehardy in [#21038](https://github.com/ankidroid/Anki-Android/issues/21038#issuecomment-4654934522)_",
+      "state": "open",
+      "labels": [],
+      "milestone": null,
+      "created_at": "2026-06-09T09:51:24Z",
+      "updated_at": "2026-06-09T09:54:17Z",
+      "comments": 1,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21245"
+    },
+    {
+      "id": "gh-4620280029",
+      "number": 21243,
+      "title": "Potential main-thread SQLite access in Reviewer.onCollectionLoaded",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [x] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\nHi AnkiDroid Team,\n\nI\u2019m a PhD student researching Android performance issues. My research group recently ran a static analysis scan for main-thread blocking bugs, and our prototype flagged a potential issue in AnkiDroid.\n\n## Checked target\n\n+ APK-level caller: `com.ichi2.anki.Reviewer#onCollectionLoaded(Collection) / reviewer UI initialization`\n+ Detected API: `project-local @WorkerThread API: com.ichi2.anki.MetaDB#getMicToolbarState`\n+ Observed context: `main/UI` thread\n+ Expected context: `worker/background` thread\n\n## What I found\n\nThe analyzer reported that the app call:\n\n```kotlin\nval isMicToolbarEnabled = MetaDB.getMicToolbarState(this, parentDid)\n```\n\nfrom a main/UI-thread path.\n\nThis is a project-defined `@WorkerThread` contract violation, not an Android SDK API contract violation. The concrete sink is `MetaDB`, AnkiDroid's SQLite metadata helper annotated at object level with `@WorkerThread`; the synchronous call is reached from a UI path.\n\n## Verified bug trace\n\n```text\ncom.ichi2.anki.Reviewer#onCollectionLoaded(Collection) / reviewer UI initialization\n  -> source location: AnkiDroid/src/main/java/com/ichi2/anki/Reviewer.kt:393\n  -> source call: val isMicToolbarEnabled = MetaDB.getMicToolbarState(this, parentDid)\n  -> Reviewer.onCollectionLoaded runs during reviewer UI initialization\n  -> it restores deck-specific whiteboard and microphone-toolbar state synchronously\n  -> calls/reaches MetaDB, an AnkiDroid SQLite metadata helper annotated with @WorkerThread\n  -> MetaDB may open or upgrade ankidroid.db before the metadata query/write returns\n  -> MetaDB then performs synchronous SQLite rawQuery/update/insert work\n  -> this belongs to a reviewer metadata-state cluster, not just one isolated line\n  -> analyzer/source audit observed ",
+      "state": "closed",
+      "labels": [
+        "Won't-fix",
+        "Needs Triage"
+      ],
+      "milestone": null,
+      "created_at": "2026-06-09T08:28:06Z",
+      "updated_at": "2026-06-09T09:49:05Z",
+      "comments": 3,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21243"
+    },
+    {
+      "id": "gh-4620146823",
+      "number": 21242,
+      "title": "Snackbar appears in the card browser unnecessarily",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [x] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\nThis is a regression in 2.25.0alpha1.\n\nOpening the browser or changing the deck from the card browser screen shows a snackbar.\n\n### Expected behaviour\n\nNo snack bar unless the user has searched for something.\n\n### Debug info\n\n```text\nAnkiDroid Version = 2.25.0alpha1 (98bddabfa055eb61e0b5f5ab2dfde43f3f174ee6)  \nBackend Version = 0.1.64-anki25.09.2 (25.09.2 3890e12c9e48c028c3f12aa58cb64bd9f8895e30)  \nAndroid Version = 13 (SDK 33)  \nProductFlavor = full  \nDevice Info = Xiaomi | POCO | mondrian | mondrian_global | 23013PC75G | qcom  \nWebView Info = [com.google.android.webview | 782704803]: Mozilla/5.0 (Linux; Android 13; 23013PC75G Build/TKQ1.220905.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/149.0.7827.48 Mobile Safari/537.36  \nACRA UUID = 4afc3b3f-e93f-4a66-bc71-2b9476ef9eb0  \nFSRS = 5.1.0 (Enabled: true)  \nCrash Reports Enabled = true\n```\n\n### (Optional) Anything else you want to share?\n\n_No response_\n\n### Research\n\n- [x] I have checked the [manual](https://docs.ankidroid.org/) and the [FAQ](https://github.com/ankidroid/Anki-Android/wiki/FAQ) and could not find a solution to my issue\n- [x] (Optional) I have confirmed the issue is not resolved in the latest alpha release ([instructions](https://docs.ankidroid.org/manual.html#betaTesting))",
+      "state": "closed",
+      "labels": [
+        "Needs Triage"
+      ],
+      "milestone": "2.25 release",
+      "created_at": "2026-06-09T08:10:10Z",
+      "updated_at": "2026-06-15T16:23:20Z",
+      "comments": 0,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21242"
+    },
+    {
+      "id": "gh-4620108014",
+      "number": 21241,
+      "title": "Add FAB is too low",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [x] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\nOverlay comparison between 2.24.0 and this version:\n\n<img width=\"1440\" height=\"508\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/31091f66-55de-4cc4-8387-966cdada4ff8\" />\n\n### Expected behaviour\n\nIt should be where it was before.\n\n### Debug info\n\n```text\nAnkiDroid Version = 2.25.0alpha1 (98bddabfa055eb61e0b5f5ab2dfde43f3f174ee6)  \nBackend Version = 0.1.64-anki25.09.2 (25.09.2 3890e12c9e48c028c3f12aa58cb64bd9f8895e30)  \nAndroid Version = 13 (SDK 33)  \nProductFlavor = full  \nDevice Info = Xiaomi | POCO | mondrian | mondrian_global | 23013PC75G | qcom  \nWebView Info = [com.google.android.webview | 782704803]: Mozilla/5.0 (Linux; Android 13; 23013PC75G Build/TKQ1.220905.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/149.0.7827.48 Mobile Safari/537.36  \nACRA UUID = 4afc3b3f-e93f-4a66-bc71-2b9476ef9eb0  \nFSRS = 5.1.0 (Enabled: true)  \nCrash Reports Enabled = true\n```\n\n### (Optional) Anything else you want to share?\n\nThe animation could be improved. You can see in this video that the button snaps back at the end of its animation:\n\nhttps://github.com/user-attachments/assets/4045e6dd-abe0-4698-8afc-696168604750\n\n### Research\n\n- [x] I have checked the [manual](https://docs.ankidroid.org/) and the [FAQ](https://github.com/ankidroid/Anki-Android/wiki/FAQ) and could not find a solution to my issue\n- [x] (Optional) I have confirmed the issue is not resolved in the latest alpha release ([instructions](https://docs.ankidroid.org/manual.html#betaTesting))",
+      "state": "open",
+      "labels": [
+        "Needs Triage",
+        "2.25"
+      ],
+      "milestone": "2.25 release",
+      "created_at": "2026-06-09T08:04:58Z",
+      "updated_at": "2026-06-15T18:30:33Z",
+      "comments": 2,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21241"
+    },
+    {
+      "id": "gh-4613412117",
+      "number": 21237,
+      "title": "Upgrade to codecov/action v7 / Rollback this `use_pypi` CI codecov argument addition once https://github.com/codecov/codecov-action/issues/1940 appears to have some resolution",
+      "body": "Rollback this `use_pypi` CI codecov argument addition once https://github.com/codecov/codecov-action/issues/1940 appears to have some resolution\r\n\r\nI fear it allows for no action verification\r\n\r\n_Originally posted by @mikehardy in https://github.com/ankidroid/Anki-Android/issues/21232#issuecomment-4644607632_\r\n\r\n\r\nIndeed, the recommended solution is to upgrade to codecov/action v7 - ref: https://github.com/codecov/codecov-action/issues/1956",
+      "state": "closed",
+      "labels": [
+        "CI",
+        "dependencies"
+      ],
+      "milestone": "2.24.1 release",
+      "created_at": "2026-06-08T13:44:32Z",
+      "updated_at": "2026-06-08T14:59:33Z",
+      "comments": 0,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21237"
+    },
+    {
+      "id": "gh-4583973617",
+      "number": 21216,
+      "title": "CI: Has Conflicts label is not removed",
+      "body": "The 'Has Conflicts' label is not removed\n\nThis adds unnecessary burden to reviewers, and makes it likely that they will miss PRs in the queue:\n\n* Recent example: https://github.com/ankidroid/Anki-Android/pull/20992\n* Possibly a regression: #15137",
+      "state": "closed",
+      "labels": [
+        "CI"
+      ],
+      "milestone": "2.25 release",
+      "created_at": "2026-06-03T21:59:58Z",
+      "updated_at": "2026-06-15T16:18:05Z",
+      "comments": 2,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21216"
+    },
+    {
+      "id": "gh-4578955869",
+      "number": 21208,
+      "title": "lint: Enable unused import checks",
+      "body": "These were disabled in ktlint 1.7 and is now opt-in. `ktlint` planned to remove these checks, but this decision has been reversed\n\n> Ktlint analyses code on a file by file base. Meaning, that all linting/formatting decisions have to be made based on information in the file that is being processed. Information in other files is not taken into account at all. For a 100% reliable detection whether an import is used, or unused, a file needs to be analyzed within the scope of the project and its dependencies.\n>\n> The no-unused-imports rule is marked as deprecated starting from Ktlint 1.7.0, and will be removed in Ktlint 2.0.0. Until the rule is removed, it can be used by explicitly enabling the rule in the .editorconfig, by adding:\n\n* https://redirect.github.com/pinterest/ktlint/issues/3038\n\n----\n\nI will use `detekt` for this: https://detekt.dev/\n\nI have been planning to enable `detekt` for a while, and this is a sufficient reason to start. Detekt bugfixes should be added as TODOs",
+      "state": "open",
+      "labels": [
+        "Blocked by dependency"
+      ],
+      "milestone": null,
+      "created_at": "2026-06-03T10:24:34Z",
+      "updated_at": "2026-06-03T10:35:45Z",
+      "comments": 1,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21208"
+    },
+    {
+      "id": "gh-4576895094",
+      "number": 21207,
+      "title": "Add Code Reviewer skills in `.agents/skills/`",
+      "body": "This was suggested as a way to optimize our code review process\n\nAdvice:\n\nUse https://github.com/mattpocock/skills/blob/main/skills/in-progress/review/SKILL.md as a sample.\n\nCreate under `.agents/skills/`:\n\n* `pr-full-review`\n  * skill\n* `reviewer-guide.md`\n  * agent-encoded version of our 'Code Review Guide'\n\nOur docs: https://github.com/ankidroid/Anki-Android/wiki/Code-review-guide",
+      "state": "closed",
+      "labels": [],
+      "milestone": "2.25 release",
+      "created_at": "2026-06-03T04:34:27Z",
+      "updated_at": "2026-06-04T07:51:12Z",
+      "comments": 0,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21207"
+    },
+    {
+      "id": "gh-4570289230",
+      "number": 21204,
+      "title": "architecture: Improve collection creation logic",
+      "body": "Over the years, we have had many issues with 'startup paths' aside from `AnkiDroidApp` -> `IntentHandler` -> `DeckPicker`\n\nIn addition, we want to make this more complicated, by making `MANAGE_EXTERNAL_STORAGE` optional.\n\n* https://github.com/ankidroid/Anki-Android/issues/13574\n* https://github.com/ankidroid/Anki-Android/issues/16786\n\n**Aims:**\n* In the `full` flavor: `MANAGE_EXTERNAL_STORAGE` becomes optional\n* The collection directory creation is deferred until a user has made the above decision\n* All launchable activities need to handle 'user has not decided on `MANAGE_EXTERNAL_STORAGE`'\n* `withCol`/`getColUnsafe`/etc...  will be modified to throw, until this decision has been made\n  * This means that setting the collection path is explicit, no longer implicitly performed in `withCol`",
+      "state": "open",
+      "labels": [],
+      "milestone": null,
+      "created_at": "2026-06-02T09:41:09Z",
+      "updated_at": "2026-06-02T09:41:09Z",
+      "comments": 0,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21204"
+    },
+    {
+      "id": "gh-4567883112",
+      "number": 21200,
+      "title": "Add FAB menu can't be opened/closed with a hardware keyboard",
+      "body": "### Summary\nOn the Deck Picker, the Add (+) floating action button does not respond to keyboard. Enter center does not open the menu, and Escape does not close it. Touch still works, so this only affects hardware keyboard, Bluetooth keyboard\n\n### Steps to reproduce\n1. Use a device with a hardware keyboard (or an emulator, or Android TV with a D-pad).\n2. Open the Deck Picker (main screen).\n3. Press Tab until the Add (+) button has focus.\n4. Press Enter\n\n### Expected\nThe Add menu expands (Add Note, Add Deck, Add Shared, Filtered). With the menu open, Escape closes it.\n\n### Actual\nNothing happens. The keypress is consumed but the menu never opens. Escape on an open menu also does nothing.\n",
+      "state": "closed",
+      "labels": [],
+      "milestone": "2.25 release",
+      "created_at": "2026-06-02T02:32:07Z",
+      "updated_at": "2026-06-08T04:09:22Z",
+      "comments": 0,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21200"
+    },
+    {
+      "id": "gh-4547816836",
+      "number": 21171,
+      "title": "[BUG]: `onCreateDialog` calls `super.onCreate`",
+      "body": "This is a common pattern and should be investigated. Seems unusual to me\n\nhttps://github.com/ankidroid/Anki-Android/blob/859851fcec58566c69b647732c4ea842752b97cf/AnkiDroid/src/main/java/com/ichi2/anki/dialogs/customstudy/CustomStudyDialog.kt#L181-L194\n\nDates back a long time: ae7d237a5e3b74b630a7fbcebbd1f4efc3a26080",
+      "state": "closed",
+      "labels": [],
+      "milestone": "2.25 release",
+      "created_at": "2026-05-29T10:46:27Z",
+      "updated_at": "2026-05-30T02:09:08Z",
+      "comments": 1,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21171"
+    },
+    {
+      "id": "gh-4544212437",
+      "number": 21168,
+      "title": "CI: OOM issues on macOS",
+      "body": "<details>\n\n<summary>Claude-produced - macOS OOMs</summary>\n\n----\n\n  - 2 days ago: https://github.com/ankidroid/Anki-Android/actions/runs/26426949029/job/77792394025 \u2192 Gradle Test Executor 16 finished with non-zero exit value 134 (SIGABRT)\n  - 2 days ago: https://github.com/ankidroid/Anki-Android/actions/runs/26426949029/job/77792394028 \u2192 same exit value 134 (SIGABRT)\n  - 5 days ago: https://github.com/ankidroid/Anki-Android/actions/runs/26329673101/job/77513484537 \u2192 Gradle Test Executor 15 finished with non-zero exit value 134 (SIGABRT)\n\n----\n\n</details>\n\n- `macos-latest` has only 7GB RAM, so we have limited options to fix this generally\n  - https://docs.github.com/en/actions/reference/runners/github-hosted-runners",
+      "state": "closed",
+      "labels": [
+        "Dev"
+      ],
+      "milestone": "2.25 release",
+      "created_at": "2026-05-28T22:18:19Z",
+      "updated_at": "2026-05-30T01:41:41Z",
+      "comments": 1,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21168"
+    },
+    {
+      "id": "gh-4539560951",
+      "number": 21161,
+      "title": "Card disappears while using Whiteboard",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [x] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\nOpen card, activate Whiteboard, write. Tried to delete data and cash, only uninstalling and reinstalling worked. But bug reappeared two days later.\n\nhttps://github.com/user-attachments/assets/69c101a2-fd30-4d7b-b5ef-cda2d4d0cad9\n\n\n### Expected behaviour\n\nNormally, you can write on the whiteboard directly on top of the cad.\n\n### Debug info\n\n```text\nAnkiDroid Version = 2.24.0 (ebcf8e0e34921628b9b8a496c66ffd4adbb3705f)  \nBackend Version = 0.1.64-anki25.09.2 (25.09.2 3890e12c9e48c028c3f12aa58cb64bd9f8895e30)  \nAndroid Version = 13 (SDK 33)  \nProductFlavor = play  \nDevice Info = samsung | samsung | gta4xl | gta4xleea | SM-P615 | exynos9611  \nWebView Info = [com.google.android.webview | 777812003]: Mozilla/5.0 (Linux; Android 13; SM-P615 Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/148.0.7778.120 Safari/537.36  \nACRA UUID = 0dcb9519-c7f0-45d2-9e5c-3cf65c10e0ae  \nFSRS = 5.1.0 (Enabled: false)  \nCrash Reports Enabled = true\n```\n\n### (Optional) Anything else you want to share?\n\n_No response_\n\n### Research\n\n- [x] I have checked the [manual](https://ankidroid.org/docs/manual.html) and the [FAQ](https://github.com/ankidroid/Anki-Android/wiki/FAQ) and could not find a solution to my issue\n- [ ] (Optional) I have confirmed the issue is not resolved in the latest alpha release ([instructions](https://docs.ankidroid.org/manual.html#betaTesting))",
+      "state": "closed",
+      "labels": [
+        "Needs Triage"
+      ],
+      "milestone": null,
+      "created_at": "2026-05-28T10:11:47Z",
+      "updated_at": "2026-05-28T10:18:59Z",
+      "comments": 1,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21161"
+    },
+    {
+      "id": "gh-4536793960",
+      "number": 21159,
+      "title": "Flaky Lint check failure: `mergeFullReleaseResources` - Java heap space",
+      "body": "Code quality check is failing frequently, but no solid reason seems like flaky  \n- https://github.com/ankidroid/Anki-Android/actions/runs/26547138994/job/78201335927?pr=21147",
+      "state": "closed",
+      "labels": [
+        "CI"
+      ],
+      "milestone": "2.25 release",
+      "created_at": "2026-05-28T00:48:54Z",
+      "updated_at": "2026-05-31T16:13:10Z",
+      "comments": 2,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21159"
+    },
+    {
+      "id": "gh-4532097040",
+      "number": 21155,
+      "title": "Rotation/unfold during review hides the answer (resets card to question side)",
+      "body": "### Checked for duplicates?\n- [x] This issue is not a duplicate (searched; related issues listed at the bottom)\n\n### Does it also happen in the desktop version?\n- [x] N/A, this is Android lifecycle behaviour\n\n### Steps to reproduce\n1. Start a review.\n2. Tap **Show Answer** so the back of the card is visible.\n3. Fold the device shut, then unfold. (Plain rotation on a non-foldable should trigger the same path: any configuration change the Reviewer handles itself.)\n4. The card flips back to the question side. The answer is hidden and I have to tap Show Answer again to see it.\n\nI have also had study progress vanish more dramatically (landing on what looked like a different card after a fold), matching #2077, but I can't reproduce that on demand. This report sticks to the side-state loss above, which is consistent.\n\n### Expected behaviour\nThe Reviewer should still be showing the same side of the same card after a fold or rotation. Today, the `CardSide` state is dropped and the view re-renders the question side.\n\n### Debug info\nPulled with `adb` rather than the in-app Copy Debug Info button. I can paste the in-app version on request.\n\n```\nAnkiDroid Version: 2.24.0 (versionCode 22400300)\nInstaller:         org.fdroid.fdroid\nAndroid Version:   16 (SDK 36)\nDevice:            Samsung Galaxy Z Fold5 (SM-F946B)\nBuild:             samsung/q5qxeea/q5q:16/BP2A.250605.031.A3/F946BXXS6FZC5:user/release-keys\nWebView:           com.google.android.webview 148.0.7778.178\nLocale:            en-GB\n```\n\nThe Reviewer's manifest entry still has `android:configChanges=\"keyboardHidden|orientation|screenSize\"`, so the activity is not being recreated on the unfold. The state loss is happening inside the manual config-change path, not in a missing `onSaveInstanceState`. That puts this in the same family as #12832 rather than a straight duplicate.\n\n### Anything else?\nSame device class as the foldable in #19674, but a different symptom and not tied to \"Disable card hardware render\" (that toggle isn",
+      "state": "closed",
+      "labels": [],
+      "milestone": null,
+      "created_at": "2026-05-27T11:54:20Z",
+      "updated_at": "2026-05-29T11:16:04Z",
+      "comments": 6,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21155"
+    },
+    {
+      "id": "gh-4529853900",
+      "number": 21153,
+      "title": "Card browser column headers are not updated after changing them from the \"Card Browser\" context menu",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [x] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\n1. Make sure that Settings -> General -> \u2018Card Browser\u2019 Menu is enabled.\n2. Open the browser.\n3. Edit a note.\n4. Select some text and then use the \"Card Browser\" context menu.\n5. Change the columns.\n6. Return to the original browser.\n\nObserve that the column headers do not match the updated columns.\n\nhttps://github.com/user-attachments/assets/5639bf6b-76e2-4ac5-83f9-c4be2e8c0fc5\n\n<img width=\"1440\" height=\"962\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/2c5ee98b-0732-4838-b13d-ebd6d795d984\" />\n\n### Expected behaviour\n\nThe column headers update.\n\n### Debug info\n\n```text\nAnkiDroid Version = 2.24.0 (ebcf8e0e34921628b9b8a496c66ffd4adbb3705f)  \nBackend Version = 0.1.64-anki25.09.2 (25.09.2 3890e12c9e48c028c3f12aa58cb64bd9f8895e30)  \nAndroid Version = 13 (SDK 33)  \nProductFlavor = full  \nDevice Info = Xiaomi | POCO | mondrian | mondrian_global | 23013PC75G | qcom  \nWebView Info = [com.google.android.webview | 777812003]: Mozilla/5.0 (Linux; Android 13; 23013PC75G Build/TKQ1.220905.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/148.0.7778.120 Mobile Safari/537.36  \nACRA UUID = 4afc3b3f-e93f-4a66-bc71-2b9476ef9eb0  \nFSRS = 5.1.0 (Enabled: true)  \nCrash Reports Enabled = true\n```\n\n### (Optional) Anything else you want to share?\n\n_No response_\n\n### Research\n\n- [x] I have checked the [manual](https://ankidroid.org/docs/manual.html) and the [FAQ](https://github.com/ankidroid/Anki-Android/wiki/FAQ) and could not find a solution to my issue\n- [x] (Optional) I have confirmed the issue is not resolved in the latest alpha release ([instructions](https://docs.ankidroid.org/manual.html#betaTesting))",
+      "state": "closed",
+      "labels": [
+        "Needs Triage",
+        "Reproduced"
+      ],
+      "milestone": "2.25 release",
+      "created_at": "2026-05-27T05:45:37Z",
+      "updated_at": "2026-05-31T12:55:52Z",
+      "comments": 0,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21153"
+    },
+    {
+      "id": "gh-4521792096",
+      "number": 21148,
+      "title": "Memory leak in deck picker",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [x] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\nAfair all I did was review a deck and got a Leak Canary popup that seems to indicate the activity instance is being leaked. Is there a scroll listener that needs to be cleaned up?\n\n```\n\u252c\u2500\u2500\u2500\n\u2502 GC Root: Global variable in native code\n\u2502\n\u251c\u2500 android.window.WindowOnBackInvokedDispatcher$OnBackInvokedCallbackWrapper\n\u2502  instance\n\u2502    Leaking: UNKNOWN\n\u2502    Retaining 1.1 kB in 15 objects\n\u2502    \u2193 WindowOnBackInvokedDispatcher$OnBackInvokedCallbackWrapper.this$0\n\u2502                                                                 ~~~~~~\n\u251c\u2500 android.window.WindowOnBackInvokedDispatcher instance\n\u2502    Leaking: UNKNOWN\n\u2502    Retaining 577 B in 17 objects\n\u2502    \u2193 WindowOnBackInvokedDispatcher.mViewRoot\n\u2502                                    ~~~~~~~~~\n\u251c\u2500 android.view.ViewRootImpl instance\n\u2502    Leaking: UNKNOWN\n\u2502    Retaining 15.0 kB in 330 objects\n\u2502    mContext instance of com.android.internal.policy.DecorContext, wrapping\n\u2502    activity com.ichi2.anki.DeckPicker with mDestroyed = false\n\u2502    ViewRootImpl#mView is not null\n\u2502    mWindowAttributes.mTitle = \"com.ichi2.anki.debug/com.ichi2.anki.DeckPicker\"\n\u2502    mWindowAttributes.type = 1\n\u2502    \u2193 ViewRootImpl.mAttachInfo\n\u2502                   ~~~~~~~~~~~\n\u251c\u2500 android.view.View$AttachInfo instance\n\u2502    Leaking: UNKNOWN\n\u2502    Retaining 775.0 kB in 13362 objects\n\u2502    \u2193 View$AttachInfo.mTreeObserver\n\u2502                      ~~~~~~~~~~~~~\n\u251c\u2500 android.view.ViewTreeObserver instance\n\u2502    Leaking: UNKNOWN\n\u2502    Retaining 773.7 kB in 13331 objects\n\u2502    \u2193 ViewTreeObserver.mOnScrollChangedListeners\n\u2502                       ~~~~~~~~~~~~~~~~~~~~~~~~~\n\u251c\u2500 android.view.ViewTreeObserver$CopyOnWriteArray instance\n\u2502    Leaking: UNKNOWN\n\u2502    Retaining 773.4 kB in 13320 objects\n\u2502    \u2193 ViewTreeObserver$CopyOnWriteArray.mData\n\u2502                             ",
+      "state": "closed",
+      "labels": [
+        "Needs Triage"
+      ],
+      "milestone": "2.24.1 release",
+      "created_at": "2026-05-26T06:02:49Z",
+      "updated_at": "2026-06-09T19:03:38Z",
+      "comments": 1,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21148"
+    },
+    {
+      "id": "gh-4517446373",
+      "number": 21144,
+      "title": "Blackboard options got overlapped by ` Show answer` in new study screen",
+      "body": "Though I can write in fact\n\n![Screenshot_2026-05-25-21-52-38-358_com.ichi2.anki.jpg](https://github.com/user-attachments/assets/769b6187-1dc9-43c1-859e-362952b37640)\n\n![Screenshot_2026-05-25-21-59-33-126_com.ichi2.anki.jpg](https://github.com/user-attachments/assets/19e13ac7-1890-4403-8366-bd938ef8b1d0)\n\n![Screenshot_2026-05-25-22-00-27-187_com.ichi2.anki.jpg](https://github.com/user-attachments/assets/3a7508bf-51e6-4bdc-9ffc-c3a341d812e1)\n\n\n\n```\nAnkiDroid Version = 2.24.0 (ebcf8e0e34921628b9b8a496c66ffd4adbb3705f)  \nBackend Version = 0.1.64-anki25.09.2 (25.09.2 3890e12c9e48c028c3f12aa58cb64bd9f8895e30)  \nAndroid Version = 16 (SDK 36)  \nProductFlavor = full  \nDevice Info = Xiaomi | Redmi | onyx | onyx | 25053RT47C | qcom  \nWebView Info = [com.google.android.webview | 768016403]: Mozilla/5.0 (Linux; Android 16; 25053RT47C Build/BP2A.250605.031.A3; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/146.0.7680.164 Mobile Safari/537.36  \nACRA UUID = 4d59def1-42fb-474d-97d5-adeb89db5771  \nFSRS = 5.1.0 (Enabled: true)  \nCrash Reports Enabled = true\n```",
+      "state": "closed",
+      "labels": [],
+      "milestone": null,
+      "created_at": "2026-05-25T14:01:07Z",
+      "updated_at": "2026-05-25T14:35:46Z",
+      "comments": 2,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21144"
+    },
+    {
+      "id": "gh-4512768414",
+      "number": 21139,
+      "title": "New study screen inconsistent with old",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [x] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\nHi all thanks for developing the new study screen, it's very useful as when I interact with embedded buttons they don't trigger the gestures.\n\nHowever there are a couple of regressions I noticed almost straight away that I would ask you to fix: \n\n1) The navigation drawer does not show, which introduces an extra click to enter the browser, and another to go back to the study screen.\n\n2) The order of items in the overflow menu is different from the old study screen. This breaks muscle memory, and imo the new order is not an improvement.\n\n<img height=\"600\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/4c3745e6-d587-44f4-9ea5-74103af87661\" />\n\n<img height=\"600\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/1ac98e73-c854-4926-a4e4-f783e8ece222\" />\n\n### Expected behaviour\n\nConsistency with old study screen\n\n### Debug info\n\n```text\nN/A\n```\n\n### (Optional) Anything else you want to share?\n\n_No response_\n\n### Research\n\n- [x] I have checked the [manual](https://ankidroid.org/docs/manual.html) and the [FAQ](https://github.com/ankidroid/Anki-Android/wiki/FAQ) and could not find a solution to my issue\n- [x] (Optional) I have confirmed the issue is not resolved in the latest alpha release ([instructions](https://docs.ankidroid.org/manual.html#betaTesting))",
+      "state": "open",
+      "labels": [],
+      "milestone": null,
+      "created_at": "2026-05-24T20:06:27Z",
+      "updated_at": "2026-05-26T04:29:20Z",
+      "comments": 12,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21139"
+    },
+    {
+      "id": "gh-4512654521",
+      "number": 21138,
+      "title": "Incremental Jetpack Compose adoption",
+      "body": "Jetpack Compose for AnkiDroid incrementally, starting with a new shared `:ui-compose` module that houses the theme bridge and reusable UI components. Existing Views/Fragments stay; new screens and migrated leaf screens render in Compose hosted inside the current Fragment shells via `ComposeView`.\n\n> FYI: At I/O 2026 Google formally moved Android UI to \"Compose First\":\n> \n> - Android Views, Fragments, RecyclerView, ViewPager, and `android.widget` are in **maintenance mode** critical bug fixes only, no new features ([source](https://android-developers.googleblog.com/2026/05/android-ui-development-is-compose-first.html)).\n> - All new Android Studio UI tooling targets Compose (Layout Editor / Navigation Editor are frozen).\n> - Compose BOM 2026.04.01 (Compose 1.11) ships Grid, FlexBox, Style API, faster SlotTable runtime ([release notes](https://android-developers.googleblog.com/2026/04/jetpack-compose-april-2026-updates.html)).\n> - The official guidance is interop-first incremental adoption via `AndroidView` / `ComposeView` ([interop docs](https://developer.android.com/develop/ui/compose/migrate/interoperability-apis)).\n> \n> What its worth, AnkiDroid is well-positioned: AGP 9, Kotlin 2.3, minSdk 24, no Hilt/Dagger lock-in, view binding already enabled, small custom-View footprint.\n\n## Proposed approach\n\n### Phase 0 Foundations \n- [ ] Enable Compose in `:AnkiDroid` build (compose BOM, kotlin-compose plugin, `buildFeatures.compose = true`)\n- [ ] Create `:ui-compose` module (theme + shared components)\n- [ ] Document conventions in `docs/development/compose.md`\n\n### Phase 1:  Pilot leaf screens (separate PRs, one per screen)\nLow-risk, no shared state, prove the patterns:\n- `AboutFragment` (static content)\n- `LoadingDialogFragment`, `AsyncDialogFragment` (dialogs)\n- `PageFragment` (WebView + toolbar- proves `AndroidView` interop) ,etc\n\n### Phase 2: Mid-complexity\n- Settings sub-screens (will need a strategy for custom `Preference` subclasses)\n- Info / help screens\n\n### Phase",
+      "state": "open",
+      "labels": [],
+      "milestone": null,
+      "created_at": "2026-05-24T19:18:12Z",
+      "updated_at": "2026-05-29T14:27:26Z",
+      "comments": 7,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21138"
+    },
+    {
+      "id": "gh-4511561618",
+      "number": 21137,
+      "title": "Filter Card Browser tags based on currently selected notes",
+      "body": "### Description:\nCurrently, the Card Browser displays all tags irrespective of the selected notes. This can make tag navigation cluttered and less relevant when working with a filtered subset of notes.\n\n### Expected Behavior:\nWhen notes are selected in the Card Browser, only the tags associated with those selected notes should be displayed in the tag list/filter section.\n\nBased on discussion from:\n[Reddit Discussion](https://www.reddit.com/r/Anki/comments/1t2g8ht/comment/ojnv2li/?utm_source=chatgpt.com)\n\nSuggested to work on by @david-allison. ",
+      "state": "open",
+      "labels": [
+        "Accepted",
+        "Card Browser"
+      ],
+      "milestone": null,
+      "created_at": "2026-05-24T12:26:48Z",
+      "updated_at": "2026-06-07T17:14:25Z",
+      "comments": 2,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21137"
+    },
+    {
+      "id": "gh-4511224606",
+      "number": 21136,
+      "title": "with blocked access permissions to the Internet, the application closes",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [ ] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\nwith blocked access permissions to the Internet, the application closes\n\nA simple matter, such an application should work without access to the Internet, and it does not work, it is a mistake, a request to fix\n\n### Expected behaviour\n\nwith blocked access permissions to the Internet, the application closes\n\nA simple matter, such an application should work without access to the Internet, and it does not work, it is a mistake, a request to fix\n\n### Debug info\n\n```text\nThe latest\n```\n\n### (Optional) Anything else you want to share?\n\n_No response_\n\n### Research\n\n- [x] I have checked the [manual](https://ankidroid.org/docs/manual.html) and the [FAQ](https://github.com/ankidroid/Anki-Android/wiki/FAQ) and could not find a solution to my issue\n- [ ] (Optional) I have confirmed the issue is not resolved in the latest alpha release ([instructions](https://docs.ankidroid.org/manual.html#betaTesting))",
+      "state": "open",
+      "labels": [
+        "Needs Author Reply"
+      ],
+      "milestone": null,
+      "created_at": "2026-05-24T10:25:07Z",
+      "updated_at": "2026-05-29T17:37:02Z",
+      "comments": 6,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21136"
+    },
+    {
+      "id": "gh-4510990358",
+      "number": 21135,
+      "title": "searc then sync fails",
+      "body": "https://github.com/user-attachments/assets/6b9d8e01-2755-4533-aefe-f91ac283d526\n\n\nAnkiDroid Version = 2.24.0alpha13-debug (bab49586a3ebb4410d1b89bc01bc7fa4ffd37281)  \nBackend Version = 0.1.64-anki25.09.2 (25.09.2 3890e12c9e48c028c3f12aa58cb64bd9f8895e30)  \nAndroid Version = 16 (SDK 36)  \nProductFlavor = play  \nDevice Info = samsung | samsung | q7q | q7qxeea | SM-F966B | qcom  \nWebView Info = [com.google.android.webview | 777817803]: Mozilla/5.0 (Linux; Android 16; SM-F966B Build/BP2A.250605.031.A3; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/148.0.7778.178 Mobile Safari/537.36  \nACRA UUID = 766f07e7-5536-4531-95a6-04d750b4c454  \nFSRS = 5.1.0 (Enabled: false)  \nCrash Reports Enabled = false\n\n",
+      "state": "open",
+      "labels": [
+        "Needs Author Reply"
+      ],
+      "milestone": "2.24.1 release",
+      "created_at": "2026-05-24T08:40:09Z",
+      "updated_at": "2026-05-29T11:57:11Z",
+      "comments": 1,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21135"
+    },
+    {
+      "id": "gh-4509992361",
+      "number": 21132,
+      "title": "Snackbar not anchored on widget FAB",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [ ] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\nTrying deleting a deck on add deck screen for Deck widget\n\n### Expected behaviour\n\nThe FAB should be anchor for snackbar but it is not\n\n### Debug info\n\n```text\nLatest build on dev branch\n```\n\n### (Optional) Anything else you want to share?\n\n_No response_\n\n### Research\n\n- [x] I have checked the [manual](https://ankidroid.org/docs/manual.html) and the [FAQ](https://github.com/ankidroid/Anki-Android/wiki/FAQ) and could not find a solution to my issue\n- [ ] (Optional) I have confirmed the issue is not resolved in the latest alpha release ([instructions](https://docs.ankidroid.org/manual.html#betaTesting))",
+      "state": "closed",
+      "labels": [],
+      "milestone": "2.25 release",
+      "created_at": "2026-05-24T00:18:22Z",
+      "updated_at": "2026-05-25T00:12:28Z",
+      "comments": 0,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21132"
+    },
+    {
+      "id": "gh-4505119588",
+      "number": 21125,
+      "title": "Custom Study - Only Due Cards",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [ ] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\nFor the new update (v2.24.0) when you want to study due cards only, it is exactly the same as new cards only (I think it maps to the same value for the select box).\n\n### Expected behaviour\n\nLike as before, only creates custom study deck for due cards.\n\n### Debug info\n\n```text\nAnkiDroid Version = 2.24.0 (ebcf8e0e34921628b9b8a496c66ffd4adbb3705f)  \nBackend Version = 0.1.64-anki25.09.2 (25.09.2 3890e12c9e48c028c3f12aa58cb64bd9f8895e30)  \nAndroid Version = 15 (SDK 35)  \nProductFlavor = play  \nDevice Info = samsung | samsung | a14 | a14nnxx | SM-A145F | s5e3830  \nWebView Info = [com.google.android.webview | 772713703]: Mozilla/5.0 (Linux; Android 15; SM-A145F Build/AP3A.240905.015.A2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/147.0.7727.137 Mobile Safari/537.36  \nACRA UUID = fb951c9f-2ab6-4635-8176-a1c1a4e91622  \nFSRS = 5.1.0 (Enabled: false)  \nCrash Reports Enabled = true\n```\n\n### (Optional) Anything else you want to share?\n\n_No response_\n\n### Research\n\n- [x] I have checked the [manual](https://ankidroid.org/docs/manual.html) and the [FAQ](https://github.com/ankidroid/Anki-Android/wiki/FAQ) and could not find a solution to my issue\n- [ ] (Optional) I have confirmed the issue is not resolved in the latest alpha release ([instructions](https://docs.ankidroid.org/manual.html#betaTesting))",
+      "state": "closed",
+      "labels": [
+        "Needs Triage"
+      ],
+      "milestone": null,
+      "created_at": "2026-05-22T19:25:47Z",
+      "updated_at": "2026-05-22T20:20:19Z",
+      "comments": 1,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21125"
+    },
+    {
+      "id": "gh-4503045852",
+      "number": 21124,
+      "title": "Full screen navigation drawer does not work in New study screen",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [x] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\n1. Install Anki Droid\n2. Use classic study screen\n3. Enable 'full screen navigation drawer' in Settings \u2192 General\n4. Go back to study mode and see that it works\n5. Go to Settings \u2192 New Study Screen and enable\n6. Go back to study mode and see that is does not work\n\n### Expected behaviour\n\nthat full screen navigation drawer works in New Study Screen\n\n### Debug info\n\n```text\nAnkiDroid Version = 2.24.0 (ebcf8e0e34921628b9b8a496c66ffd4adbb3705f)  \nBackend Version = 0.1.64-anki25.09.2 (25.09.2 3890e12c9e48c028c3f12aa58cb64bd9f8895e30)  \nAndroid Version = 16 (SDK 36)  \nProductFlavor = play  \nDevice Info = samsung | samsung | m1s | m1sxeea | SM-S942B | s5e9965  \nWebView Info = [com.google.android.webview | 777812003]: Mozilla/5.0 (Linux; Android 16; SM-S942B Build/BP4A.251205.006; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/148.0.7778.120 Mobile Safari/537.36  \nACRA UUID = ff2bf93e-2eb4-4242-b3f4-acc6b4705d31  \nFSRS = 5.1.0 (Enabled: true)  \nCrash Reports Enabled = true\n```\n\n### (Optional) Anything else you want to share?\n\n_No response_\n\n### Research\n\n- [x] I have checked the [manual](https://ankidroid.org/docs/manual.html) and the [FAQ](https://github.com/ankidroid/Anki-Android/wiki/FAQ) and could not find a solution to my issue\n- [ ] (Optional) I have confirmed the issue is not resolved in the latest alpha release ([instructions](https://docs.ankidroid.org/manual.html#betaTesting))",
+      "state": "closed",
+      "labels": [
+        "Needs Triage"
+      ],
+      "milestone": null,
+      "created_at": "2026-05-22T13:37:08Z",
+      "updated_at": "2026-05-26T13:59:24Z",
+      "comments": 3,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21124"
+    },
+    {
+      "id": "gh-4502117513",
+      "number": 21123,
+      "title": "add a \"reset\" action in the reviewer",
+      "body": "If I review a card and realize I need to reset it, going through the browser is unpractical. We should be a le to add this as an option in the toolbar",
+      "state": "closed",
+      "labels": [],
+      "milestone": null,
+      "created_at": "2026-05-22T11:07:35Z",
+      "updated_at": "2026-05-22T19:23:13Z",
+      "comments": 2,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21123"
+    },
+    {
+      "id": "gh-4494416239",
+      "number": 21115,
+      "title": "\u4ec0\u4e48\u65f6\u5019\u652f\u6301\u53e6\u4e00\u79cd\u6807\u8bb0katex\u7684\u65b9\u6cd5",
+      "body": "$$$$",
+      "state": "closed",
+      "labels": [],
+      "milestone": null,
+      "created_at": "2026-05-21T12:11:40Z",
+      "updated_at": "2026-05-22T19:05:57Z",
+      "comments": 2,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21115"
+    },
+    {
+      "id": "gh-4491953743",
+      "number": 21113,
+      "title": "Remaining cards counter is not working",
+      "body": "### Checked for duplicates?\n\n- [x] This issue is not a duplicate\n\n### Does it also happen in the desktop version?\n\n- [ ] This bug does not occur in the latest version of Anki Desktop\n\n### What are the steps to reproduce this bug?\n\nI just casually entered the app and studied. After a while, I noticed the remaining cards counter said the same, which meant I haven't studied any cards at all.\n\n### Expected behaviour\n\nThe counter keeps showing one number instead of gradually decreasing as i study.\n\n### Debug info\n\n```text\nAnkiDroid Version = 2.24.0 (ebcf8e0e34921628b9b8a496c66ffd4adbb3705f)  \nBackend Version = 0.1.64-anki25.09.2 (25.09.2 3890e12c9e48c028c3f12aa58cb64bd9f8895e30)  \nAndroid Version = 16 (SDK 36)  \nProductFlavor = play  \nDevice Info = Google | google | shiba | shiba | Pixel 8 | shiba  \nWebView Info = [com.google.android.webview | 777812003]: Mozilla/5.0 (Linux; Android 16; Pixel 8 Build/CP1A.260405.005; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/148.0.7778.120 Mobile Safari/537.36  \nACRA UUID = 8520528b-5efc-452f-b2b9-746191d2f95b  \nFSRS = 5.1.0 (Enabled: false)  \nCrash Reports Enabled = true\n```\n\n### (Optional) Anything else you want to share?\n\n_No response_\n\n### Research\n\n- [x] I have checked the [manual](https://ankidroid.org/docs/manual.html) and the [FAQ](https://github.com/ankidroid/Anki-Android/wiki/FAQ) and could not find a solution to my issue\n- [ ] (Optional) I have confirmed the issue is not resolved in the latest alpha release ([instructions](https://docs.ankidroid.org/manual.html#betaTesting))",
+      "state": "open",
+      "labels": [
+        "Needs Triage"
+      ],
+      "milestone": null,
+      "created_at": "2026-05-21T05:21:16Z",
+      "updated_at": "2026-05-21T16:42:45Z",
+      "comments": 9,
+      "url": "https://github.com/ankidroid/Anki-Android/issues/21113"
+    }
+  ]
+}
