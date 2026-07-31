@@ -37,6 +37,7 @@ export interface Gap {
   };
   defenseExplanation: string;
   rankingReasoning: string;
+  counterArgument: string;
   createdAt: string;
 }
 

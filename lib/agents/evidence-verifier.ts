@@ -57,6 +57,7 @@ export async function runEvidenceVerifier(
       },
       defenseExplanation: gap.defenseExplanation,
       rankingReasoning: gap.rankingReasoning,
+      counterArgument: "",
       createdAt: new Date().toISOString(),
     });
   }

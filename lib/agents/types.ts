@@ -74,6 +74,7 @@ export interface VerifiedGap {
   };
   defenseExplanation: string;
   rankingReasoning: string;
+  counterArgument: string;
   createdAt: string;
 }
 

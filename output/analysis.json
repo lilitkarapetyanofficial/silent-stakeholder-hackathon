@@ -62,7 +62,7 @@
       },
       "defenseExplanation": "Multiple independent reviews describe the same pattern: users enter credentials, get redirected to email/web, accept connection, then get sent back to the app with a credential error. This is not a single complaint but a systemic authentication flow failure. Issue #22899 addresses a different aspect (2FA clarity) and does not resolve the redirect loop.",
       "rankingReasoning": "Ranked #1 because: 3 independent reviews describe the exact same authentication loop mechanism, consistent across multiple app versions, and the existing issue addresses a tangential concern.",
-      "createdAt": "2026-07-31T15:29:53.390Z"
+      "createdAt": "2026-07-31T16:43:09.373Z"
     },
     {
       "id": "gap-2",
@@ -123,7 +123,7 @@
       },
       "defenseExplanation": "Reviews describe losing drafts mid-edit, uploads failing silently, and no confirmation that content was saved. This reveals a deeper need for trust in the app's data persistence during the creative workflow, not just individual bug fixes.",
       "rankingReasoning": "Ranked #2 because: 2 reviews independently describe data loss anxiety, but fewer reviews than auth issue and some related issues exist.",
-      "createdAt": "2026-07-31T15:29:53.390Z"
+      "createdAt": "2026-07-31T16:43:09.373Z"
     },
     {
       "id": "gap-3",
@@ -183,7 +183,7 @@
       },
       "defenseExplanation": "Users describe formatting disappearing, blocks not behaving as expected, and the editor fighting their intent. This is not about individual bugs but about the overall editing experience not meeting user expectations for a professional mobile CMS.",
       "rankingReasoning": "Ranked #3 because: 2 reviews describe editing friction, consistent pattern across multiple users.",
-      "createdAt": "2026-07-31T15:29:53.390Z"
+      "createdAt": "2026-07-31T16:43:09.373Z"
     },
     {
       "id": "gap-4",
@@ -236,14 +236,14 @@
       },
       "defenseExplanation": "A pattern of general dissatisfaction emerges across multiple reviews, suggesting users do not trust the app to work reliably. This is a broader need for quality assurance that underlies all specific feature gaps.",
       "rankingReasoning": "Ranked #5 because: covers remaining unresolved reviews, lower confidence due to broader pattern.",
-      "createdAt": "2026-07-31T15:29:53.390Z"
+      "createdAt": "2026-07-31T16:43:09.373Z"
     }
   ],
   "stats": {
     "totalReviews": 3200,
     "totalIssues": 1000,
     "dateRange": "2016-02 to 2017-05",
-    "analyzedAt": "2026-07-31T15:29:53.400Z",
+    "analyzedAt": "2026-07-31T16:43:09.384Z",
     "ignoredCount": 1,
     "underPrioritizedCount": 2,
     "misunderstoodCount": 1
