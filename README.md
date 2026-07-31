@@ -8,7 +8,7 @@ Product teams build what they *see* in issues and feature requests. But the most
 
 ## How It Works
 
-A multi-agent AI pipeline analyzes 500+ Google Play reviews and 1,000+ GitHub issues to find mismatches between user needs and the product roadmap:
+A multi-agent AI pipeline analyzes Google Play reviews and GitHub issues to find mismatches between user needs and the product roadmap:
 
 1. **Preprocessor** — Clusters similar reviews using Jaccard similarity, extracts keywords, summarizes issues (local, no API calls)
 2. **LatentNeedDetector** — Uses Gemini to find hidden unmet needs by cross-referencing user signals against roadmap activity
@@ -21,15 +21,30 @@ Each gap receives a verdict:
 
 Each gap includes:
 - Hidden user need written from the user's perspective
-- Confidence score (0-100%) with explanation
+- Confidence score (0-100%) with justification
 - Evidence trace with review IDs and issue numbers
 - Defense explanation for live Q&A with judges
+
+## Data Sources
+
+### User Signals (Reviews)
+- **Dataset:** [sealuzh/app_reviews](https://huggingface.co/datasets/sealuzh/app_reviews) from HuggingFace
+- **Package:** `org.wordpress.android` (WordPress for Android)
+- **Records:** 3,200 reviews filtered from 288,065 total
+- **Date Range:** February 2016 - May 2017
+- **Fields:** review text, star rating (1-5), date
+- **Citation:** Grano, G., Di Sorbo, A., Mercaldo, F., Visaggio, C. A., Canfora, G., & Panichella, S. (2017). Software Applications User Reviews. Zurich Open Repository and Archive.
+
+### Roadmap (GitHub Issues)
+- **Repository:** [wordpress-mobile/WordPress-Android](https://github.com/wordpress-mobile/WordPress-Android)
+- **Records:** 1,000 issues + 50 milestones
+- **Fields:** issue number, title, body, state, labels, milestone, comments, dates
 
 ## Tech Stack
 
 - **Frontend:** Next.js 15, React 19, Tailwind CSS 4, TypeScript
 - **AI:** Gemini API (`gemini-3.5-flash` → `gemini-2.0-flash` fallback)
-- **Data:** WordPress for Android Play Store reviews + GitHub issues/milestones
+- **Data:** HuggingFace datasets + GitHub API
 
 ## Setup
 
@@ -72,6 +87,6 @@ Open [http://localhost:3000](http://localhost:3000)
 │   ├── data.ts           # Data loading + caching
 │   ├── types.ts          # Core data types
 │   └── utils.ts          # Client-safe helpers
-├── data/raw/             # 500 reviews + 1000 issues
+├── data/raw/             # Reviews + issues JSON
 └── output/               # Cached analysis results
 ```
