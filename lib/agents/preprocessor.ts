@@ -1,5 +1,5 @@
 import type { Review, Issue } from "../types";
-import type { PreprocessedData, ClusteredReview } from "./types";
+import type { PreprocessedData, ClusteredReview, IssueSummary } from "./types";
 
 const STOP_WORDS = new Set([
   "the", "a", "an", "is", "are", "was", "were", "be", "been", "being",
@@ -105,7 +105,7 @@ export function preprocessReviews(reviews: Review[]): PreprocessedData {
   };
 }
 
-export function preprocessIssues(issues: Issue[]) {
+export function preprocessIssues(issues: Issue[]): IssueSummary {
   const byState = { open: 0, closed: 0 };
   const byLabel = new Map<string, number>();
   const byMilestone = new Map<string, number>();
@@ -134,7 +134,15 @@ export function preprocessIssues(issues: Issue[]) {
 
   const highCommentIssues = [...issues]
     .sort((a, b) => b.comments - a.comments)
-    .slice(0, 30);
+    .slice(0, 30)
+    .map((i) => ({
+      number: i.number,
+      title: i.title,
+      state: i.state,
+      labels: i.labels,
+      milestone: i.milestone,
+      comments: i.comments,
+    }));
 
   return {
     total: issues.length,

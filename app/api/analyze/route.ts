@@ -27,7 +27,6 @@ export async function POST() {
         errors: state.errors,
         startedAt: state.startedAt,
         completedAt: state.completedAt,
-        judge: state.results.judge,
       },
     });
   } catch (error) {

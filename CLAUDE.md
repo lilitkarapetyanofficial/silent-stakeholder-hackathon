@@ -1,11 +1,11 @@
 # CLAUDE.md - Silent Stakeholder Project
 
 ## Project Overview
-A multi-agent AI system that discovers hidden unmet user needs by comparing Google Play reviews against GitHub roadmap issues for **WordPress for Android**. Uses Gemini API for LLM reasoning across a 6-step pipeline.
+A multi-agent AI system that discovers hidden unmet user needs by comparing Google Play reviews against GitHub roadmap issues for **WordPress for Android**. Uses Gemini API for LLM reasoning across a simplified 2-agent pipeline.
 
 ## Architecture
 ```
-Preprocessor (local) → Review Analyst (Gemini) + Roadmap Analyst (Gemini) [parallel] → Gap Detector (Gemini) → Evidence Verifier (local) → Judge (Gemini)
+Preprocessor (local) → LatentNeedDetector (Gemini) → EvidenceVerifier (local)
 ```
 
 ## Folder Structure
@@ -20,13 +20,12 @@ Preprocessor (local) → Review Analyst (Gemini) + Roadmap Analyst (Gemini) [par
 │       └── gaps/route.ts     # GET: serves cached results
 ├── components/               # React UI components
 ├── lib/
-│   ├── agents/               # 6-step pipeline agents
+│   ├── agents/               # 2-step pipeline agents
 │   ├── data.ts               # Data loading + caching
 │   ├── types.ts              # Core data types
 │   └── utils.ts              # Client-safe helpers
 ├── data/raw/                 # Reviews + issues JSON
-├── output/                   # Cached analysis results
-└── .env.local                # GEMINI_API_KEY
+└── output/                   # Cached analysis results
 ```
 
 ## Coding Rules
@@ -41,11 +40,8 @@ Preprocessor (local) → Review Analyst (Gemini) + Roadmap Analyst (Gemini) [par
 ## Agent System
 Each agent in `lib/agents/` exports a single async function:
 - `preprocessor.ts`: `preprocessReviews()`, `preprocessIssues()` - local, no Gemini
-- `review-analyst.ts`: `runReviewAnalyst()` - Gemini call
-- `roadmap-analyst.ts`: `runRoadmapAnalyst()` - Gemini call
-- `gap-detector.ts`: `runGapDetector()` - Gemini call
+- `latent-need-detector.ts`: `runLatentNeedDetector()` - Gemini call, finds hidden needs
 - `evidence-verifier.ts`: `runEvidenceVerifier()` - local verification
-- `judge.ts`: `runJudge()` - Gemini call
 
 All agent I/O types defined in `lib/agents/types.ts`.
 

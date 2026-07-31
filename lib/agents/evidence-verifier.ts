@@ -1,9 +1,8 @@
 import type { Review, Issue } from "../types";
-import type { GapAgentOutput, EvidenceAgentOutput, VerifiedGap } from "./types";
-import { callGeminiJson } from "./gemini-client";
+import type { LatentNeedDetectorOutput, EvidenceAgentOutput, VerifiedGap } from "./types";
 
 export async function runEvidenceVerifier(
-  gaps: GapAgentOutput,
+  gaps: LatentNeedDetectorOutput,
   reviews: Review[],
   issues: Issue[]
 ): Promise<EvidenceAgentOutput> {
@@ -46,15 +45,16 @@ export async function runEvidenceVerifier(
     verifiedGaps.push({
       id: `gap-${verifiedGaps.length + 1}`,
       topic: gap.topic,
-      userNeed: gap.userNeed,
-      explanation: gap.whyHidden,
-      confidence: Math.min(1, Math.max(0, gap.confidence)),
+      userNeed: gap.hiddenNeed,
+      explanation: gap.confidenceExplanation,
+      confidence: Math.min(100, Math.max(0, gap.confidence)),
       verdict: gap.verdict,
-      confidenceExplanation: gap.confidenceReasoning,
+      confidenceExplanation: gap.confidenceExplanation,
       evidence: {
         reviews: evidenceReviews,
         issues: evidenceIssues,
       },
+      defenseExplanation: gap.defenseExplanation,
       createdAt: new Date().toISOString(),
     });
   }
@@ -64,11 +64,11 @@ export async function runEvidenceVerifier(
       verifiedGaps.push({
         id: `gap-${verifiedGaps.length + 1}`,
         topic: gap.topic,
-        userNeed: gap.userNeed,
-        explanation: gap.whyHidden,
-        confidence: Math.min(1, Math.max(0, gap.confidence * 0.8)),
+        userNeed: gap.hiddenNeed,
+        explanation: gap.confidenceExplanation,
+        confidence: Math.min(100, Math.max(0, Math.round(gap.confidence * 0.8))),
         verdict: gap.verdict,
-        confidenceExplanation: gap.confidenceReasoning,
+        confidenceExplanation: gap.confidenceExplanation,
         evidence: {
           reviews: gap.supportingQuotes.slice(0, 3).map((q, i) => ({
             reviewId: gap.supportingReviewIds[i] || `review-${i}`,
@@ -85,6 +85,7 @@ export async function runEvidenceVerifier(
             labels: [],
           })),
         },
+        defenseExplanation: gap.defenseExplanation,
         createdAt: new Date().toISOString(),
       });
     }

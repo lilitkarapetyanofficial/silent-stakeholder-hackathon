@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { loadCachedAnalysis, loadReviews, loadIssues } from "@/lib/data";
+import { loadCachedAnalysis, loadReviews, loadIssues, getDateRange } from "@/lib/data";
 
 export async function GET() {
   try {
@@ -7,17 +7,12 @@ export async function GET() {
     const reviews = loadReviews();
     const { issues } = loadIssues();
 
-    const dates = reviews.filter((r) => r.at).map((r) => r.at!).sort();
-    const dateRange = dates.length > 0
-      ? `${dates[0].slice(0, 7)} to ${dates[dates.length - 1].slice(0, 7)}`
-      : "Unknown";
-
     return NextResponse.json({
       gaps: analysis?.gaps ?? [],
       stats: {
         totalReviews: reviews.length,
         totalIssues: issues.length,
-        dateRange,
+        dateRange: getDateRange(reviews),
         analyzedAt: analysis?.stats.analyzedAt ?? null,
         ignoredCount: analysis?.stats.ignoredCount ?? 0,
         underPrioritizedCount: analysis?.stats.underPrioritizedCount ?? 0,

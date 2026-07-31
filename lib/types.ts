@@ -22,48 +22,19 @@ export interface Issue {
   url: string;
 }
 
-export interface Milestone {
-  id: string;
-  title: string;
-  state: string;
-  open_issues: number;
-  closed_issues: number;
-}
-
-export interface EvidenceReview {
-  reviewId: string;
-  content: string;
-  score: number;
-  thumbsUp: number;
-  date: string;
-}
-
-export interface EvidenceIssue {
-  issueNumber: number;
-  title: string;
-  url: string;
-  state: string;
-  labels: string[];
-}
-
 export interface Gap {
   id: string;
   topic: string;
-  need: string;
+  userNeed: string;
   explanation: string;
   confidence: number;
-  confidenceBreakdown: {
-    volume: number;
-    social: number;
-    pain: number;
-    coverage: number;
-  };
   confidenceExplanation: string;
   verdict: "IGNORED" | "UNDER-PRIORITIZED" | "MISUNDERSTOOD";
   evidence: {
-    reviews: EvidenceReview[];
-    issues: EvidenceIssue[];
+    reviews: { reviewId: string; content: string; score: number; thumbsUp: number; date: string }[];
+    issues: { issueNumber: number; title: string; url: string; state: string; labels: string[] }[];
   };
+  defenseExplanation: string;
   createdAt: string;
 }
 

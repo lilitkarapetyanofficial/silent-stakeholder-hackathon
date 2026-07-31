@@ -14,7 +14,7 @@ export default function GapCard({ gap, rank, isDark }: GapCardProps) {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div className={`rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-[var(--fg-muted)]/30 transition-all duration-200 overflow-hidden`}>
+    <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-[var(--fg-muted)]/30 transition-all duration-200 overflow-hidden">
       <div className="p-5 cursor-pointer" onClick={() => setExpanded(!expanded)}>
         <div className="flex items-start justify-between gap-4 mb-3">
           <div className="flex-1 min-w-0">
@@ -26,21 +26,21 @@ export default function GapCard({ gap, rank, isDark }: GapCardProps) {
               <span className="text-[11px] text-[var(--fg-muted)] font-mono">#{rank}</span>
             </div>
             <h3 className="text-lg font-bold text-[var(--fg)] capitalize mb-1">{gap.topic}</h3>
-            <p className="text-sm font-medium text-[var(--fg)] leading-relaxed">{gap.need}</p>
+            <p className="text-sm font-medium text-[var(--fg)] leading-relaxed">{gap.userNeed}</p>
             {gap.explanation && (
               <p className="text-xs text-[var(--fg-muted)] leading-relaxed mt-2">{gap.explanation}</p>
             )}
           </div>
           <div className="text-right flex-shrink-0">
-            <div className="text-3xl font-bold font-mono text-[var(--fg)]">{Math.round(gap.confidence * 100)}%</div>
+            <div className="text-3xl font-bold font-mono text-[var(--fg)]">{gap.confidence}%</div>
             <p className="text-[10px] text-[var(--fg-muted)] uppercase tracking-wider mt-0.5">confidence</p>
           </div>
         </div>
 
         <div className="h-2 bg-[var(--bg-muted)] rounded-full overflow-hidden mb-4">
           <div
-            className={`h-full rounded-full transition-all duration-700 ${getConfidenceColor(gap.confidence, isDark)}`}
-            style={{ width: `${gap.confidence * 100}%` }}
+            className={`h-full rounded-full transition-all duration-700 ${getConfidenceColor(gap.confidence / 100, isDark)}`}
+            style={{ width: `${gap.confidence}%` }}
           />
         </div>
 
@@ -64,6 +64,17 @@ export default function GapCard({ gap, rank, isDark }: GapCardProps) {
             </div>
           )}
 
+          {gap.defenseExplanation && (
+            <div className="mb-4">
+              <h4 className="text-[11px] font-semibold text-[var(--fg-muted)] uppercase tracking-wider mb-2">
+                Why This Is a Real Unmet Need
+              </h4>
+              <p className="text-xs text-[var(--fg-muted)] leading-relaxed bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-3">
+                {gap.defenseExplanation}
+              </p>
+            </div>
+          )}
+
           {gap.evidence.reviews.length > 0 && (
             <div className="mb-4">
               <h4 className="text-[11px] font-semibold text-[var(--fg-muted)] uppercase tracking-wider mb-2">
@@ -74,7 +85,7 @@ export default function GapCard({ gap, rank, isDark }: GapCardProps) {
                   <div key={i} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-3">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-[10px] font-mono text-[var(--fg-muted)]">{r.reviewId}</span>
-                      <span className="text-[10px] text-[var(--fg-muted)]">{r.score}★</span>
+                      <span className="text-[10px] text-[var(--fg-muted)]">{r.score} stars</span>
                       <span className="text-[10px] text-[var(--fg-muted)]">{r.thumbsUp} thumbs-up</span>
                       <span className="text-[10px] text-[var(--fg-muted)]">{r.date?.slice(0, 10)}</span>
                     </div>

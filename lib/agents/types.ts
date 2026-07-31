@@ -1,6 +1,5 @@
-import type { Review, Issue } from "../types";
+import type { Review } from "../types";
 
-// ─── Preprocessed Data ───────────────────────────────────────────────
 export interface ClusteredReview {
   id: string;
   representativeReview: Review;
@@ -19,71 +18,42 @@ export interface PreprocessedData {
   totalClusters: number;
 }
 
-// ─── Agent Outputs ───────────────────────────────────────────────────
-export interface ReviewAgentOutput {
-  latentNeeds: {
-    topic: string;
-    needStatement: string;
-    explanation: string;
-    sentiment: "frustrated" | "confused" | "hoping" | "angry";
-    frequency: "high" | "medium" | "low";
-    supportingClusters: string[];
-    sampleReviewIds: string[];
-    sampleQuotes: string[];
+export interface IssueSummary {
+  total: number;
+  open: number;
+  closed: number;
+  topLabels: { label: string; count: number }[];
+  topMilestones: { milestone: string; count: number }[];
+  highCommentIssues: {
+    number: number;
+    title: string;
+    state: string;
+    labels: string[];
+    milestone: string | null;
+    comments: number;
   }[];
-  reviewStats: {
-    totalAnalyzed: number;
+}
+
+export interface DetectedGap {
+  topic: string;
+  hiddenNeed: string;
+  confidence: number;
+  confidenceExplanation: string;
+  verdict: "IGNORED" | "UNDER-PRIORITIZED" | "MISUNDERSTOOD";
+  supportingReviewIds: string[];
+  supportingQuotes: string[];
+  relatedIssueNumbers: number[];
+  defenseExplanation: string;
+}
+
+export interface LatentNeedDetectorOutput {
+  gaps: DetectedGap[];
+  stats: {
+    totalReviews: number;
+    totalIssues: number;
     clustersFormed: number;
     avgRating: number;
-    topComplaintThemes: string[];
   };
-}
-
-export interface RoadmapAgentOutput {
-  activeWork: {
-    topic: string;
-    issueCount: number;
-    priority: "high" | "medium" | "low";
-    sampleIssueNumbers: number[];
-  }[];
-  plannedFeatures: {
-    topic: string;
-    milestone: string | null;
-    status: "planned" | "in-progress" | "completed";
-    issueNumbers: number[];
-  }[];
-  roadmapGaps: string[];
-  roadmapStats: {
-    totalIssues: number;
-    openIssues: number;
-    closedIssues: number;
-    milestonesCount: number;
-    topLabels: string[];
-  };
-}
-
-export interface GapAgentOutput {
-  gaps: {
-    topic: string;
-    userNeed: string;
-    whyHidden: string;
-    confidence: number;
-    verdict: "IGNORED" | "UNDER-PRIORITIZED" | "MISUNDERSTOOD";
-    confidenceReasoning: string;
-    supportingReviewIds: string[];
-    supportingQuotes: string[];
-    relatedIssueNumbers: number[];
-  }[];
-}
-
-export interface EvidenceItem {
-  type: "review" | "issue";
-  id: string;
-  content: string;
-  url?: string;
-  rating?: number;
-  date?: string;
-  state?: string;
 }
 
 export interface VerifiedGap {
@@ -98,6 +68,7 @@ export interface VerifiedGap {
     reviews: { reviewId: string; content: string; score: number; thumbsUp: number; date: string }[];
     issues: { issueNumber: number; title: string; url: string; state: string; labels: string[] }[];
   };
+  defenseExplanation: string;
   createdAt: string;
 }
 
@@ -107,23 +78,6 @@ export interface EvidenceAgentOutput {
   removalReasons: string[];
 }
 
-export interface JudgeScore {
-  category: string;
-  score: number;
-  maxScore: number;
-  feedback: string;
-}
-
-export interface JudgeAgentOutput {
-  totalScore: number;
-  maxScore: number;
-  overallFeedback: string;
-  scores: JudgeScore[];
-  improvements: string[];
-  strengths: string[];
-}
-
-// ─── Pipeline State ──────────────────────────────────────────────────
 export type AgentStatus = "pending" | "running" | "completed" | "failed";
 
 export interface PipelineState {
@@ -131,19 +85,13 @@ export interface PipelineState {
   currentAgent: string;
   agents: {
     preprocessor: AgentStatus;
-    reviewAnalyst: AgentStatus;
-    roadmapAnalyst: AgentStatus;
-    gapDetector: AgentStatus;
+    latentNeedDetector: AgentStatus;
     evidenceVerifier: AgentStatus;
-    judge: AgentStatus;
   };
   results: {
     preprocessed?: PreprocessedData;
-    reviewAnalysis?: ReviewAgentOutput;
-    roadmapAnalysis?: RoadmapAgentOutput;
-    gaps?: GapAgentOutput;
+    latentNeeds?: LatentNeedDetectorOutput;
     evidence?: EvidenceAgentOutput;
-    judge?: JudgeAgentOutput;
   };
   errors: string[];
   startedAt: string;

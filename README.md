@@ -11,16 +11,19 @@ Product teams build what they *see* in issues and feature requests. But the most
 A multi-agent AI pipeline analyzes 500+ Google Play reviews and 1,000+ GitHub issues to find mismatches between user needs and the product roadmap:
 
 1. **Preprocessor** — Clusters similar reviews using Jaccard similarity, extracts keywords, summarizes issues (local, no API calls)
-2. **Review Analyst** — Uses Gemini to find latent hidden needs from clustered reviews
-3. **Roadmap Analyst** — Uses Gemini to analyze what the dev team is building (parallel with step 2)
-4. **Gap Detector** — Cross-references user needs against roadmap to find mismatches
-5. **Evidence Verifier** — Validates that evidence IDs exist in real data, removes unsupported claims
-6. **Judge Agent** — Evaluates findings against hackathon quality criteria
+2. **LatentNeedDetector** — Uses Gemini to find hidden unmet needs by cross-referencing user signals against roadmap activity
+3. **EvidenceVerifier** — Validates that evidence IDs exist in real data, removes unsupported claims
 
 Each gap receives a verdict:
 - **IGNORED** — Need exists but no roadmap issue addresses it
 - **UNDER-PRIORITIZED** — Issues exist but are closed/stale/low-priority
 - **MISUNDERSTOOD** — Issues exist but solve a different problem
+
+Each gap includes:
+- Hidden user need written from the user's perspective
+- Confidence score (0-100%) with explanation
+- Evidence trace with review IDs and issue numbers
+- Defense explanation for live Q&A with judges
 
 ## Tech Stack
 
@@ -65,7 +68,7 @@ Open [http://localhost:3000](http://localhost:3000)
 │   └── api/gaps/         # Cached results
 ├── components/           # React UI components
 ├── lib/
-│   ├── agents/           # 6-step pipeline agents
+│   ├── agents/           # 2-step pipeline agents
 │   ├── data.ts           # Data loading + caching
 │   ├── types.ts          # Core data types
 │   └── utils.ts          # Client-safe helpers
