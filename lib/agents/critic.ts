@@ -1,3 +1,4 @@
+import { appendFileSync } from "fs";
 import type { Review, Issue } from "../types";
 import type { VerifiedGap } from "./types";
 import { callGeminiJson } from "./gemini-client";
@@ -66,6 +67,8 @@ Return ONLY a JSON object: { "counterArgument": "your adversarial analysis" }`;
       });
       results.push({ ...gap, counterArgument: response.counterArgument });
     } catch (e) {
+      const errorDetail = e instanceof Error ? (e.stack || e.message) : String(e);
+      appendFileSync("critic-error.log", `[${new Date().toISOString()}] ${errorDetail}\n\n`);
       console.error("[Critic] Full error:", e);
       results.push({
         ...gap,
