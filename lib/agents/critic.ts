@@ -65,7 +65,8 @@ Return ONLY a JSON object: { "counterArgument": "your adversarial analysis" }`;
         maxTokens: 500,
       });
       results.push({ ...gap, counterArgument: response.counterArgument });
-    } catch {
+    } catch (e) {
+      console.error("[Critic] Full error:", e);
       results.push({
         ...gap,
         counterArgument: `Counter-argument unavailable: critic agent failed to process this gap.`,

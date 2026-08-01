@@ -35,7 +35,7 @@
       "counterArgument": "Counter-argument unavailable: critic agent failed to process this gap.",
       "product": "wordpress-mobile/WordPress-Android",
       "reviewsAvailable": true,
-      "createdAt": "2026-08-01T05:51:36.521Z"
+      "createdAt": "2026-08-01T05:56:47.317Z"
     },
     {
       "id": "gap-2",
@@ -72,7 +72,7 @@
       "counterArgument": "Counter-argument unavailable: critic agent failed to process this gap.",
       "product": "wordpress-mobile/WordPress-Android",
       "reviewsAvailable": true,
-      "createdAt": "2026-08-01T05:51:36.523Z"
+      "createdAt": "2026-08-01T05:56:47.320Z"
     },
     {
       "id": "gap-3",
@@ -113,7 +113,7 @@
       "counterArgument": "Counter-argument unavailable: critic agent failed to process this gap.",
       "product": "wordpress-mobile/WordPress-Android",
       "reviewsAvailable": true,
-      "createdAt": "2026-08-01T05:51:36.525Z"
+      "createdAt": "2026-08-01T05:56:47.321Z"
     }
   ],
   "rejectedGaps": [],
@@ -121,7 +121,7 @@
     "totalReviews": 3200,
     "totalIssues": 1000,
     "dateRange": "2016-02 to 2017-05",
-    "analyzedAt": "2026-08-01T05:51:36.533Z",
+    "analyzedAt": "2026-08-01T05:56:47.508Z",
     "ignoredCount": 2,
     "underPrioritizedCount": 1,
     "misunderstoodCount": 0
