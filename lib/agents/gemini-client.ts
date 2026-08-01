@@ -15,7 +15,7 @@ function getApiKey(): string {
 
 function computeCacheKey(prompt: string, model: string): string {
   let hash = 0;
-  const str = model + prompt.slice(0, 200);
+  const str = model + prompt.slice(0, 2000);
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
     hash = ((hash << 5) - hash) + char;

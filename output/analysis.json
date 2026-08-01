@@ -2,15 +2,52 @@
   "gaps": [
     {
       "id": "gap-1",
-      "topic": "non-destructive-editing-control",
-      "userNeed": "I need full agency and non-destructive state control over my posts so I can experiment with visual changes without fearing permanent loss of my original layout.",
-      "explanation": "Users editing on mobile experience psychological friction when changes auto-commit instantly without safety nets. This isn't just a request for a shortcut button, but a fundamental need for peace of mind and full state revision management while drafting content on touchscreen devices.",
+      "topic": "mobile-monetization-creator-workflow",
+      "userNeed": "I need a clear, accessible way to manage monetization and site extensions directly from my phone so I can build a profitable business without needing a desktop computer.",
+      "explanation": "Users view WordPress as a platform to run an income-generating business rather than a simple personal journaling app. When mobile-only creators cannot manage monetization plugins or discover earning mechanisms, they feel abandoned at a key stage of site growth. Addressing this requires exposing mobile-friendly plugin/monetization workflows instead of forcing desktop fallbacks.",
+      "llmConfidence": 82,
+      "computedConfidence": 42,
+      "flagged": true,
+      "confidenceJustification": "82% — supported by distinct review clusters and low-rated review signals raising monetization and extension capabilities, with zero open roadmap issues addressing mobile creator monetization features.",
+      "verdict": "IGNORED",
+      "verdictReason": "The engineering roadmap focuses almost exclusively on editor stability, stats fixes, and core app crashes while completely omitting mobile plugin and monetization management features.",
+      "evidence": {
+        "reviews": [
+          {
+            "reviewId": "rev-5e018cce",
+            "content": "It is wroast app i have ever downloaded I created a blog with it now I can't install plugins into it to monetize my blog",
+            "score": 1,
+            "thumbsUp": 0,
+            "date": "2017-04-25T00:00:00"
+          },
+          {
+            "reviewId": "rev-65b07688",
+            "content": "Using this app how can we earn?",
+            "score": 1,
+            "thumbsUp": 0,
+            "date": "2017-04-21T00:00:00"
+          }
+        ],
+        "issues": []
+      },
+      "defenseExplanation": "Users view WordPress as a platform to run an income-generating business rather than a simple personal journaling app. When mobile-only creators cannot manage monetization plugins or discover earning mechanisms, they feel abandoned at a key stage of site growth. Addressing this requires exposing mobile-friendly plugin/monetization workflows instead of forcing desktop fallbacks.",
+      "rankingReasoning": "Ranked #1 because it represents a fundamental strategic disconnect between user expectations of WordPress as an end-to-end business builder and the mobile app's restricted scope as a basic content editor.",
+      "counterArgument": "The reviews cited represent basic user misunderstanding of the WordPress platform rather than a genuine mobile product gap. Review rev-65b07688 reflects fundamental confusion about WordPress being a content management system rather than a direct payout platform, while rev-5e018cce's plugin complaint is almost certainly caused by WordPress.com plan tier restrictions rather than a missing mobile feature. Attempting to build complex desktop-level plugin administration into a mobile companion app targets uninformed users rather than addressing a legitimate mobile workflow need.",
+      "product": "wordpress-mobile/WordPress-Android",
+      "reviewsAvailable": true,
+      "createdAt": "2026-08-01T06:14:04.115Z"
+    },
+    {
+      "id": "gap-2",
+      "topic": "non-destructive-editing-safety",
+      "userNeed": "I need explicit control over when my changes are saved and an unambiguous way to undo edits so I can experiment with content formatting without fear of permanently ruining my draft.",
+      "explanation": "Authors experience significant friction and anxiety when continuous background auto-saving modifies live drafts without granular undo points on mobile touch keyboards. The product treats auto-saving as a convenience, whereas authors require clear non-destructive editing boundaries to feel safe composing complex posts on mobile. Providing explicit revision history and reliable undo/redo capabilities directly resolves this psychological safety gap.",
       "llmConfidence": 88,
       "computedConfidence": 46,
       "flagged": true,
-      "confidenceJustification": "High confidence based on detailed low-rated feedback highlighting anxiety around instant auto-saving combined with inadequate undo mechanisms, unsupported by current closed visual-confirmation issue #21189.",
-      "verdict": "UNDER-PRIORITIZED",
-      "verdictReason": "GitHub issue #21189 was closed around visual confirmation of blog restoration, completely missing the underlying core need for explicit post draft versioning and granular undo controls while writing.",
+      "confidenceJustification": "88% — corroborated by explicit user feedback regarding auto-save anxiety and closed issue #21189 which addressed visual confirmation of UNDO but missed the underlying need for explicit state control.",
+      "verdict": "MISUNDERSTOOD",
+      "verdictReason": "GitHub issue #21189 addressed visual confirmation feedback for site restoration, but failed to solve the writer's need for granular undo history and manual draft state control during live text editing.",
       "evidence": {
         "reviews": [
           {
@@ -34,61 +71,24 @@
           }
         ]
       },
-      "defenseExplanation": "Users editing on mobile experience psychological friction when changes auto-commit instantly without safety nets. This isn't just a request for a shortcut button, but a fundamental need for peace of mind and full state revision management while drafting content on touchscreen devices.",
-      "rankingReasoning": "Ranked #1 due to direct collision with post publishing core workflows, supported by high-friction 2-star feedback and insufficient closed issue scope on GitHub.",
-      "counterArgument": "The review rev-31a0c4de merely expresses frustration over basic text-editing controls like a visible Undo button and explicit save options, rather than a deep latent need for complex non-destructive revision management. Furthermore, issue #21189 explicitly shows that an UNDO functionality already exists in the app, meaning the core capability is present and the issue is simply a lack of visual confirmation feedback. Elevating a straightforward UI polish bug into a fundamental psychological gap overstates both the severity and the actual scope of user complaint.",
+      "defenseExplanation": "Authors experience significant friction and anxiety when continuous background auto-saving modifies live drafts without granular undo points on mobile touch keyboards. The product treats auto-saving as a convenience, whereas authors require clear non-destructive editing boundaries to feel safe composing complex posts on mobile. Providing explicit revision history and reliable undo/redo capabilities directly resolves this psychological safety gap.",
+      "rankingReasoning": "Ranked #2 because post editing is the core utility of the app, and lack of non-destructive editing guarantees directly damages user trust during the core authoring workflow.",
+      "counterArgument": "Review [rev-31a0c4de] reflects feature discoverability and UI feedback confusion rather than a fundamental lack of non-destructive editing safety. As evidenced by closed issue #21189, UNDO functionality already exists within the application, demonstrating that the underlying capability is present even if visual feedback needs minor refinement. Forcing explicit manual save controls over industry-standard auto-save based on isolated user misunderstanding would introduce catastrophic data-loss risks for mobile users.",
       "product": "wordpress-mobile/WordPress-Android",
       "reviewsAvailable": true,
-      "createdAt": "2026-08-01T06:10:16.297Z"
-    },
-    {
-      "id": "gap-2",
-      "topic": "monetization-and-extensibility-transparency",
-      "userNeed": "I need clear visibility into how my blog can generate revenue and extend capabilities on mobile so I don't feel stranded after setting up my site.",
-      "explanation": "Users migrate to mobile expecting a complete site management tool that helps them achieve commercial goals. When plugin installation and earning features are absent or hidden without explanation, users feel deceived and abandon the platform.",
-      "llmConfidence": 82,
-      "computedConfidence": 42,
-      "flagged": true,
-      "confidenceJustification": "Corroborated across low-rated reviews and cluster review data asking how to earn or install revenue-generating plugins, with zero corresponding open roadmap items.",
-      "verdict": "IGNORED",
-      "verdictReason": "The product roadmap contains zero open issues addressing mobile monetization onboarding or feature parity transparency regarding plugins.",
-      "evidence": {
-        "reviews": [
-          {
-            "reviewId": "rev-65b07688",
-            "content": "Using this app how can we earn?",
-            "score": 1,
-            "thumbsUp": 0,
-            "date": "2017-04-21T00:00:00"
-          },
-          {
-            "reviewId": "rev-5e018cce",
-            "content": "It is wroast app i have ever downloaded I created a blog with it now I can't install plugins into it to monetize my blog",
-            "score": 1,
-            "thumbsUp": 0,
-            "date": "2017-04-25T00:00:00"
-          }
-        ],
-        "issues": []
-      },
-      "defenseExplanation": "Users migrate to mobile expecting a complete site management tool that helps them achieve commercial goals. When plugin installation and earning features are absent or hidden without explanation, users feel deceived and abandon the platform.",
-      "rankingReasoning": "Ranked #2 because multiple independent review clusters and low ratings highlight user intent to build commercial sites, completely absent from the 1000 logged GitHub issues.",
-      "counterArgument": "The review rev-31a0c4de merely expresses frustration over basic text-editing controls like a visible Undo button and explicit save options, rather than a deep latent need for complex non-destructive revision management. Furthermore, issue #21189 explicitly shows that an UNDO functionality already exists in the app, meaning the core capability is present and the issue is simply a lack of visual confirmation feedback. Elevating a straightforward UI polish bug into a fundamental psychological gap overstates both the severity and the actual scope of user complaint.",
-      "product": "wordpress-mobile/WordPress-Android",
-      "reviewsAvailable": true,
-      "createdAt": "2026-08-01T06:10:16.300Z"
+      "createdAt": "2026-08-01T06:14:04.117Z"
     },
     {
       "id": "gap-3",
-      "topic": "desktop-to-mobile-taxonomy-parity",
-      "userNeed": "I need seamless structure parity between web and mobile so I can manage my pre-existing categories and layout without breaking my published site setup.",
-      "explanation": "Content creators rely on structured classification systems created on desktop. When the mobile client fails to pull existing categories or template contexts, it breaks user trust and forces creators back to desktop for routine publishing.",
+      "topic": "full-taxonomy-publishing-parity",
+      "userNeed": "I need complete parity with desktop site structure tools like categories and templates so I can publish fully-organized content directly from my mobile device.",
+      "explanation": "Mobile-first creators rely on the app to maintain their site's structure on the go, but missing category trees or template options breaks their publishing pipeline. When category structures fail to sync, users are forced to delay publishing or switch to desktop browsers, defeating the purpose of a mobile content management app. Full structural taxonomy parity ensures creators can reliably execute complete publishing workflows natively on Android.",
       "llmConfidence": 79,
-      "computedConfidence": 62,
+      "computedConfidence": 47,
       "flagged": true,
-      "confidenceJustification": "Supported by explicit negative reviews detailing missing custom categories and template management features, demonstrating a broken cross-device mental model.",
-      "verdict": "MISUNDERSTOOD",
-      "verdictReason": "The roadmap treats mobile editing strictly as simplified rich text entry rather than supporting existing site taxonomies and template customization for desktop-configured blogs.",
+      "confidenceJustification": "79% — directly identified in low-rated mobile publishing reviews where site taxonomy sync failures block complete mobile publishing workflows.",
+      "verdict": "UNDER-PRIORITIZED",
+      "verdictReason": "Although posting/editing is a labeled category on GitHub, structural taxonomy sync and mobile template editing remain unaddressed in active top roadmap milestones.",
       "evidence": {
         "reviews": [
           {
@@ -106,27 +106,14 @@
             "date": "2017-04-23T00:00:00"
           }
         ],
-        "issues": [
-          {
-            "issueNumber": 19250,
-            "title": "\"Couldn't update dashboard\" error on sites hosted on WPCOM",
-            "url": "https://github.com/wordpress-mobile/WordPress-Android/issues/19250",
-            "state": "open",
-            "labels": [
-              "[Type] Bug",
-              "[Pri] High",
-              "/My site",
-              "My Site Dashboard"
-            ]
-          }
-        ]
+        "issues": []
       },
-      "defenseExplanation": "Content creators rely on structured classification systems created on desktop. When the mobile client fails to pull existing categories or template contexts, it breaks user trust and forces creators back to desktop for routine publishing.",
-      "rankingReasoning": "Ranked #3 because it reflects continuous friction for active mobile updating, confirmed by low-star complaints regarding missing web-configured taxonomies.",
-      "counterArgument": "The review rev-31a0c4de merely expresses frustration over basic text-editing controls like a visible Undo button and explicit save options, rather than a deep latent need for complex non-destructive revision management. Furthermore, issue #21189 explicitly shows that an UNDO functionality already exists in the app, meaning the core capability is present and the issue is simply a lack of visual confirmation feedback. Elevating a straightforward UI polish bug into a fundamental psychological gap overstates both the severity and the actual scope of user complaint.",
+      "defenseExplanation": "Mobile-first creators rely on the app to maintain their site's structure on the go, but missing category trees or template options breaks their publishing pipeline. When category structures fail to sync, users are forced to delay publishing or switch to desktop browsers, defeating the purpose of a mobile content management app. Full structural taxonomy parity ensures creators can reliably execute complete publishing workflows natively on Android.",
+      "rankingReasoning": "Ranked #3 due to strong direct operational friction for mobile-first content managers who depend on custom category organization to publish properly formatted content on the go.",
+      "counterArgument": "The cited evidence reflects transient sync bugs and niche power-user edge cases rather than a broad, unaddressed latent need for full desktop taxonomy parity. Review rev-00490e85 describes existing categories failing to display—a clear API sync or local caching bug—while rev-4bffdf11 demands template editing, an inherently complex desktop workflow ill-suited for mobile screens. Forcing complete desktop structural parity onto mobile risks severe UI bloat for the vast majority of users who rely on the app primarily for quick drafting and light publishing on the go.",
       "product": "wordpress-mobile/WordPress-Android",
       "reviewsAvailable": true,
-      "createdAt": "2026-08-01T06:10:16.302Z"
+      "createdAt": "2026-08-01T06:14:04.119Z"
     }
   ],
   "rejectedGaps": [],
@@ -134,7 +121,7 @@
     "totalReviews": 3200,
     "totalIssues": 1000,
     "dateRange": "2016-02 to 2017-05",
-    "analyzedAt": "2026-08-01T06:10:20.807Z",
+    "analyzedAt": "2026-08-01T06:14:20.351Z",
     "ignoredCount": 1,
     "underPrioritizedCount": 1,
     "misunderstoodCount": 1
