@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync } from "fs";
 import { join } from "path";
 
 const CACHE_DIR = join(process.cwd(), ".cache", "gemini");
@@ -113,6 +113,7 @@ export async function callGeminiJson<T>(
 ): Promise<T> {
   const text = await callGemini(prompt, opts);
   console.log(`[callGeminiJson] Raw text (first 500 chars): ${text.slice(0, 500)}`);
+  appendFileSync("critic-error.log", `[${new Date().toISOString()}] RAW TEXT (${text.length} chars):\n${text}\n\n`);
   const jsonMatch = text.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
   if (!jsonMatch) throw new Error("No JSON found in Gemini response");
   return JSON.parse(jsonMatch[0]);
