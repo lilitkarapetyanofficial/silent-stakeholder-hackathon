@@ -48,7 +48,7 @@ Each gap includes:
 ## Tech Stack
 
 - **Frontend:** Next.js 15, React 19, Tailwind CSS 4, TypeScript
-- **AI:** Gemini API (`gemini-2.0-flash` primary, `gemini-2.5-flash` fallback)
+- **AI:** Gemini API (`gemini-3.6-flash` primary, `gemini-3.5-flash` fallback)
 - **Data:** HuggingFace datasets + GitHub API
 
 ## Setup

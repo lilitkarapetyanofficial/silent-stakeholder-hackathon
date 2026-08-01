@@ -51,7 +51,7 @@ All agent I/O types defined in `lib/agents/types.ts`.
 
 ## Gemini Client
 `lib/agents/gemini-client.ts`:
-- Model fallback: `gemini-2.0-flash` → `gemini-2.5-flash`
+- Model fallback: `gemini-3.6-flash` → `gemini-3.5-flash`
 - Retry logic with exponential backoff (3 attempts per model)
 - Rate limiting: 1 request/second
 - File-based caching in `.cache/gemini/` (1hr TTL)

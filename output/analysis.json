@@ -3,14 +3,14 @@
     {
       "id": "gap-1",
       "topic": "mobile-monetization-onboarding",
-      "userNeed": "I need to know how to turn my site into a revenue source and manage monetization tools directly from my phone so I can run a business without needing a computer.",
-      "explanation": "Users view WordPress mobile as a full-fledged micro-business platform rather than just a simple content publisher. When they discover monetization options or required plugins are inaccessible or unexplained on mobile, they suffer immediate churn. Proactively guiding users on site monetization directly in the app resolves a major latent barrier for self-employed creators.",
+      "userNeed": "I need step-by-step guidance and mobile-friendly tools to turn my blog into a revenue-generating business directly from my phone.",
+      "explanation": "Users downloading the mobile app view WordPress not merely as a content publishing tool, but as a platform to build a business and earn income. When they encounter no native monetization workflows or plugin store features on mobile, they feel disappointed and abandon the product. Bridging this gap requires embedding clear monetization pathways and Jetpack commerce features directly into the mobile experience.",
       "llmConfidence": 88,
-      "computedConfidence": 17,
+      "computedConfidence": 42,
       "flagged": true,
-      "confidenceJustification": "Corroborated by 19 reviews in Cluster 12 focusing on earning potential alongside low-rated reviews explicitly citing plugin and monetization roadblocks.",
+      "confidenceJustification": "88% — corroborated by Cluster 12 (17 reviews explicitly inquiring how to earn) and low-rated reviews regarding plugin/monetization limitations on mobile.",
       "verdict": "IGNORED",
-      "verdictReason": "The current GitHub roadmap focuses almost exclusively on technical maintenance and core blogging while omitting clear monetization pathways and plugin accessibility for mobile-first creators.",
+      "verdictReason": "The mobile engineering roadmap is focused exclusively on app stability and standard content editing, completely omitting creator business monetization and plugin integration pathways on mobile.",
       "evidence": {
         "reviews": [
           {
@@ -30,24 +30,61 @@
         ],
         "issues": []
       },
-      "defenseExplanation": "Users view WordPress mobile as a full-fledged micro-business platform rather than just a simple content publisher. When they discover monetization options or required plugins are inaccessible or unexplained on mobile, they suffer immediate churn. Proactively guiding users on site monetization directly in the app resolves a major latent barrier for self-employed creators.",
-      "rankingReasoning": "Ranked #1 due to strong signal volume across multiple user clusters (19 reviews in Cluster 12) combined with high churn impact in low-rated reviews, with zero active open GitHub issues addressing monetization guidance on mobile.",
+      "defenseExplanation": "Users downloading the mobile app view WordPress not merely as a content publishing tool, but as a platform to build a business and earn income. When they encounter no native monetization workflows or plugin store features on mobile, they feel disappointed and abandon the product. Bridging this gap requires embedding clear monetization pathways and Jetpack commerce features directly into the mobile experience.",
+      "rankingReasoning": "Ranked #1 because of high cluster volume (17 reviews in Cluster 12) combined with critical low-star review feedback and zero open GitHub issues addressing monetization or earning onboarding.",
       "counterArgument": "Counter-argument unavailable: critic agent failed to process this gap.",
       "product": "wordpress-mobile/WordPress-Android",
       "reviewsAvailable": true,
-      "createdAt": "2026-07-31T20:01:06.385Z"
+      "createdAt": "2026-08-01T05:51:36.521Z"
     },
     {
       "id": "gap-2",
-      "topic": "editorial-safety-and-state-control",
-      "userNeed": "I need complete confidence that my post edits can be undone and that my published content won't be unintentionally overwritten while I format text.",
-      "explanation": "Automatic background saving creates severe friction on touchscreen devices where formatting errors and accidental taps happen constantly. Users require visible safety controls like dedicated undo history and explicit draft checkpointing to feel safe experimenting with post layouts. Without explicit state management, mobile writing causes anxiety rather than seamless productivity.",
+      "topic": "cross-platform-taxonomy-parity",
+      "userNeed": "I need my mobile editing environment to faithfully preserve and expose the custom site structure, categories, and templates I configured on desktop.",
+      "explanation": "Mobile creators rely on established desktop taxonomies and site templates to maintain site organization while editing on the go. When desktop categories disappear or templates are uneditable in mobile, the user's workflow breaks and they are forced back to desktop. The app needs full taxonomy sync and template awareness to serve mobile-first managers effectively.",
       "llmConfidence": 82,
-      "computedConfidence": 21,
+      "computedConfidence": 47,
       "flagged": true,
-      "confidenceJustification": "Directly supported by explicit user feedback regarding aggressive auto-saving and missing undo capabilities during rich text editing.",
+      "confidenceJustification": "82% — backed by explicit user reviews citing missing desktop categories and uneditable site templates on mobile.",
+      "verdict": "IGNORED",
+      "verdictReason": "Roadmap issues focus heavily on single Gutenberg block crashes while ignoring broader taxonomy synchronization and template editing parity between web and mobile.",
+      "evidence": {
+        "reviews": [
+          {
+            "reviewId": "rev-00490e85",
+            "content": "All my categories that I have set are not showing on Mobile application that's very difficult for people who always update my blog on mobile please fixing it.",
+            "score": 2,
+            "thumbsUp": 0,
+            "date": "2017-04-25T00:00:00"
+          },
+          {
+            "reviewId": "rev-4bffdf11",
+            "content": "Cant edit my templates from the app",
+            "score": 2,
+            "thumbsUp": 0,
+            "date": "2017-04-23T00:00:00"
+          }
+        ],
+        "issues": []
+      },
+      "defenseExplanation": "Mobile creators rely on established desktop taxonomies and site templates to maintain site organization while editing on the go. When desktop categories disappear or templates are uneditable in mobile, the user's workflow breaks and they are forced back to desktop. The app needs full taxonomy sync and template awareness to serve mobile-first managers effectively.",
+      "rankingReasoning": "Ranked #2 because it directly impedes regular content managers who publish routinely on mobile, verified by explicit low-rated reviews, with no tracking on the open GitHub roadmap.",
+      "counterArgument": "Counter-argument unavailable: critic agent failed to process this gap.",
+      "product": "wordpress-mobile/WordPress-Android",
+      "reviewsAvailable": true,
+      "createdAt": "2026-08-01T05:51:36.523Z"
+    },
+    {
+      "id": "gap-3",
+      "topic": "in-flight-editing-safety",
+      "userNeed": "I need explicit control over when my changes save and a reliable undo mechanism so I can edit risk-free on my phone.",
+      "explanation": "Aggressive automatic saving combined with touch-screen missteps creates fear of permanently overwriting live or draft content. Users require clear save checkpoints and granular local undo/redo capabilities before changes auto-sync to the server. Providing explicit draft history control builds user trust and confidence during mobile post creation.",
+      "llmConfidence": 85,
+      "computedConfidence": 46,
+      "flagged": true,
+      "confidenceJustification": "85% — supported by detailed user feedback regarding anxiety from aggressive auto-saving and missing undo capabilities, combined with closed roadmap issues that only tackled button confirmation rather than edit state safety.",
       "verdict": "UNDER-PRIORITIZED",
-      "verdictReason": "While general editor crashes are actively tracked, granular local undo history and explicit draft confirmation mechanisms are ignored in open roadmap issues.",
+      "verdictReason": "The development team closed issue #21189 considering undo feedback addressed, failing to recognize the deeper user need for complete non-destructive post revision and state control.",
       "evidence": {
         "reviews": [
           {
@@ -71,49 +108,12 @@
           }
         ]
       },
-      "defenseExplanation": "Automatic background saving creates severe friction on touchscreen devices where formatting errors and accidental taps happen constantly. Users require visible safety controls like dedicated undo history and explicit draft checkpointing to feel safe experimenting with post layouts. Without explicit state management, mobile writing causes anxiety rather than seamless productivity.",
-      "rankingReasoning": "Ranked #2 due to its direct friction with the core primary use case of the app (content creation) and the mismatch between background cloud synchronization and user expectation of local editing safety.",
+      "defenseExplanation": "Aggressive automatic saving combined with touch-screen missteps creates fear of permanently overwriting live or draft content. Users require clear save checkpoints and granular local undo/redo capabilities before changes auto-sync to the server. Providing explicit draft history control builds user trust and confidence during mobile post creation.",
+      "rankingReasoning": "Ranked #3 because while closed issue #21189 acknowledged UNDO UI, the core latent need for non-destructive editing and manual save point control remains under-served in the product.",
       "counterArgument": "Counter-argument unavailable: critic agent failed to process this gap.",
       "product": "wordpress-mobile/WordPress-Android",
       "reviewsAvailable": true,
-      "createdAt": "2026-07-31T20:01:06.385Z"
-    },
-    {
-      "id": "gap-3",
-      "topic": "site-structure-and-taxonomy-parity",
-      "userNeed": "I need full visibility and control over my site's existing categories and templates on mobile so I can manage my site architecture seamlessly away from desktop.",
-      "explanation": "Mobile managers expect structural parity with the WordPress web dashboard. When custom categories or templates are missing from the mobile workflow, users lose trust in the app for site administration and are forced back to desktop. Ensuring full taxonomy synchronization unlocks complete mobile management for established multi-category blogs.",
-      "llmConfidence": 79,
-      "computedConfidence": 22,
-      "flagged": true,
-      "confidenceJustification": "Supported by low-star reviews highlighting missing categories and template editing limitations when attempting site management on mobile.",
-      "verdict": "IGNORED",
-      "verdictReason": "Open issues focus heavily on isolated UI bugs and tech debt, ignoring functional gaps where complex site taxonomies and templates fail to render on mobile.",
-      "evidence": {
-        "reviews": [
-          {
-            "reviewId": "rev-00490e85",
-            "content": "All my categories that I have set are not showing on Mobile application that's very difficult for people who always update my blog on mobile please fixing it.",
-            "score": 2,
-            "thumbsUp": 0,
-            "date": "2017-04-25T00:00:00"
-          },
-          {
-            "reviewId": "rev-4bffdf11",
-            "content": "Cant edit my templates from the app",
-            "score": 2,
-            "thumbsUp": 0,
-            "date": "2017-04-23T00:00:00"
-          }
-        ],
-        "issues": []
-      },
-      "defenseExplanation": "Mobile managers expect structural parity with the WordPress web dashboard. When custom categories or templates are missing from the mobile workflow, users lose trust in the app for site administration and are forced back to desktop. Ensuring full taxonomy synchronization unlocks complete mobile management for established multi-category blogs.",
-      "rankingReasoning": "Ranked #3 because while it severely impacts power users managing existing sites on mobile, the evidence stems from targeted high-severity individual reviews rather than broad volume clusters.",
-      "counterArgument": "Counter-argument unavailable: critic agent failed to process this gap.",
-      "product": "wordpress-mobile/WordPress-Android",
-      "reviewsAvailable": true,
-      "createdAt": "2026-07-31T20:01:06.386Z"
+      "createdAt": "2026-08-01T05:51:36.525Z"
     }
   ],
   "rejectedGaps": [],
@@ -121,7 +121,7 @@
     "totalReviews": 3200,
     "totalIssues": 1000,
     "dateRange": "2016-02 to 2017-05",
-    "analyzedAt": "2026-07-31T20:01:10.739Z",
+    "analyzedAt": "2026-08-01T05:51:36.533Z",
     "ignoredCount": 2,
     "underPrioritizedCount": 1,
     "misunderstoodCount": 0

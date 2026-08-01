@@ -24,7 +24,8 @@ function computedConfidence(
   const ratingScore = Math.round((avgRating / 5) * 25);
 
   const now = Date.now();
-  const threeMonthsAgo = now - 90 * 24 * 60 * 60 * 1000;
+  const latestReviewDate = Math.max(...reviews.map((r) => r.at ? new Date(r.at).getTime() : 0));
+  const threeMonthsAgo = latestReviewDate - 90 * 24 * 60 * 60 * 1000;
   const recentCount = matchedReviews.filter((r) => {
     if (!r.at) return false;
     return new Date(r.at).getTime() > threeMonthsAgo;
