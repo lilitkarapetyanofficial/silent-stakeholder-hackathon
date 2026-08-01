@@ -63,7 +63,7 @@ Return ONLY a JSON object: { "counterArgument": "your adversarial analysis" }`;
     try {
       const response = await callGeminiJson<CriticResponse>(prompt, {
         temperature: 0.5,
-        maxTokens: 1000,
+        maxTokens: 4000,
       });
       results.push({ ...gap, counterArgument: response.counterArgument });
     } catch (e) {
